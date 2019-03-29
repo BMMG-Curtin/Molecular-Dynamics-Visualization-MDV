@@ -6,7 +6,11 @@ Molecular Dynamics Visualization (MDV) is a tool developed by Curtin University 
 
 The application loads molecular topology and trajectory files and displays the structure and trajectory animation on screen. It supports PDB, Gromacs and XYZ files. It also allows for animation of the secondary structure. The menu is built in world space with a pointer mapped to 3D space to cater to stereo displays that don't use the OS mouse cursor.
 
-This software was developed in collaboration with the following staff  at Curtin University, Michael Wiebrands, Ricardo Mancera, Chris Malajczuk, Andrew  Woods and Andrew Rohl.
+This software was developed by the following staff at Curtin University, Michael Wiebrands, Ricardo Mancera, Chris Malajczuk, Andrew  Woods and Andrew Rohl.
+
+### Note
+
+This repository provides a version of MDV for Windows PC. Code specific to the Curtin HIVE Cylinder integration is not included in this repository.
 
 ### More information:
 
