@@ -12,7 +12,7 @@ This software was developed by the following staff at Curtin University, Michael
 
 This repository provides a version of MDV for Windows PC. Code specific to the Curtin HIVE Cylinder integration is not included in this repository.
 
-### More information:
+### More information
 
 https://www.youtube.com/watch?v=5SrmfuHLRbs
 
