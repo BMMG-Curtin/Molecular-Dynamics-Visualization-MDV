@@ -1,6 +1,6 @@
 # MolecularDynamicsVisualization
 
-Molecular Dynamics Visualization (MDV) is a tool developed by Curtin University to display Molecular Dynamics simulations on a large scale stereo cylindrical display at Curtin HIVE.
+Molecular Dynamics Visualization (MDV) is a tool developed by Curtin University to display molecular dynamics simulations on a large scale stereo cylindrical display at Curtin HIVE.
 
 ![MDV on HIVE Cylinder Display](Docs/Images/MDVHIVECylinder.jpg)
 
