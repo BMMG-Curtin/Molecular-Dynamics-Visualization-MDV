@@ -1,0 +1,2 @@
+﻿KDTree source code acquired from https://github.com/codeandcats/KdTree.
+The code is distributed under the MIT license and should be similarly covered by the main project distribution license.

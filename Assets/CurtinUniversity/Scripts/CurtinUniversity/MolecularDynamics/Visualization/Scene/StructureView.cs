@@ -1,0 +1,359 @@
+﻿using UnityEngine;
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
+using CurtinUniversity.MolecularDynamics.Model.Model;
+using CurtinUniversity.MolecularDynamics.Model.Analysis;
+
+using System.Diagnostics;
+
+namespace CurtinUniversity.MolecularDynamics.Visualization {
+
+    public class StructureView : MonoBehaviour {
+
+        public PrimaryStructureView PrimaryStructureView;
+        public SecondaryStructureView SecondaryStructureView;
+
+        [NonSerialized]
+        public bool Initialised = false;
+
+        public int AtomCount { get { return primaryStructure == null ? 0 : primaryStructure.AtomCount(); } }
+        public int ResidueCount { get { return primaryStructure == null ? 0 : primaryStructure.ResidueCount(); } }
+        public string Title { get { return primaryStructure == null || primaryStructure.Title == null ? "-- none --" : primaryStructure.Title.Trim(); } }
+        public int BondCount { get { return PrimaryStructureView.Bonds == null ? 0 : PrimaryStructureView.Bonds.Count; } }
+        public int FrameCount { get { return primaryStructureTrajectory == null ? 0 : primaryStructureTrajectory.FrameCount(); } }
+
+        public bool Initialising { get { return initialising; } }
+        public bool BuildingModel { get { return buildingModel; } }
+        public bool BypassSecondaryStructureBuild { get; set; } // used to bypass further SSbuilds if fails on first build.
+        public bool BypassSecondaryStructureTrajectoryBuild { get; set; } // used to bypass further SSbuilds if fails on first build.
+
+        private SceneManager sceneManager;
+
+        // model data store
+        private PrimaryStructure primaryStructure;
+        private SecondaryStructure secondaryStructure;
+        private PrimaryStructureTrajectory primaryStructureTrajectory;
+        private SecondaryStructureTrajectory secondaryStructureTrajectory;
+
+        private bool displayTrajectory = false;
+
+        private int currentFrameIndex = 0;
+        private bool animating = false;
+        private float lastAnimationUpdate = 0;
+
+        private float secondsBetweenFrames;
+
+        private bool initialising = false;
+        private bool buildingModel = false;
+
+        void Start() {
+
+            sceneManager = SceneManager.instance;
+            AnimationSpeed = Settings.FrameAnimationSpeed;
+        }
+
+        void Update() {
+
+            if (primaryStructureTrajectory != null && animating && !buildingModel) {
+                if (Time.time - lastAnimationUpdate > secondsBetweenFrames) {
+                    DisplayNextFrame();
+                    lastAnimationUpdate = Time.time;
+                }
+            }
+        }
+
+        public IEnumerator FinishBuilds() {
+
+            StopAnimation();
+            while (buildingModel)
+                yield return null;
+
+            yield break;
+        }
+
+        public IEnumerator Initialise(PrimaryStructure primaryStructure, SecondaryStructure secondaryStructure) {
+
+            initialising = true;
+
+            this.primaryStructure = primaryStructure;
+            this.secondaryStructure = secondaryStructure;
+            BypassSecondaryStructureBuild = false;
+            BypassSecondaryStructureTrajectoryBuild = false;
+
+
+            yield return PrimaryStructureView.Initialise(primaryStructure);
+            yield return SecondaryStructureView.Initialise(primaryStructure);
+
+            primaryStructureTrajectory = null;
+            secondaryStructureTrajectory = null;
+            displayTrajectory = false;
+
+            yield return StartCoroutine(buildModel(true, true));
+
+            Initialised = true;
+            initialising = false;
+
+            //UnityEngine.Debug.Log("Initialised model");
+        }
+
+        public IEnumerator Rebuild(bool primaryStructure, bool secondaryStructure) {
+
+            if (!buildingModel) {
+
+                if (primaryStructureTrajectory != null && displayTrajectory && !buildingModel)
+                    yield return StartCoroutine(buildModel(primaryStructure, secondaryStructure, currentFrameIndex));
+                else
+                    yield return StartCoroutine(buildModel(primaryStructure, secondaryStructure));
+            }
+
+            yield break;
+        }
+
+        public void ResetModelView() {
+            PrimaryStructureView.ResetModelView();
+        }
+
+        public void ShowModelView(bool show) {
+            PrimaryStructureView.ShowModelView(show);
+        }
+
+        private IEnumerator buildModel() {
+            buildingModel = true;
+            yield return StartCoroutine(buildModel(true, true, null));
+        }
+
+        private IEnumerator buildModel(int? frameNumber) {
+            buildingModel = true;
+            yield return StartCoroutine(buildModel(true, true, frameNumber));
+        }
+
+        private IEnumerator buildModel(bool buildPrimaryStructure, bool buildSecondaryStructure, int? frameNumber = null) {
+
+            //UnityEngine.Debug.Log("Starting model build");
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            buildingModel = true;
+
+            //UnityEngine.Debug.Log("Building frame number: " + frameNumber);
+
+            PrimaryStructureFrame frame = null;
+            if (frameNumber != null) {
+                frame = primaryStructureTrajectory.GetFrame((int)frameNumber);
+            }
+
+            SecondaryStructure secondaryStructureToBuild = null;
+
+            if (Settings.EnableSecondaryStructure) {
+
+                if (frameNumber != null && secondaryStructureTrajectory != null && !BypassSecondaryStructureTrajectoryBuild) {
+                    try {
+                        secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
+                    }
+                    catch (Exception ex) {
+                        sceneManager.GUIManager.ShowConsoleError(ex.Message + " - Aborting trajectory secondary structure builds.");
+                        BypassSecondaryStructureTrajectoryBuild = true;
+                    }
+                }
+                else {
+                    secondaryStructureToBuild = secondaryStructure;
+                }
+            }
+
+            if (buildPrimaryStructure) {
+                yield return PrimaryStructureView.BuildModel(frame);
+                //UnityEngine.Debug.Log("Completed primary structure build");
+            }
+
+            if (buildSecondaryStructure) {
+                yield return SecondaryStructureView.BuildModel(frame, secondaryStructureToBuild);
+                //UnityEngine.Debug.Log("Completed secondary structure build");
+            }
+
+            if (Settings.CalculateBoxEveryFrame) {
+                sceneManager.UpdateModelBox(frame);
+            }
+
+            Utility.Cleanup.ForeceGC();
+
+            buildingModel = false;
+            watch.Stop();
+            if (Settings.DebugMessages) {
+                sceneManager.GUIManager.Console.BannerBuildTime = watch.ElapsedMilliseconds.ToString();
+            }
+
+            //UnityEngine.Debug.Log("Ending model build. Elapsed time [" + watch.ElapsedMilliseconds.ToString() + "]");
+            yield break;
+        }
+
+        public void AddTrajectory(PrimaryStructureTrajectory trajectory) {
+
+            primaryStructureTrajectory = trajectory;
+            secondaryStructureTrajectory = new SecondaryStructureTrajectory(primaryStructure, primaryStructureTrajectory, Settings.StrideExecutablePath, Settings.TmpFilePath);
+            BypassSecondaryStructureTrajectoryBuild = false;
+
+            currentFrameIndex = 0;
+            sceneManager.GUIManager.TrajectoryControls.SetFrameNumber("-");
+            sceneManager.GUIManager.TrajectoryControls.SetTotalFrames(trajectory.FrameCount().ToString());
+        }
+
+        public void DisplayNextFrame() {
+
+            if (!buildingModel) {
+                if (!displayTrajectory) {
+                    displayTrajectory = true;
+                    ResetModelView();
+                }
+                else {
+                    currentFrameIndex++;
+                }
+
+                if (currentFrameIndex >= primaryStructureTrajectory.FrameCount()) {
+                    currentFrameIndex = 0;
+                }
+
+                StartCoroutine(buildModel(currentFrameIndex));
+
+                sceneManager.GUIManager.TrajectoryControls.SetFrameNumber((currentFrameIndex + 1).ToString());
+            }
+        }
+
+        public void DisplayPreviousFrame() {
+
+            if (!buildingModel) {
+
+
+                if (!displayTrajectory) {
+                    displayTrajectory = true;
+                    ResetModelView();
+                }
+                else {
+                    currentFrameIndex--;
+                }
+
+                if (currentFrameIndex < 0) {
+                    currentFrameIndex = primaryStructureTrajectory.FrameCount() - 1;
+                }
+
+                StartCoroutine(buildModel(currentFrameIndex));
+
+                sceneManager.GUIManager.TrajectoryControls.SetFrameNumber((currentFrameIndex + 1).ToString());
+
+            }
+        }
+
+        public IEnumerator ResetFrame() {
+
+            yield return StartCoroutine(FinishBuilds());
+
+            if (!buildingModel) {
+
+                currentFrameIndex = 0;
+                StartCoroutine(buildModel());
+
+                sceneManager.GUIManager.TrajectoryControls.SetFrameNumber("-");
+                displayTrajectory = false;
+                ResetModelView();
+            }
+        }
+
+        public void DisplayStartFrame() {
+
+            if (!buildingModel) {
+
+                displayTrajectory = true;
+                ResetModelView();
+
+                currentFrameIndex = 0;
+                StartCoroutine(buildModel(currentFrameIndex));
+
+                sceneManager.GUIManager.TrajectoryControls.SetFrameNumber((currentFrameIndex + 1).ToString());
+            }
+        }
+
+        public void DisplayEndFrame() {
+
+            if (!buildingModel) {
+
+                displayTrajectory = true;
+                ResetModelView();
+
+                currentFrameIndex = primaryStructureTrajectory.FrameCount() - 1;
+                StartCoroutine(buildModel(currentFrameIndex));
+
+                sceneManager.GUIManager.TrajectoryControls.SetFrameNumber((currentFrameIndex + 1).ToString());
+            }
+        }
+
+        public void DisplayFrame(int frameNumber) {
+
+            if (!buildingModel) {
+
+                frameNumber--; // displayed frame is indexed from 1, model trajectory frames are indexed from 0
+
+                // only display chosen frame if within tranjectory frame bounds
+                if (frameNumber >= 0 && frameNumber < primaryStructureTrajectory.FrameCount()) {
+                    currentFrameIndex = frameNumber;
+                    StartCoroutine(buildModel(currentFrameIndex));
+                }
+
+                sceneManager.GUIManager.TrajectoryControls.SetFrameNumber((currentFrameIndex + 1).ToString());
+            }
+            else {
+                currentFrameIndex = frameNumber - 1;
+            }
+        }
+
+        public void StartAnimation() {
+            animating = true;
+        }
+
+        public void StopAnimation() {
+            animating = false;
+        }
+
+        public void ResetAnimation() {
+            animating = true;
+            StartCoroutine(ResetFrame());
+        }
+
+        public int AnimationSpeed {
+
+            get {
+                return Settings.FrameAnimationSpeed;
+            }
+
+            set {
+                int animationSpeed = value;
+
+                if (animationSpeed < 1)
+                    animationSpeed = 1;
+
+                if (animationSpeed > Settings.MaxFrameAnimationSpeed)
+                    animationSpeed = Settings.MaxFrameAnimationSpeed;
+
+                Settings.FrameAnimationSpeed = animationSpeed;
+                setFrameDelay(animationSpeed);
+            }
+        }
+
+        private void setFrameDelay(int animationSpeed) {
+
+            // Decrement animation speed to allow for scaling from 0. 
+            animationSpeed = animationSpeed <= 0 ? 0 : animationSpeed - 1;
+
+            // Decrement max speed to match animation speed decrement and still allow scaling up to 1. Don't allow maxSpeed of 0 
+            int maxSpeed = Settings.MaxFrameAnimationSpeed;
+            maxSpeed = maxSpeed > 1 ? maxSpeed - 1 : 1;
+
+            float speedScale = ((float)animationSpeed / (float)maxSpeed); // should range from 0 to 1 unless Settings.MaxFrameAnimationSpeed was set to less than 2
+            secondsBetweenFrames = (1 - speedScale) * Settings.MaxSecondsBetweenFrames;
+
+            //UnityEngine.Debug.Log("Setting frame speed: " + secondsBetweenFrames);
+        }
+    }
+}

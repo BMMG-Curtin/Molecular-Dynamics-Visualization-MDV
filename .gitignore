@@ -1,0 +1,48 @@
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+Assets/AssetStoreTools*
+sysinfo.txt
+*.pidb.meta
+*.pdb.meta
+
+# Visual Studio cache directory
+.vs/
+ 
+# VS/Rider/MD/Consulo
+ExportedObj/
+.consulo/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+ 
+# Builds
+*.apk
+*.unitypackage
+*.app
+## *.exe
+
+# Windows
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk

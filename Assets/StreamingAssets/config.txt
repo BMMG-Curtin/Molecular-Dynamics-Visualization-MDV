@@ -1,0 +1,73 @@
+
+// Default Starting Model
+// All paths assume config file directory as a base
+LoadMoleculeOnStart: True
+LoadMoleculeFileName: C240.xyz
+// LoadMoleculeFileName: 5TQL_BB.pdb
+
+// Model Settings
+MaxBondLength: 0.155 // Bonds are calculated on atom distance. Atoms seperated by a distance in nm lower than this value have a bond. 0.155 is fairly standard
+GenerateBonds: True
+GenerateBondsOnModelLoad: False // if this is False and GenerateBonds is True then bonds will be generated when needed for display.
+
+// Scene Lighting
+GeneralLightBrightness: 1.5
+DefaultFillLightBrightness: 0.2
+DefaultSpotLightBrightness: 0.3
+DefaultMainLightBrightness: 0.3
+DefaultAreaLightBrightness: 0.3
+
+// Colour settings
+
+// Colors for residue highlighting. 
+// Uses RGB values ranging from 0-255
+// ResidueColour1: 255, 0, 0 		// red
+// ResidueColour2: 255, 128, 0		// orange
+// ResidueColour3: 255, 255, 0 	// yellow
+// ResidueColour4: 128, 255, 0 	// lime
+// ResidueColour5: 0, 255, 0 		// green
+// ResidueColour6: 0, 255, 191 	// cyan
+// ResidueColour7: 0, 191, 255 	// blue
+// ResidueColour8: 0, 0, 255	 	// dark blue
+// ResidueColour9: 191, 0, 255 	// purple
+// ResidueColour10: 220, 220, 220 	// dull white
+// ResidueColourDefault: 255, 0, 0 // red
+
+
+// Colors for residue highlighting. 
+// Uses RGB values ranging from 0-255
+ResidueColour1: 255, 0, 0 		// red1
+ResidueColour2: 255, 65, 65 	// red2
+ResidueColour3: 255, 125, 125 	// red3
+ResidueColour4: 255, 195, 195 	// red4
+ResidueColour5: 255, 255, 0 	// yellow
+ResidueColour6: 220, 220, 220 	// grey
+ResidueColour7: 195, 195, 255 	// blue1
+ResidueColour8: 125, 125, 255 	// blue2
+ResidueColour9: 65, 65, 255 	// blue3
+ResidueColour10: 0, 0, 255 	    // blue4
+
+ResidueColourDefault: 255, 0, 0 // red
+
+// Colour Hues for color input file
+// For hue values see: http://www.colorpicker.com/)
+MinColourHue: 0 // red 
+MaxColourHue: 0.66 // blue
+MinColourValue: 0.4
+MidColourValue: 0.5
+MaxColourValue: 0.6
+ColourBands: 5
+HighlightedBondColourHue: 0
+
+// Other Settings
+DefaultTrajectoryStartFrame: 0
+MinTrajectoryStartFrame: 0
+MaxTrajectoryStartFrame: 1000
+DefaultTrajectoryFrameCount: 1000
+MinTrajectoryFrameCount: 1
+MaxTrajectoryFrameCount: 1000
+DefaultTrajectoryFrameFrequency: 1
+MinTrajectoryFrameFrequency: 1
+MaxTrajectoryFrameFrequency: 1000
+DefaultFacelockDesktopUI: True
+DefaultHoverUI: False
