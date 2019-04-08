@@ -14,6 +14,8 @@ This repository provides a version of MDV for Windows PC. Code specific to the C
 
 ### More information
 
+https://doi.org/10.1515/jib-2018-0010
+
 https://www.youtube.com/watch?v=5SrmfuHLRbs
 
-https://www.degruyter.com/view/j/jib.2018.15.issue-2/jib-2018-0010/jib-2018-0010.xml
+
