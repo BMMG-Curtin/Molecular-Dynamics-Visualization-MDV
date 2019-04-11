@@ -7,6 +7,8 @@ using CurtinUniversity.MolecularDynamics.Model.Definitions;
 using CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree;
 using CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree.Math;
 
+using System.Diagnostics;
+
 namespace CurtinUniversity.MolecularDynamics.Model.Utility {
 
     public static class BondCalculator {
@@ -35,12 +37,21 @@ namespace CurtinUniversity.MolecularDynamics.Model.Utility {
         // same as above method but allows for custom max bond lengths
         public static Dictionary<int, Bond> CalculateBonds(Dictionary<int, Atom> atoms, Dictionary<ElementPair, float> maxBondLengths) {
 
+            UnityEngine.Debug.Log("Generating Atom Tree");
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             Dictionary<int, Bond> bonds = new Dictionary<int, Bond>();
             KdTree<float, int> tree = new KdTree<float, int>(3, new FloatMath());
 
             foreach (KeyValuePair<int, Atom> atom in atoms) {
                 tree.Add(new float[] { atom.Value.Position.x, atom.Value.Position.y, atom.Value.Position.z }, atom.Key);
             }
+
+            watch.Stop();
+            UnityEngine.Debug.Log("Generated Atom Tree: " + watch.ElapsedMilliseconds.ToString("N2"));
+            watch.Reset();
+            watch.Start();
 
             // Iterative tree search will find duplicate bonds if the atoms at the search position aren't removed. 
             // Tree removal is more expensive than keeping a seperate collection and checking if found bond already in collection
@@ -110,6 +121,10 @@ namespace CurtinUniversity.MolecularDynamics.Model.Utility {
                     }
                 }
             }
+
+            watch.Stop();
+            UnityEngine.Debug.Log("Generated Bond Results: " + watch.ElapsedMilliseconds.ToString("N2"));
+            watch.Reset();
 
             return bonds;
         }
