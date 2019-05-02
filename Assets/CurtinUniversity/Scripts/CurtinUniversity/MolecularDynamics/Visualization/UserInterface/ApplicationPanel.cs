@@ -40,17 +40,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             initialised = true;
 
-            //if (Settings.DisplayPlatform == Platform.Desktop) {
-                resolutions = Screen.resolutions;
-                currentResolutionIndex = 0;
-                for (int i = 0; i < resolutions.Length; i++) {
-                    if (resolutions[i].width == Screen.width && resolutions[i].height == Screen.height) {
-                        currentResolutionIndex = i;
-                    }
-                }
-            //}
+            ////if (Settings.DisplayPlatform == Platform.Desktop) {
+            //    resolutions = Screen.resolutions;
+            //    currentResolutionIndex = 0;
+            //    for (int i = 0; i < resolutions.Length; i++) {
+            //        if (resolutions[i].width == Screen.width && resolutions[i].height == Screen.height) {
+            //            currentResolutionIndex = i;
+            //        }
+            //    }
+            ////}
 
-            fullScreen = Screen.fullScreen;
+            //fullScreen = Screen.fullScreen;
 
             if (PlayerPrefs.HasKey(playerPrefsAtomMeshQualityKey)) {
                 Settings.AtomMeshQuality = PlayerPrefs.GetInt(playerPrefsAtomMeshQualityKey);
@@ -80,12 +80,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
-            if (resolutions != null) {
-                CurrentResolutionText.text = resolutions[currentResolutionIndex].width + " X " + resolutions[currentResolutionIndex].height;
-            }
-            else {
-                CurrentResolutionText.text = "-";
-            }
+            //if (resolutions != null) {
+            //    CurrentResolutionText.text = resolutions[currentResolutionIndex].width + " X " + resolutions[currentResolutionIndex].height;
+            //}
+            //else {
+            //    CurrentResolutionText.text = "-";
+            //}
 
             AtomMeshQualityText.text = Settings.AtomMeshQualityValues[Settings.AtomMeshQuality];
             BondMeshQualityText.text = Settings.BondMeshQualityValues[Settings.BondMeshQuality];
@@ -94,45 +94,45 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             MouseSpeedText.text = Settings.SceneMouseCursorSpeed.ToString();
             GUICursorSpeedText.text = Settings.GUIMouseCursorSpeed.ToString();
-            UIDistanceText.text = Settings.UIDistance.ToString();
+            //UIDistanceText.text = Settings.UIDistance.ToString();
 
-            FullscreenToggle.isOn = fullScreen;
+            //FullscreenToggle.isOn = fullScreen;
         }
 
-        public void SetResolution(int width, int height, bool fullScreen) {
+        //public void SetResolution(int width, int height, bool fullScreen) {
 
-            Screen.SetResolution(width, height, fullScreen);
+        //    Screen.SetResolution(width, height, fullScreen);
 
-            if (Settings.HideHardwareMouseCursor) {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
+        //    if (Settings.HideHardwareMouseCursor) {
+        //        Cursor.lockState = CursorLockMode.Locked;
+        //        Cursor.visible = false;
+        //    }
 
-            //Camera.main.ResetAspect();
-        }
+        //    //Camera.main.ResetAspect();
+        //}
 
-        public void IncreaseScreenResolution() {
+        //public void IncreaseScreenResolution() {
 
-            if (currentResolutionIndex + 1 < resolutions.Length) {
-                currentResolutionIndex++;
-                CurrentResolutionText.text = resolutions[currentResolutionIndex].width + " X " + resolutions[currentResolutionIndex].height;
-                SetResolution(resolutions[currentResolutionIndex].width, resolutions[currentResolutionIndex].height, FullscreenToggle.isOn);
-            }
-        }
+        //    if (currentResolutionIndex + 1 < resolutions.Length) {
+        //        currentResolutionIndex++;
+        //        CurrentResolutionText.text = resolutions[currentResolutionIndex].width + " X " + resolutions[currentResolutionIndex].height;
+        //        SetResolution(resolutions[currentResolutionIndex].width, resolutions[currentResolutionIndex].height, FullscreenToggle.isOn);
+        //    }
+        //}
 
-        public void DecreaseScreenResolution() {
+        //public void DecreaseScreenResolution() {
 
-            if (currentResolutionIndex > 0) {
-                currentResolutionIndex--;
-                CurrentResolutionText.text = resolutions[currentResolutionIndex].width + " X " + resolutions[currentResolutionIndex].height;
-                SetResolution(resolutions[currentResolutionIndex].width, resolutions[currentResolutionIndex].height, FullscreenToggle.isOn);
-            }
-        }
+        //    if (currentResolutionIndex > 0) {
+        //        currentResolutionIndex--;
+        //        CurrentResolutionText.text = resolutions[currentResolutionIndex].width + " X " + resolutions[currentResolutionIndex].height;
+        //        SetResolution(resolutions[currentResolutionIndex].width, resolutions[currentResolutionIndex].height, FullscreenToggle.isOn);
+        //    }
+        //}
 
-        public void FullScreen() {
-            Screen.fullScreen = FullscreenToggle.isOn;
+        //public void FullScreen() {
+        //    Screen.fullScreen = FullscreenToggle.isOn;
 
-        }
+        //}
 
         public void IncreaseAtomMeshQuality() {
 
@@ -202,14 +202,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             GUICursorSpeedText.text = Settings.GUIMouseCursorSpeed.ToString();
         }
 
-        public void IncreaseUIDistance() {
-            SceneManager.instance.GUIManager.SetUIDistance(Settings.UIDistance + Settings.UIDistanceStep);
-            UIDistanceText.text = Settings.UIDistance.ToString();
-        }
+        //public void IncreaseUIDistance() {
+        //    SceneManager.instance.GUIManager.SetUIDistance(Settings.UIDistance + Settings.UIDistanceStep);
+        //    UIDistanceText.text = Settings.UIDistance.ToString();
+        //}
 
-        public void DecreaseUIDistance() {
-            SceneManager.instance.GUIManager.SetUIDistance(Settings.UIDistance - Settings.UIDistanceStep);
-            UIDistanceText.text = Settings.UIDistance.ToString();
-        }
+        //public void DecreaseUIDistance() {
+        //    SceneManager.instance.GUIManager.SetUIDistance(Settings.UIDistance - Settings.UIDistanceStep);
+        //    UIDistanceText.text = Settings.UIDistance.ToString();
+        //}
     }
 }
