@@ -498,15 +498,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             HashSet<string> enabledResidues = null;
             HashSet<string> customDisplayResidues = null;
 
-            if (sceneManager.GUIManager.ElementsPanel.HasHiddenElements) {
-                enabledElements = sceneManager.GUIManager.ElementsPanel.EnabledElements;
-            }
-            if (sceneManager.GUIManager.ResiduesPanel.HasHiddenResidues) {
-                enabledResidues = sceneManager.GUIManager.ResiduesPanel.EnabledResidueNames;
-            }
-            if (sceneManager.GUIManager.ResiduesPanel.HasCustomDisplayResidues) {
-                customDisplayResidues = sceneManager.GUIManager.ResiduesPanel.CustomDisplayResidues;
-            }
+// to fix
+
+            //if (sceneManager.GUIManager.ElementsPanel.HasHiddenElements) {
+            //    enabledElements = sceneManager.GUIManager.ElementsPanel.EnabledElements;
+            //}
+            //if (sceneManager.GUIManager.ResiduesPanel.HasHiddenResidues) {
+            //    enabledResidues = sceneManager.GUIManager.ResiduesPanel.EnabledResidueNames;
+            //}
+            //if (sceneManager.GUIManager.ResiduesPanel.HasCustomDisplayResidues) {
+            //    customDisplayResidues = sceneManager.GUIManager.ResiduesPanel.CustomDisplayResidues;
+            //}
 
             atoms = primaryStructure.GetAtoms(Settings.ShowStandardResidues, Settings.ShowNonStandardResidues, enabledElements, enabledResidues);
 
