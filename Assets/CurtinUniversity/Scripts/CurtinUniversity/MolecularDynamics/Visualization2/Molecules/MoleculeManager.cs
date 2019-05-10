@@ -11,10 +11,7 @@ using CurtinUniversity.MolecularDynamics.Model.Model;
 
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
-    public delegate void OnLoadedMolecule();
-    public delegate void OnLoadMoleculeMessage(string message, bool error);
-    
-    public class Molecules : MonoBehaviour {
+    public class MoleculeManager : MonoBehaviour {
 
         [SerializeField]
         private GameObject MoleculePrefab;
@@ -24,30 +21,35 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private bool loadingFile;
 
         private void Awake() {
+
+            molecules = new Dictionary<int, Molecule>();
             loadingFile = false;
         }
 
-        public void LoadMolecule(string fileName, MoleculeRenderSettings settings, OnLoadMoleculeMessage message, OnLoadedMolecule onLoaded) {
+        public void LoadMolecule(string fileName, MoleculeRenderSettings settings) {
 
             if (!loadingFile) {
-                StartCoroutine(loadMolecule(fileName, settings,  message, onLoaded));
+                StartCoroutine(loadMolecule(fileName, settings));
             }
         }
 
-        public void LoadMoleculeTrajectory(int moleculeID, string fileName, OnLoadMoleculeMessage message, OnLoadedMolecule onLoaded) {
+        public void LoadMoleculeTrajectory(int moleculeID, string fileName) {
 
         }
 
-        public void SetMolecularRepresentation(int moleculeID, string fileName, OnLoadMoleculeMessage message) {
+        public void UpdateMoleculeRenderSettings(int moleculeID, MoleculeRenderSettings settings) {
 
+            if(molecules.ContainsKey(moleculeID)) {
+                molecules[moleculeID].MoleculeRenderSettings = settings;
+            }
         }
 
-        private IEnumerator loadMolecule(string fileName, MoleculeRenderSettings renderSettings, OnLoadMoleculeMessage message, OnLoadedMolecule moleculeLoaded) {
+        private IEnumerator loadMolecule(string fileName, MoleculeRenderSettings renderSettings) {
 
             loadingFile = true;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            message("Loading Structure File: " + fileName, false);
+            MoleculeEvents.RaiseOnRenderMessage("Loading Structure File: " + fileName, false);
             yield return new WaitForSeconds(0.05f);
 
             PrimaryStructure primaryStructure = null;
@@ -66,29 +68,29 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             catch (FileParseException ex) {
 
                 Debug.Log("Error Loading Structure File: " + ex.Message);
-                message("Error Loading Structure File: " + ex.Message, true);
+                MoleculeEvents.RaiseOnRenderMessage("Error Loading Structure File: " + ex.Message, true);
                 loadingFile = false;
                 yield break;
             }
 
 
             watch.Stop();
-            message("Structure File Load Complete [" + watch.ElapsedMilliseconds + "ms]", false);
+            MoleculeEvents.RaiseOnRenderMessage("Structure File Load Complete [" + watch.ElapsedMilliseconds + "ms]", false);
             yield return new WaitForSeconds(0.05f);
 
             if (primaryStructure != null) {
 
                 GameObject moleculeGO = GameObject.Instantiate(MoleculePrefab);
                 moleculeGO.transform.parent = this.transform;
+                moleculeGO.SetActive(true);
 
                 Molecule molecule = moleculeGO.GetComponent<Molecule>();
-                molecule.PrimaryStructure = primaryStructure;
                 molecule.MoleculeRenderSettings = renderSettings;
+                molecule.PrimaryStructure = primaryStructure;
 
-                // callback
-                if (moleculeLoaded != null) {
-                    moleculeLoaded();
-                }
+                molecules.Add(molecule.ID, molecule);
+
+                MoleculeEvents.RaiseOnLoadedMolecule();
             }
 
             loadingFile = false;

@@ -3,19 +3,28 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-using CurtinUniversity.MolecularDynamics.Visualization;
-
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class UserInterface : MonoBehaviour {
 
         // inspector properties
-        public GameObject UserInterfaceCanvas;
-        public GameObject MainMenu;
-        public GameObject ConsoleGO;
-        public GameObject TrajectoryControlsGO;
+        [SerializeField]
+        private GameObject UserInterfaceCanvas;
 
-        public Console Console;
+        [SerializeField]
+        private GameObject SettingsGO;
+
+        [SerializeField]
+        private GameObject ConsoleGO;
+
+        [SerializeField]
+        private GameObject TrajectoryControlsGO;
+
+        [SerializeField]
+        private MessageConsole console;
+
+        [SerializeField]
+        private ApplicationSettings applicationSettings;
 
         //public MainMenu Menu;
         //public TrajectoryControls TrajectoryControls;
@@ -41,39 +50,17 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         int reportFrequency = 1; // in seconds
         float timer;
 
-        public static UserInterface Instance;
-
-        private void Awake() {
-
-            if (Instance == null) {
-                Instance = this;
-            }
-            else if (Instance != this) {
-                Destroy(gameObject);
-            }
-        }
-
         private void Start() {
 
-            if (Settings.HideHardwareMouseCursor) {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-
-            //cameraPosition = new GameObject();
-            //cameraPosition.name = "CameraPosition";
-
-            //if (PlayerPrefs.HasKey(playerPrefsUIDistance)) {
-            //    SetUIDistance(PlayerPrefs.GetFloat(playerPrefsUIDistance));
-            //}
-            //else {
-            //    SetUIDistance(Settings.UIDistance);
+            //if (Settings.HideHardwareMouseCursor) {
+            //    Cursor.lockState = CursorLockMode.Locked;
+            //    Cursor.visible = false;
             //}
 
             HideUserInterface();
         }
 
-        void Update() {
+        private void Update() {
 
             // if the window loses focus (e.g. alt-tab) then the cursor gets unlocked.
             // need to lock again when user uses the application.
@@ -89,13 +76,17 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 frameCount += 1;
 
                 if (timer >= reportFrequency) {
-                    if (Console == null) {
+                    if (console == null) {
                         Debug.Log("Console is null");
                     }
-                    Console.BannerFPS = (frameCount / reportFrequency).ToString();
+                    console.BannerFPS = (frameCount / reportFrequency).ToString();
                     timer = frameCount = 0;
                 }
             }
+        }
+
+        public void SetSceneSettings(SceneSettings settings) {
+            applicationSettings.SetSceneSettings(settings);
         }
 
         public void ToogleUserInterface() {
@@ -104,7 +95,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 UserInterfaceCanvas.SetActive(!UserInterfaceCanvas.activeSelf);
             }
             else {
-                MainMenu.SetActive(!MainMenu.activeSelf);
+                SettingsGO.SetActive(!SettingsGO.activeSelf);
                 ConsoleGO.SetActive(!ConsoleGO.activeSelf);
             }
         }
@@ -115,7 +106,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 UserInterfaceCanvas.SetActive(true);
             }
             else {
-                MainMenu.SetActive(true);
+                SettingsGO.SetActive(true);
                 ConsoleGO.SetActive(true);
             }
         }
@@ -126,7 +117,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 UserInterfaceCanvas.SetActive(false);
             }
             else {
-                MainMenu.SetActive(false);
+                SettingsGO.SetActive(false);
                 ConsoleGO.SetActive(false);
             }
         }
@@ -139,7 +130,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
             else {
 
-                if (MainMenu.activeSelf && ConsoleGO.activeSelf) {
+                if (SettingsGO.activeSelf && ConsoleGO.activeSelf) {
                     return true;
                 }
 
@@ -158,43 +149,18 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public void ShowConsoleMessage(string message) {
 
             UserInterfaceCanvas.SetActive(true);
-            Console.ShowMessage(message);
+            console.ShowMessage(message);
         }
 
         public void ShowConsoleError(string message) {
 
             UserInterfaceCanvas.SetActive(true);
-            Console.ShowError(message);
+            console.ShowError(message);
         }
 
         public void ConsoleSetSilent(bool silent) {
-            Console.Silent = silent;
+            console.Silent = silent;
         }
-
-        //public void SetUIDistance(float distance) {
-
-        //    distance = (float)System.Math.Round((double)distance, 1);
-
-        //    if (distance < Settings.MinUIDistance) {
-        //        distance = Settings.MinUIDistance;
-        //    }
-
-        //    else if (distance > Settings.MaxUIDistance) {
-        //        distance = Settings.MaxUIDistance;
-        //    }
-
-        //    userInterfacePosZ = distance;
-
-        //    Settings.UIDistance = distance;
-        //    PlayerPrefs.SetFloat(playerPrefsUIDistance, distance);
-        //}
-
-        //public void ReloadOptions() {
-        //    if (VisualisationPanel.gameObject.activeSelf) {
-        //        VisualisationPanel.LoadSettings();
-        //        ApplicationPanel.LoadSettings();
-        //    }
-        //}
 
         public bool HasInputFocus() {
 

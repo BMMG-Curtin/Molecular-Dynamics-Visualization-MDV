@@ -16,7 +16,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private PrimaryStructureTrajectory Trajectory;
         private MoleculeRenderSettings renderSettings;
 
-        private MoleculeRenderer renderer;
+        private MoleculeRenderer moleculeRenderer;
 
         private bool rendering;
         private bool settingsChanged;
@@ -26,7 +26,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             rendering = false;
             settingsChanged = false;
 
-            renderer = GetComponent<MoleculeRenderer>();
+            renderSettings = MoleculeRenderSettings.Default();
+            moleculeRenderer = GetComponent<MoleculeRenderer>();
         }
 
         private void Update() {
@@ -39,6 +40,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public int ID { get { return this.GetInstanceID(); } }
 
         public MoleculeRenderSettings MoleculeRenderSettings {
+
             get {
                 return renderSettings;
             }
@@ -77,22 +79,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                 settingsChanged = false;
 
-                if (renderSettings != null && primaryStructure != null) {
+                if (primaryStructure != null) {
 
                     rendering = true;
-
-                    // do rendering
-                    Debug.Log("Molecule is done rendering");
-
-                    Debug.Log(primaryStructure.Title);
-
-                    renderer.Initialise(primaryStructure, null, )
-
+                    yield return StartCoroutine(moleculeRenderer.Render(primaryStructure, null, renderSettings));
                     rendering = false;
                 }
             }
-
-            yield break;
         }
     }
 }

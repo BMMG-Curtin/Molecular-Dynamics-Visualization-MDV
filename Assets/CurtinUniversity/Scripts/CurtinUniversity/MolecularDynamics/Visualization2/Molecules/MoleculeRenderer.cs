@@ -9,10 +9,9 @@ using CurtinUniversity.MolecularDynamics.Model.Analysis;
 
 using System.Diagnostics;
 
-using CurtinUniversity.MolecularDynamics.Visualization;
 using CurtinUniversity.MolecularDynamics.Visualization.Utility;
 
-    namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class MoleculeRenderer : MonoBehaviour {
 
@@ -22,14 +21,16 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
         [NonSerialized]
         public bool Initialised = false;
 
-        public int AtomCount { get { return primaryStructure == null ? 0 : primaryStructure.AtomCount(); } }
-        public int ResidueCount { get { return primaryStructure == null ? 0 : primaryStructure.ResidueCount(); } }
-        public string Title { get { return primaryStructure == null || primaryStructure.Title == null ? "-- none --" : primaryStructure.Title.Trim(); } }
-        public int BondCount { get { return PrimaryStructureRenderer.Bonds == null ? 0 : PrimaryStructureRenderer.Bonds.Count; } }
-        public int FrameCount { get { return primaryStructureTrajectory == null ? 0 : primaryStructureTrajectory.FrameCount(); } }
+        //public int AtomCount { get { return primaryStructure == null ? 0 : primaryStructure.AtomCount(); } }
+        //public int ResidueCount { get { return primaryStructure == null ? 0 : primaryStructure.ResidueCount(); } }
+        //public string Title { get { return primaryStructure == null || primaryStructure.Title == null ? "-- none --" : primaryStructure.Title.Trim(); } }
+        //public int BondCount { get { return PrimaryStructureRenderer.Bonds == null ? 0 : PrimaryStructureRenderer.Bonds.Count; } }
+        //public int FrameCount { get { return primaryStructureTrajectory == null ? 0 : primaryStructureTrajectory.FrameCount(); } }
 
         public bool Initialising { get { return initialising; } }
         public bool BuildingModel { get { return buildingModel; } }
+
+        // this should really be a check to see if model is a protein
         public bool BypassSecondaryStructureBuild { get; set; } // used to bypass further SSbuilds if fails on first build.
         public bool BypassSecondaryStructureTrajectoryBuild { get; set; } // used to bypass further SSbuilds if fails on first build.
 
@@ -40,6 +41,7 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
         private SecondaryStructure secondaryStructure;
         private PrimaryStructureTrajectory primaryStructureTrajectory;
         private SecondaryStructureTrajectory secondaryStructureTrajectory;
+        private MoleculeRenderSettings renderSettings;
 
         private bool displayTrajectory = false;
 
@@ -52,11 +54,7 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
         private bool initialising = false;
         private bool buildingModel = false;
 
-        private MessageConsole console;
-
         void Start() {
-
-            console = MessageConsole.Instance;
             //AnimationSpeed = Settings.FrameAnimationSpeed;
         }
 
@@ -79,12 +77,13 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
             yield break;
         }
 
-        public IEnumerator Initialise(PrimaryStructure primaryStructure, SecondaryStructure secondaryStructure, MoleculeRenderSettings settings) {
+        public IEnumerator Render(PrimaryStructure primaryStructure, SecondaryStructure secondaryStructure, MoleculeRenderSettings settings) {
 
             initialising = true;
 
             this.primaryStructure = primaryStructure;
             this.secondaryStructure = secondaryStructure;
+            this.renderSettings = settings;
             BypassSecondaryStructureBuild = false;
             BypassSecondaryStructureTrajectoryBuild = false;
 
@@ -100,7 +99,7 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
             Initialised = true;
             initialising = false;
 
-            //UnityEngine.Debug.Log("Initialised model");
+            UnityEngine.Debug.Log("Initialised model");
         }
 
         public IEnumerator Rebuild(bool primaryStructure, bool secondaryStructure) {
@@ -159,7 +158,7 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
                         secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
                     }
                     catch (Exception ex) {
-                        console.ShowError(ex.Message + " - Aborting trajectory secondary structure builds.");
+                        MoleculeEvents.RaiseOnRenderMessage(ex.Message + " - Aborting trajectory secondary structure builds.", true);
                         BypassSecondaryStructureTrajectoryBuild = true;
                     }
                 }
@@ -169,7 +168,7 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
             }
 
             if (buildPrimaryStructure) {
-                yield return PrimaryStructureRenderer.BuildModel(frame);
+                yield return StartCoroutine(PrimaryStructureRenderer.BuildModel(renderSettings, frame));
                 //UnityEngine.Debug.Log("Completed primary structure build");
             }
 
@@ -187,7 +186,7 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
             buildingModel = false;
             watch.Stop();
             if (Settings.DebugMessages) {
-                console.BannerBuildTime = watch.ElapsedMilliseconds.ToString();
+                //console.BannerBuildTime = watch.ElapsedMilliseconds.ToString();
             }
 
             //UnityEngine.Debug.Log("Ending model build. Elapsed time [" + watch.ElapsedMilliseconds.ToString() + "]");

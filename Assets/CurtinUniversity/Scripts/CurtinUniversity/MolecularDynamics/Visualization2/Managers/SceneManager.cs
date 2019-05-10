@@ -4,27 +4,35 @@ using System.IO;
 
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Visualization;
-
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class SceneManager : MonoBehaviour {
 
         [SerializeField]
+        private Scene scene;
+
+        [SerializeField]
         private UserInterface userInterface;
 
         [SerializeField]
-        private Molecules molecules;
+        private MoleculeManager molecules;
 
-        [SerializeField]
-        private Scene scene;
+        private void Awake() {
+
+            Settings.Load();
+        }
 
         private void Start() {
 
-            Config.LoadConfig();
-            Settings.Load();
+            // setup UI and Molecule Render events
+            UserInterfaceEvents.OnSceneSettingsUpdated += onSceneSettingsUpdated;
+            MoleculeEvents.OnMoleculeLoaded += onMoleculeLoaded;
+            MoleculeEvents.OnRenderMessage += onMoleculeRenderMessage;
 
-            scene.Settings = new SceneSettings();
+            SceneSettings sceneSettings = SceneSettings.Default();
+            scene.Settings = sceneSettings;
+            userInterface.SetSceneSettings(sceneSettings);
+
             loadDefaultModel();
         }
 
@@ -40,25 +48,27 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 userInterface.ConsoleSetSilent(false);
                 string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + filename;
                 MoleculeRenderSettings settings = new MoleculeRenderSettings();
-                molecules.LoadMolecule(filePath, settings, onConsoleMessage, onMoleculeLoaded);
+                molecules.LoadMolecule(filePath, settings);
                 userInterface.ConsoleSetSilent(false);
             }
         }
 
         private void onMoleculeLoaded() {
-
-            Debug.Log("Molecule file loaded!");
             StartCoroutine(scene.Lighting.LightToDefaults(1f));
         }
 
-        private void onConsoleMessage(string message, bool error) {
+        private void onMoleculeRenderMessage(string message, bool error) {
 
-            if (error) {
-                userInterface.Console.ShowError(message);
+            if(error) {
+                userInterface.ShowConsoleError(message);
             }
             else {
-                userInterface.Console.ShowMessage(message);
+                userInterface.ShowConsoleMessage(message);
             }
+        }
+
+        private void onSceneSettingsUpdated(SceneSettings settings) {
+            scene.Settings = settings;
         }
     }
 }

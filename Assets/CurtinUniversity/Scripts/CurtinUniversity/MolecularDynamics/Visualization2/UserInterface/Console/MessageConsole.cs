@@ -4,8 +4,6 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 
-using CurtinUniversity.MolecularDynamics.Visualization;
-
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public enum ConsoleMessageType {
@@ -16,7 +14,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
     }
 
     public class MessageConsole : MonoBehaviour {
-
+        
         public Text BannerMessage;
         public Text ConsoleContent;
         public ScrollRect ScrollRect;
@@ -27,6 +25,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public string BannerFPS { set { bannerFPS = value; newBanner = true; } }
         public string BannerBuildTime { set { bannerBuildTime = value; newBanner = true; } }
         // public string BannerModelInfo { set { bannerModelInfo = value; newBanner = true; } }
+
+        private SceneManager sceneManager;
 
         private string bannerFPS = "";
         private string bannerBuildTime = "";
@@ -49,23 +49,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private bool newBanner = true;
         private bool newMessages = true;
-
-        public static MessageConsole Instance = null;
-
-        void Awake() {
-
-            if (Instance == null) {
-                Instance = this;
-            }
-            else if (Instance != this) {
-                Destroy(gameObject);
-            }
-
-            DontDestroyOnLoad(gameObject);
-
-            Config.LoadConfig();
-            Settings.Load();
-        }
 
         void Start() {
 
