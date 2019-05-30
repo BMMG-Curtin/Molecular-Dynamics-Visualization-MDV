@@ -13,7 +13,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private PrimaryStructure primaryStructure;
         private SecondaryStructure secondaryStructure;
-        private PrimaryStructureTrajectory Trajectory;
+        private PrimaryStructureTrajectory trajectory;
         private MoleculeRenderSettings renderSettings;
 
         private MoleculeRenderer moleculeRenderer;

@@ -4,19 +4,27 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class UserInterfaceEvents {
 
-        public delegate void LoadMolecule(string filename);
+        public delegate void LoadMolecule(int moleculeID, string filename, MoleculeRenderSettings renderSettings);
         public static event LoadMolecule OnLoadMolecule;
-        public static void RaiseOnLoadMolecule(string filename) {
+        public static void RaiseOnLoadMolecule(int moleculeID, string filename, MoleculeRenderSettings renderSettings) {
             if(OnLoadMolecule != null) {
-                OnLoadMolecule(filename);
+                OnLoadMolecule(moleculeID, filename, renderSettings);
             }
         }
 
-        public delegate void LoadTrajectory(string filename);
+        public delegate void LoadTrajectory(int moleculeID, string filename);
         public static event LoadTrajectory OnLoadTrajectory;
-        public static void RaiseOnLoadTrajectory(string filename) {
+        public static void RaiseOnLoadTrajectory(int moleculeID, string filename) {
             if (OnLoadTrajectory != null) {
-                OnLoadTrajectory(filename);
+                OnLoadTrajectory(moleculeID, filename);
+            }
+        }
+
+        public delegate void RemoveMolecule(int moleculeID);
+        public static event RemoveMolecule OnRemoveMolecule;
+        public static void RaiseOnRemoveMolecule(int moleculeID) {
+            if (OnRemoveMolecule != null) {
+                OnRemoveMolecule(moleculeID);
             }
         }
 

@@ -26,15 +26,22 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             loadingFile = false;
         }
 
-        public void LoadMolecule(string fileName, MoleculeRenderSettings settings) {
+        public void LoadMolecule(int moleculeID, string fileName, MoleculeRenderSettings settings) {
+
+            if(molecules.ContainsKey(moleculeID)) {
+
+                MoleculeEvents.RaiseOnRenderMessage("Error Loading Structure File: already loaded", true);
+                return;
+            }
 
             if (!loadingFile) {
-                StartCoroutine(loadMolecule(fileName, settings));
+                StartCoroutine(loadMolecule(moleculeID, fileName, settings));
             }
         }
 
         public void LoadMoleculeTrajectory(int moleculeID, string fileName) {
 
+            // TODO
         }
 
         public void UpdateMoleculeRenderSettings(int moleculeID, MoleculeRenderSettings settings) {
@@ -44,7 +51,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        private IEnumerator loadMolecule(string fileName, MoleculeRenderSettings renderSettings) {
+        private IEnumerator loadMolecule(int moleculeID, string fileName, MoleculeRenderSettings renderSettings) {
 
             loadingFile = true;
 
@@ -88,7 +95,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 molecule.MoleculeRenderSettings = renderSettings;
                 molecule.PrimaryStructure = primaryStructure;
 
-                molecules.Add(molecule.ID, molecule);
+                molecules.Add(moleculeID, molecule);
 
                 MoleculeEvents.RaiseOnLoadedMolecule();
             }

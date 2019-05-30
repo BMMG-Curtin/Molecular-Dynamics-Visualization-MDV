@@ -17,8 +17,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         [SerializeField]
         private MoleculeManager molecules;
 
-        private void Awake() {
+        private string testStructureFile = @"D:\MolecularModels\MDV\Demo Files\Final Systems\AB.gro";
+        private string testTrajectoryFile = @"D:\MolecularModels\MDV\Demo Files\Final Systems\AB_traj.xtc";
 
+        private void Awake() {
             Settings.Load();
         }
 
@@ -28,6 +30,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             UserInterfaceEvents.OnSceneSettingsUpdated += onSceneSettingsUpdated;
             MoleculeEvents.OnMoleculeLoaded += onMoleculeLoaded;
             MoleculeEvents.OnRenderMessage += onMoleculeRenderMessage;
+
+            UserInterfaceEvents.OnLoadMolecule += molecules.LoadMolecule;
 
             SceneSettings sceneSettings = SceneSettings.Default();
             scene.Settings = sceneSettings;
@@ -48,7 +52,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 userInterface.ConsoleSetSilent(false);
                 string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + filename;
                 MoleculeRenderSettings settings = new MoleculeRenderSettings();
-                molecules.LoadMolecule(filePath, settings);
+                molecules.LoadMolecule(-99, filePath, settings);
                 userInterface.ConsoleSetSilent(false);
             }
         }
