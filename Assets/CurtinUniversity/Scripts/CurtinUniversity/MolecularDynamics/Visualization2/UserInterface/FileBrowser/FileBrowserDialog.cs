@@ -25,10 +25,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public GameObject DirectoryContent;
         public ScrollRect ScrollView;
         public TextMeshProUGUI CurrentDirectoryText;
-        // public TextMeshProUGUI FileNameField;
         public TMP_InputField FileNameField;
-        public TextMeshProUGUI SubmitButtonText;
-        public TextMeshProUGUI NotificationText;
 
         private string currentFilePath;
         private OnFileBrowserOpenFileSubmit onSubmit;
@@ -40,7 +37,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private string playerPrefsCurrentFilePathKey = @"CurrentFilePath";
 
-        public void Initialise(List<string> validFileExtensions, string submitButtonText, OnFileBrowserOpenFileSubmit onSubmit) {
+        public void Initialise(List<string> validFileExtensions, OnFileBrowserOpenFileSubmit onSubmit) {
 
             Debug.Log("Initialising File Browser");
 
@@ -76,15 +73,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             if (!setPath) {
                 displayDrives();
             }
-
-            if(submitButtonText != null && submitButtonText.Trim() != "") {
-                SubmitButtonText.text = submitButtonText;
-            }
-            else {
-                SubmitButtonText.text = "Open";
-            }
-
-            NotificationText.text = "";
         }
 
         public void SetFileName(string fileName) {
