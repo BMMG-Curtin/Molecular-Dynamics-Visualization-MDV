@@ -221,7 +221,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private IEnumerator calculateBonds() {
 
-            MoleculeEvents.RaiseOnRenderMessage("Calculating Bonds", false);
+            MoleculeEvents.RaiseRenderMessage("Calculating Bonds", false);
             yield return null;
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -232,7 +232,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             Bonds = primaryStructure.GenerateBonds();
             watch.Stop();
-            MoleculeEvents.RaiseOnRenderMessage("Bonds Calculated [" + watch.ElapsedMilliseconds + "ms]", false);
+            MoleculeEvents.RaiseRenderMessage("Bonds Calculated [" + watch.ElapsedMilliseconds + "ms]", false);
         }
 
         private IEnumerator createModelAtoms(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame) {
@@ -296,7 +296,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 }
                 else {
                     if (atom.Index >= frame.AtomCount) {
-                        MoleculeEvents.RaiseOnRenderMessage("Atoms not found in frame record. Aborting frame render.", true);
+                        MoleculeEvents.RaiseRenderMessage("Atoms not found in frame record. Aborting frame render.", true);
                         yield break;
                     }
                     position = new Vector3(frame.Coords[atom.Index * 3], frame.Coords[(atom.Index * 3) + 1], frame.Coords[(atom.Index * 3) + 2]);
@@ -374,7 +374,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                     }
                     else {
                         if (atom.Key >= frame.AtomCount) {
-                            MoleculeEvents.RaiseOnRenderMessage("Incomplete atom information in frame. Aborting frame render.", true);
+                            MoleculeEvents.RaiseRenderMessage("Incomplete atom information in frame. Aborting frame render.", true);
                             yield break;
                         }
                         position = new Vector3(frame.Coords[atom.Key * 3], frame.Coords[(atom.Key * 3) + 1], frame.Coords[(atom.Key * 3) + 2]);

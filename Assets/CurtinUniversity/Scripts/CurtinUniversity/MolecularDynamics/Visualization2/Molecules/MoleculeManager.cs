@@ -26,20 +26,20 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             loadingFile = false;
         }
 
-        public void LoadMolecule(int moleculeID, string fileName, MoleculeRenderSettings settings) {
+        public void LoadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
 
             if(molecules.ContainsKey(moleculeID)) {
 
-                MoleculeEvents.RaiseOnRenderMessage("Error Loading Structure File: already loaded", true);
+                MoleculeEvents.RaiseRenderMessage("Error Loading Molecule: already loaded", true);
                 return;
             }
 
             if (!loadingFile) {
-                StartCoroutine(loadMolecule(moleculeID, fileName, settings));
+                StartCoroutine(loadMolecule(moleculeID, filePath, settings));
             }
         }
 
-        public void LoadMoleculeTrajectory(int moleculeID, string fileName) {
+        public void LoadMoleculeTrajectory(int moleculeID, string filePath) {
 
             // TODO
         }
@@ -47,42 +47,42 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public void UpdateMoleculeRenderSettings(int moleculeID, MoleculeRenderSettings settings) {
 
             if(molecules.ContainsKey(moleculeID)) {
-                molecules[moleculeID].MoleculeRenderSettings = settings;
+                molecules[moleculeID].RenderSettings = settings;
             }
         }
 
-        private IEnumerator loadMolecule(int moleculeID, string fileName, MoleculeRenderSettings renderSettings) {
+        private IEnumerator loadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
 
             loadingFile = true;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            MoleculeEvents.RaiseOnRenderMessage("Loading Structure File: " + fileName, false);
+            MoleculeEvents.RaiseRenderMessage("Loading Structure File: " + filePath, false);
             yield return new WaitForSeconds(0.05f);
 
             PrimaryStructure primaryStructure = null;
 
             try {
-                if (fileName.EndsWith(".gro")) {
-                    primaryStructure = GROStructureParser.GetStructure(fileName);
+                if (filePath.EndsWith(".gro")) {
+                    primaryStructure = GROStructureParser.GetStructure(filePath);
                 }
-                else if (fileName.EndsWith(".xyz")) {
-                    primaryStructure = XYZStructureParser.GetStructure(fileName);
+                else if (filePath.EndsWith(".xyz")) {
+                    primaryStructure = XYZStructureParser.GetStructure(filePath);
                 }
-                else if (fileName.EndsWith(".pdb")) {
-                    primaryStructure = PDBStructureParser.GetPrimaryStructure(fileName);
+                else if (filePath.EndsWith(".pdb")) {
+                    primaryStructure = PDBStructureParser.GetPrimaryStructure(filePath);
                 }
             }
             catch (FileParseException ex) {
 
                 Debug.Log("Error Loading Structure File: " + ex.Message);
-                MoleculeEvents.RaiseOnRenderMessage("Error Loading Structure File: " + ex.Message, true);
+                MoleculeEvents.RaiseRenderMessage("Error Loading Structure File: " + ex.Message, true);
                 loadingFile = false;
                 yield break;
             }
 
 
             watch.Stop();
-            MoleculeEvents.RaiseOnRenderMessage("Structure File Load Complete [" + watch.ElapsedMilliseconds + "ms]", false);
+            MoleculeEvents.RaiseRenderMessage("Structure File Load Complete [" + watch.ElapsedMilliseconds + "ms]", false);
             yield return new WaitForSeconds(0.05f);
 
             if (primaryStructure != null) {
@@ -92,12 +92,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 moleculeGO.SetActive(true);
 
                 Molecule molecule = moleculeGO.GetComponent<Molecule>();
-                molecule.MoleculeRenderSettings = renderSettings;
+                molecule.RenderSettings = settings;
                 molecule.PrimaryStructure = primaryStructure;
 
                 molecules.Add(moleculeID, molecule);
 
-                MoleculeEvents.RaiseOnLoadedMolecule();
+                MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure.Title);
             }
 
             loadingFile = false;

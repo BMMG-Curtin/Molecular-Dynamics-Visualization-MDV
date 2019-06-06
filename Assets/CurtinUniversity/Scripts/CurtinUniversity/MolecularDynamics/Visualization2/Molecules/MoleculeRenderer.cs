@@ -158,7 +158,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                         secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
                     }
                     catch (Exception ex) {
-                        MoleculeEvents.RaiseOnRenderMessage(ex.Message + " - Aborting trajectory secondary structure builds.", true);
+                        MoleculeEvents.RaiseRenderMessage(ex.Message + " - Aborting trajectory secondary structure builds.", true);
                         BypassSecondaryStructureTrajectoryBuild = true;
                     }
                 }

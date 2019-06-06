@@ -15,7 +15,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public delegate void OnFileBrowserOpenFileSubmit(string fileName, string filePath);
 
-    public class FileBrowserDialog : MonoBehaviour {
+    public class LoadFileDialog : MonoBehaviour {
 
         public GameObject FileNameButtonPrefab;
         public GameObject DirNameButtonPrefab;

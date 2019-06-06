@@ -19,12 +19,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private MoleculeRenderer moleculeRenderer;
 
         private bool rendering;
-        private bool settingsChanged;
+        private bool updateRender;
 
         private void Awake() {
 
             rendering = false;
-            settingsChanged = false;
+            updateRender = false;
 
             renderSettings = MoleculeRenderSettings.Default();
             moleculeRenderer = GetComponent<MoleculeRenderer>();
@@ -32,14 +32,14 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private void Update() {
 
-            if(!rendering && settingsChanged) {
+            if(!rendering && updateRender) {
                 StartCoroutine(render());
             }
         }
 
         public int ID { get { return this.GetInstanceID(); } }
 
-        public MoleculeRenderSettings MoleculeRenderSettings {
+        public MoleculeRenderSettings RenderSettings {
 
             get {
                 return renderSettings;
@@ -47,7 +47,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             set {
                 renderSettings = value;
-                settingsChanged = true;
+                updateRender = true;
             }
         }
 
@@ -58,7 +58,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
             set {
                 primaryStructure = value;
-                settingsChanged = true;
+                updateRender = true;
             }
         }
 
@@ -69,7 +69,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
             set {
                 secondaryStructure = value;
-                settingsChanged = true;
+                updateRender = true;
             }
         }
 
@@ -77,7 +77,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             if(!rendering) {
 
-                settingsChanged = false;
+                updateRender = false;
 
                 if (primaryStructure != null) {
 

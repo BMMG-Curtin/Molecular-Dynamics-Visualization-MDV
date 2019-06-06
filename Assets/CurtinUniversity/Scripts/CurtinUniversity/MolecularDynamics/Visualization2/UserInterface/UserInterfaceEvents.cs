@@ -6,7 +6,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         public delegate void LoadMolecule(int moleculeID, string filename, MoleculeRenderSettings renderSettings);
         public static event LoadMolecule OnLoadMolecule;
-        public static void RaiseOnLoadMolecule(int moleculeID, string filename, MoleculeRenderSettings renderSettings) {
+        public static void RaiseLoadMolecule(int moleculeID, string filename, MoleculeRenderSettings renderSettings) {
             if(OnLoadMolecule != null) {
                 OnLoadMolecule(moleculeID, filename, renderSettings);
             }
@@ -14,7 +14,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         public delegate void LoadTrajectory(int moleculeID, string filename);
         public static event LoadTrajectory OnLoadTrajectory;
-        public static void RaiseOnLoadTrajectory(int moleculeID, string filename) {
+        public static void RaiseLoadTrajectory(int moleculeID, string filename) {
             if (OnLoadTrajectory != null) {
                 OnLoadTrajectory(moleculeID, filename);
             }
@@ -22,7 +22,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         public delegate void RemoveMolecule(int moleculeID);
         public static event RemoveMolecule OnRemoveMolecule;
-        public static void RaiseOnRemoveMolecule(int moleculeID) {
+        public static void RaiseRemoveMolecule(int moleculeID) {
             if (OnRemoveMolecule != null) {
                 OnRemoveMolecule(moleculeID);
             }
@@ -30,17 +30,17 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         public delegate void SceneSettingsUpdated(SceneSettings settings);
         public static event SceneSettingsUpdated OnSceneSettingsUpdated;
-        public static void RaiseOnSceneSettingsUpdated(SceneSettings settings) {
+        public static void RaiseSceneSettingsUpdated(SceneSettings settings) {
             if (OnSceneSettingsUpdated != null) {
                 OnSceneSettingsUpdated(settings);
             }
         }
 
-        public delegate void MoleculeRenderSettingsUpdated(MoleculeRenderSettings settings);
-        public static event MoleculeRenderSettingsUpdated OnMoleculeRenderSettingsUpdated;
-        public static void RaiseOnMoleculeRenderSettingsUpdated(MoleculeRenderSettings settings) {
-            if (OnMoleculeRenderSettingsUpdated != null) {
-                OnMoleculeRenderSettingsUpdated(settings);
+        public delegate void MoleculeSettingsUpdated(MoleculeSettings settings);
+        public static event MoleculeSettingsUpdated OnMoleculeSettingsUpdated;
+        public static void RaiseMoleculeSettingsUpdated(MoleculeSettings settings) {
+            if (OnMoleculeSettingsUpdated != null) {
+                OnMoleculeSettingsUpdated(settings);
             }
         }
     }

@@ -28,10 +28,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             // setup UI and Molecule Render events
             UserInterfaceEvents.OnSceneSettingsUpdated += onSceneSettingsUpdated;
-            MoleculeEvents.OnMoleculeLoaded += onMoleculeLoaded;
-            MoleculeEvents.OnRenderMessage += onMoleculeRenderMessage;
-
             UserInterfaceEvents.OnLoadMolecule += molecules.LoadMolecule;
+
+            MoleculeEvents.OnMoleculeLoaded += onMoleculeLoaded;
+            MoleculeEvents.OnMoleculeLoaded += userInterface.MoleculeLoaded;
+            MoleculeEvents.OnRenderMessage += onMoleculeRenderMessage;
 
             SceneSettings sceneSettings = SceneSettings.Default();
             scene.Settings = sceneSettings;
@@ -51,13 +52,16 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                 userInterface.ConsoleSetSilent(false);
                 string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + filename;
-                MoleculeRenderSettings settings = new MoleculeRenderSettings();
-                molecules.LoadMolecule(-99, filePath, settings);
+
+                // need to load settings via UI
+
+                //MoleculeSettings settings = new MoleculeSettings(-99, filePath);
+                //molecules.LoadMolecule(-99, filePath, settings.RenderSettings);
                 userInterface.ConsoleSetSilent(false);
             }
         }
 
-        private void onMoleculeLoaded() {
+        private void onMoleculeLoaded(int id, string name, string desc) {
             StartCoroutine(scene.Lighting.LightToDefaults(1f));
         }
 

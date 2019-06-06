@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
-    public class SettingsMenu : MonoBehaviour {
+    public class SettingsPanelsMenu : MonoBehaviour {
 
         public GameObject ApplicationPanel;
         public GameObject MoleculesPanel;

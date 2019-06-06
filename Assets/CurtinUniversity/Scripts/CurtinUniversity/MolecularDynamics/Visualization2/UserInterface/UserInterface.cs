@@ -24,7 +24,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private MessageConsole console;
 
         [SerializeField]
-        private ApplicationSettings applicationSettings;
+        private ApplicationSettingsPanel applicationSettings;
+
+        [SerializeField]
+        private MoleculesSettingsPanel moleculeSettings;
 
         //public MainMenu Menu;
         //public TrajectoryControls TrajectoryControls;
@@ -87,6 +90,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         public void SetSceneSettings(SceneSettings settings) {
             applicationSettings.SetSceneSettings(settings);
+        }
+
+        public void MoleculeLoaded(int id, string name, string description) {
+            moleculeSettings.MoleculeLoaded(id, name, description);
         }
 
         public void ToogleUserInterface() {

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
-    public class ApplicationSettings : MonoBehaviour {
+    public class ApplicationSettingsPanel : MonoBehaviour {
 
         public Toggle GroundToggle;
         public Toggle ShadowsToggle;
@@ -35,19 +35,19 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             Debug.Log("Ground Toggle Clicked. Value: " + GroundToggle.isOn);
 
             sceneSettings.ShowGround = GroundToggle.isOn;
-            UserInterfaceEvents.RaiseOnSceneSettingsUpdated(sceneSettings);
+            UserInterfaceEvents.RaiseSceneSettingsUpdated(sceneSettings);
         }
 
         public void OnShadowsToggleChanged() {
 
             sceneSettings.ShowShadows = ShadowsToggle.isOn;
-            UserInterfaceEvents.RaiseOnSceneSettingsUpdated(sceneSettings);
+            UserInterfaceEvents.RaiseSceneSettingsUpdated(sceneSettings);
         }
 
         public void OnLightsToggleChanged() {
 
             sceneSettings.LightsOn= LightsToggle.isOn;
-            UserInterfaceEvents.RaiseOnSceneSettingsUpdated(sceneSettings);
+            UserInterfaceEvents.RaiseSceneSettingsUpdated(sceneSettings);
         }
 
 
