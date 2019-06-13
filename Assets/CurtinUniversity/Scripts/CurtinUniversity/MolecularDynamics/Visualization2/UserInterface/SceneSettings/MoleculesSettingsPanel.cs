@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class MoleculesSettingsPanel : MonoBehaviour {
@@ -24,6 +26,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         [SerializeField]
         private Button removeMoleculeButton;
 
+        [SerializeField]
+        private Button showHideMoleculeButton;
+
+        [SerializeField]
+        private TextMeshProUGUI showHideMoleculeButtonText;
+
         private Dictionary<int, MoleculeSettings> molecules;
         private Dictionary<int, MoleculeListItem> moleculeListItems;
 
@@ -39,6 +47,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             selectedMoleculeID = null;
             removeMoleculeButton.interactable = false;
             removeMoleculeButton.gameObject.SetActive(false);
+
+            showHideMoleculeButton.interactable = false;
+            showHideMoleculeButton.gameObject.SetActive(false);
+            showHideMoleculeButtonText.text = "Hide Molecule";
         }
 
         public void OnLoadMoleculeButton() {
@@ -86,10 +98,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             if (hiddenMolecules.Contains(moleculeID)) {
                 UserInterfaceEvents.RaiseShowMolecule(moleculeID, true);
                 hiddenMolecules.Remove(moleculeID);
+                showHideMoleculeButtonText.text = "Hide Molecule";
             }
             else {
                 UserInterfaceEvents.RaiseShowMolecule(moleculeID, false);
-                hiddenMolecules.Remove(moleculeID);
+                hiddenMolecules.Add(moleculeID);
+                showHideMoleculeButtonText.text = "Show Molecule";
             }
         }
 
@@ -150,12 +164,18 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
 
             if(selectedMoleculeID != null) {
+
                 removeMoleculeButton.gameObject.SetActive(true);
                 removeMoleculeButton.interactable = true;
+                showHideMoleculeButton.gameObject.SetActive(true);
+                showHideMoleculeButton.interactable = true;
+
             }
             else {
                 removeMoleculeButton.gameObject.SetActive(false);
                 removeMoleculeButton.interactable = false;
+                showHideMoleculeButton.gameObject.SetActive(false);
+                showHideMoleculeButton.interactable = false;
             }
         }
 

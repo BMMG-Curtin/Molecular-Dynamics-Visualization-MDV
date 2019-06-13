@@ -10,8 +10,6 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
 
 using System.Diagnostics;
 
-// using CurtinUniversity.MolecularDynamics.Visualization;
-
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     [RequireComponent(typeof(MeshRenderer))]
@@ -705,13 +703,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             meshObject.transform.SetParent(modelObject.transform, false);
 
-            //sceneManager.Model.SaveTransform();
-            //sceneManager.Model.ResetTransform();
-            //float modelHover = sceneManager.Model.HoverHeight();
+            //Molecule.SaveTransform();
+            //Molecule.ResetTransform();
+            //float modelHover = Molecule.HoverHeight();
             //UnityEngine.Debug.Log("Add mesh to model. Hover height: " + modelHover);
-            //meshObject.transform.position = new Vector3(-1 * sceneManager.Model.ModelCentre.x, modelHover, -1 * sceneManager.Model.ModelCentre.z);
+            //meshObject.transform.position = new Vector3(-1 * Molecule.MoleculeCentre.x, modelHover, -1 * Molecule.MoleculeCentre.z);
             //meshObject.transform.parent = modelObject.transform;
-            //sceneManager.Model.RestoreTransform();
+            //Molecule.RestoreTransform();
         }
 
         private float getAtomScale(string elementName, MoleculeRenderSettings settings) {

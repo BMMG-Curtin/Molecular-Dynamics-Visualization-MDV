@@ -89,12 +89,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             position.y = position.y + sceneManager.Model.HoverHeight();
             position.z = position.z - sceneManager.Model.ModelCentre.z;
 
-
             GameObject boxEdge = (GameObject)Instantiate(BoxEdgePrefab, position, Quaternion.identity);
             boxEdge.transform.localScale = new Vector3(edgeWidth, (endPoint - startPoint).magnitude + edgeWidth, edgeWidth);
             boxEdge.transform.rotation = Quaternion.FromToRotation(Vector3.up, startPoint - endPoint);
 
-            boxEdge.transform.parent = sceneManager.MolecularModelBox.transform;
+            boxEdge.transform.SetParent(sceneManager.MolecularModelBox.transform);
             boxEdge.SetActive(true);
         }
     }
