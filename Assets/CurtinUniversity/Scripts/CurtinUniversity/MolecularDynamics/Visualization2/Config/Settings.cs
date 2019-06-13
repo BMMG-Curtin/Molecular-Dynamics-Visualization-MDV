@@ -18,28 +18,28 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         /// USER ADJUSTABLE SETTINGS (either through UI or config file)
 
-        public static bool EnablePrimaryStructure { get; set; }
-        public static bool ShowBonds { get; set; }
-        public static bool ShowAtoms { get; set; }
-        public static bool ShowStandardResidues { get; set; }
-        public static bool ShowNonStandardResidues { get; set; }
-        public static bool ShowMainChains { get; set; }
-        public static bool ShowSimulationBox { get; set; }
-        public static MolecularRepresentation Representation { get; set; }
-        public static bool EnableSecondaryStructure { get; set; }
-        public static bool ShowHelices { get; set; }
-        public static bool ShowSheets { get; set; }
-        public static bool ShowTurns { get; set; }
-        public static bool ShowGround { get; set; }
-        public static bool ShowShadows { get; set; }
-        public static bool ShowLights { get; set; } // turn off spotlighting, ambient light only
-        public static bool ShowLightGlobes { get; set; } // light globes in scene, not actual lighting
-        public static bool ModelRotate { get; set; }
-        public static bool ToggleStructures { get; set; } // determines if enabling primary structure disables the secondary 
+        //public static bool EnablePrimaryStructure { get; set; }
+        //public static bool ShowBonds { get; set; }
+        //public static bool ShowAtoms { get; set; }
+        //public static bool ShowStandardResidues { get; set; }
+        //public static bool ShowNonStandardResidues { get; set; }
+        //public static bool ShowMainChains { get; set; }
+        //public static bool ShowSimulationBox { get; set; }
+        //public static MolecularRepresentation Representation { get; set; }
+        //public static bool EnableSecondaryStructure { get; set; }
+        //public static bool ShowHelices { get; set; }
+        //public static bool ShowSheets { get; set; }
+        //public static bool ShowTurns { get; set; }
+        //public static bool ShowGround { get; set; }
+        //public static bool ShowShadows { get; set; }
+        //public static bool ShowLights { get; set; } // turn off spotlighting, ambient light only
+        //public static bool ShowLightGlobes { get; set; } // light globes in scene, not actual lighting
+        //public static bool ModelRotate { get; set; }
+        //public static bool ToggleStructures { get; set; } // determines if enabling primary structure disables the secondary 
         public static bool SmoothRibbons { get; set; }
-        public static float MaxModelScale { get; set; }
-        public static float MinModelScale { get; set; }
-        public static float DefaultModelScale { get; set; }
+        //public static float MaxModelScale { get; set; }
+        //public static float MinModelScale { get; set; }
+        //public static float DefaultModelScale { get; set; }
         public static float MaxAtomScale { get; set; }
         public static float MinAtomScale { get; set; }
         public static float DefaultAtomScale { get; set; }
@@ -50,18 +50,18 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public static bool GenerateBonds = true;
         public static bool GenerateBondsOnModelLoad = true;
         public static bool RecalculateBondsOnNewFrame = false;
-        public static int MaxFrameAnimationSpeed { get; set; }
-        public static int FrameAnimationSpeed { get; set; }
-        public static float MaxSecondsBetweenFrames { get; set; }
-        public static int DefaultTrajectoryStartFrame { get; set; }
-        public static int MinTrajectoryStartFrame { get; set; }
-        public static int MaxTrajectoryStartFrame { get; set; }
-        public static int DefaultTrajectoryFrameCount { get; set; }
-        public static int MinTrajectoryFrameCount { get; set; }
-        public static int MaxTrajectoryFrameCount { get; set; }
-        public static int DefaultTrajectoryFrameFrequency { get; set; }
-        public static int MinTrajectoryFrameFrequency { get; set; }
-        public static int MaxTrajectoryFrameFrequency { get; set; }
+        //public static int MaxFrameAnimationSpeed { get; set; }
+        //public static int FrameAnimationSpeed { get; set; }
+        //public static float MaxSecondsBetweenFrames { get; set; }
+        //public static int DefaultTrajectoryStartFrame { get; set; }
+        //public static int MinTrajectoryStartFrame { get; set; }
+        //public static int MaxTrajectoryStartFrame { get; set; }
+        //public static int DefaultTrajectoryFrameCount { get; set; }
+        //public static int MinTrajectoryFrameCount { get; set; }
+        //public static int MaxTrajectoryFrameCount { get; set; }
+        //public static int DefaultTrajectoryFrameFrequency { get; set; }
+        //public static int MinTrajectoryFrameFrequency { get; set; }
+        //public static int MaxTrajectoryFrameFrequency { get; set; }
         public static string[] AtomMeshQualityValues { get; set; }
         public static string[] BondMeshQualityValues { get; set; }
         public static int AtomMeshQuality { get; set; }
@@ -72,18 +72,18 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public static int LowMeshQualityValue { get; set; }
         public static int SceneMouseCursorSpeed { get; set; }
         public static int GUIMouseCursorSpeed { get; set; }
-        public static float UIDistance { get; set; }
-        public static float MinUIDistance { get; set; }
-        public static float MaxUIDistance { get; set; }
-        public static float UIDistanceStep { get; set; }
+        //public static float UIDistance { get; set; }
+        //public static float MinUIDistance { get; set; }
+        //public static float MaxUIDistance { get; set; }
+        //public static float UIDistanceStep { get; set; }
         // Trajectory color values. Colour values loaded from colour file are in 0-1 range (HSV base).
-        public static float MinColourHue { get; set; }
-        public static float MaxColourHue { get; set; }
-        public static float MinColourValue { get; set; }
-        public static float MidColourValue { get; set; }
-        public static float MaxColourValue { get; set; }
-        public static int ColourBands { get; set; }
-        public static float HighlightedBondColourHue { get; set; }
+        //public static float MinColourHue { get; set; }
+        //public static float MaxColourHue { get; set; }
+        //public static float MinColourValue { get; set; }
+        //public static float MidColourValue { get; set; }
+        //public static float MaxColourValue { get; set; }
+        //public static int ColourBands { get; set; }
+        //public static float HighlightedBondColourHue { get; set; }
 
         public static Color32 ResidueColour1 { get; set; }
         public static Color32 ResidueColour2 { get; set; }
@@ -158,27 +158,27 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private static void loadDefaultApplicationSettings() {
 
             //DisplayPlatform = Platform.Desktop;
-            EnablePrimaryStructure = true;
-            ShowAtoms = false;
-            ShowBonds = true;
-            ShowStandardResidues = true;
-            ShowNonStandardResidues = true;
-            ShowMainChains = false;
-            ShowSimulationBox = false;
-            EnableSecondaryStructure = false;
-            ShowHelices = true;
-            ShowSheets = true;
-            ShowTurns = true;
-            Representation = MolecularRepresentation.CPK;
-            ShowGround = true;
-            ShowShadows = true;
-            ShowLights = true;
-            ModelRotate = true;
-            ToggleStructures = false;
-            SmoothRibbons = true;
-            MaxModelScale = 3f;
-            MinModelScale = 0.1f;
-            DefaultModelScale = 1f;
+            //EnablePrimaryStructure = true;
+            //ShowAtoms = false;
+            //ShowBonds = true;
+            //ShowStandardResidues = true;
+            //ShowNonStandardResidues = true;
+            //ShowMainChains = false;
+            //ShowSimulationBox = false;
+            //EnableSecondaryStructure = false;
+            //ShowHelices = true;
+            //ShowSheets = true;
+            //ShowTurns = true;
+            //Representation = MolecularRepresentation.CPK;
+            //ShowGround = true;
+            //ShowShadows = true;
+            //ShowLights = true;
+            //ModelRotate = true;
+            //ToggleStructures = false;
+            //SmoothRibbons = true;
+            //MaxModelScale = 3f;
+            //MinModelScale = 0.1f;
+            //DefaultModelScale = 1f;
             MaxAtomScale = 3f;
             MinAtomScale = 0.1f;
             DefaultAtomScale = 1f;
@@ -194,18 +194,18 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             BondMeshQuality = DefaultBondMeshQuality;
             LowMeshQualityThreshold = 30000; // over this amount of model atoms, app will change mesh quality to low
             LowMeshQualityValue = 1;
-            DefaultTrajectoryStartFrame = 0;
-            MinTrajectoryStartFrame = 0;
-            MaxTrajectoryStartFrame = 1000;
-            DefaultTrajectoryFrameCount = 100;
-            MinTrajectoryFrameCount = 1;
-            MaxTrajectoryFrameCount = 1000;
-            DefaultTrajectoryFrameFrequency = 1;
-            MinTrajectoryFrameFrequency = 1;
-            MaxTrajectoryFrameFrequency = 1000;
-            MaxFrameAnimationSpeed = 10;
-            FrameAnimationSpeed = 5;
-            MaxSecondsBetweenFrames = 0.5f;
+            //DefaultTrajectoryStartFrame = 0;
+            //MinTrajectoryStartFrame = 0;
+            //MaxTrajectoryStartFrame = 1000;
+            //DefaultTrajectoryFrameCount = 100;
+            //MinTrajectoryFrameCount = 1;
+            //MaxTrajectoryFrameCount = 1000;
+            //DefaultTrajectoryFrameFrequency = 1;
+            //MinTrajectoryFrameFrequency = 1;
+            //MaxTrajectoryFrameFrequency = 1000;
+            //MaxFrameAnimationSpeed = 10;
+            //FrameAnimationSpeed = 5;
+            //MaxSecondsBetweenFrames = 0.5f;
             GUIMouseCursorSpeed = 5;
             MinGUIMouseCursorSpeed = 1;
             MaxGUIMouseCursorSpeed = 10;
@@ -221,13 +221,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             ModelBoxEdgeWidthDefault = 0.05f;
             UseFileSimulationBox = false;
             CalculateBoxEveryFrame = false;
-            MinColourHue = 360f / 360f; // red
-            MaxColourHue = 205f / 360f; // blue
-            MinColourValue = 0.3f;
-            MidColourValue = 0.5f;
-            MaxColourValue = 0.7f;
-            ColourBands = 5;
-            HighlightedBondColourHue = 360f / 360f;
+            //MinColourHue = 360f / 360f; // red
+            //MaxColourHue = 205f / 360f; // blue
+            //MinColourValue = 0.3f;
+            //MidColourValue = 0.5f;
+            //MaxColourValue = 0.7f;
+            //ColourBands = 5;
+            //HighlightedBondColourHue = 360f / 360f;
             AlphaHelixColour = new Color32(0, 0, 255, 1);     // blue
             BetaSheetColour = new Color32(255, 0, 0, 1);     // red
             BetaBridgeColour = new Color32(0, 0, 0, 1);       // black
@@ -247,10 +247,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             ResidueColour9 = new Color32(191, 0, 255, 255); // purple
             ResidueColour10 = new Color32(255, 0, 191, 255); // pink
             ResidueColourDefault = ResidueColour1;
-            UIDistance = 1f;
-            MinUIDistance = 0.9f;
-            MaxUIDistance = 2f;
-            UIDistanceStep = 0.1f;
+            //UIDistance = 1f;
+            //MinUIDistance = 0.9f;
+            //MaxUIDistance = 2f;
+            //UIDistanceStep = 0.1f;
             StartMessage = "Welcome to the Molecular Dynamics Viewer";
             ValidExtensions = new[] { ".xyz", ".gro", ".pdb", ".xtc", ".dcd", ".col" };
             GromacsFileExtension = ".gro";
@@ -291,20 +291,20 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //Debug.Log("Display Platform: " + DisplayPlatform.ToString());
 
             // colour options
-            if (Config.KeyExists("MinColourHue"))
-                MinColourHue = Config.GetFloat("MinColourHue");
-            if (Config.KeyExists("MaxColourHue"))
-                MaxColourHue = Config.GetFloat("MaxColourHue");
-            if (Config.KeyExists("MinColourValue"))
-                MinColourValue = Config.GetFloat("MinColourValue");
-            if (Config.KeyExists("MidColourValue"))
-                MidColourValue = Config.GetFloat("MidColourValue");
-            if (Config.KeyExists("MaxColourValue"))
-                MaxColourValue = Config.GetFloat("MaxColourValue");
-            if (Config.KeyExists("ColourBands"))
-                ColourBands = Config.GetInt("ColourBands");
-            if (Config.KeyExists("HighlightedBondColourHue"))
-                HighlightedBondColourHue = Config.GetFloat("HighlightedBondColourHue");
+            //if (Config.KeyExists("MinColourHue"))
+            //    MinColourHue = Config.GetFloat("MinColourHue");
+            //if (Config.KeyExists("MaxColourHue"))
+            //    MaxColourHue = Config.GetFloat("MaxColourHue");
+            //if (Config.KeyExists("MinColourValue"))
+            //    MinColourValue = Config.GetFloat("MinColourValue");
+            //if (Config.KeyExists("MidColourValue"))
+            //    MidColourValue = Config.GetFloat("MidColourValue");
+            //if (Config.KeyExists("MaxColourValue"))
+            //    MaxColourValue = Config.GetFloat("MaxColourValue");
+            //if (Config.KeyExists("ColourBands"))
+            //    ColourBands = Config.GetInt("ColourBands");
+            //if (Config.KeyExists("HighlightedBondColourHue"))
+            //    HighlightedBondColourHue = Config.GetFloat("HighlightedBondColourHue");
 
             // bond options
             if (Config.KeyExists("GenerateBonds"))
@@ -317,24 +317,24 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 RecalculateBondsOnNewFrame = Config.GetBool("RecalculateBondsOnNewFrame");
 
             // trajectory options
-            if (Config.KeyExists("DefaultTrajectoryStartFrame"))
-                DefaultTrajectoryStartFrame = Config.GetInt("DefaultTrajectoryStartFrame");
-            if (Config.KeyExists("MinTrajectoryStartFrame"))
-                MinTrajectoryStartFrame = Config.GetInt("MinTrajectoryStartFrame");
-            if (Config.KeyExists("MaxTrajectoryStartFrame"))
-                MaxTrajectoryStartFrame = Config.GetInt("MaxTrajectoryStartFrame");
-            if (Config.KeyExists("DefaultTrajectoryFrameCount"))
-                DefaultTrajectoryFrameCount = Config.GetInt("DefaultTrajectoryFrameCount");
-            if (Config.KeyExists("MinTrajectoryFrameCount"))
-                MinTrajectoryFrameCount = Config.GetInt("MinTrajectoryFrameCount");
-            if (Config.KeyExists("MaxTrajectoryFrameCount"))
-                MaxTrajectoryFrameCount = Config.GetInt("MaxTrajectoryFrameCount");
-            if (Config.KeyExists("DefaultTrajectoryFrameFrequency"))
-                DefaultTrajectoryFrameFrequency = Config.GetInt("DefaultTrajectoryFrameFrequency");
-            if (Config.KeyExists("MinTrajectoryFrameFrequency"))
-                MinTrajectoryFrameFrequency = Config.GetInt("MinTrajectoryFrameFrequency");
-            if (Config.KeyExists("MaxTrajectoryFrameFrequency"))
-                MaxTrajectoryFrameFrequency = Config.GetInt("MaxTrajectoryFrameFrequency");
+            //if (Config.KeyExists("DefaultTrajectoryStartFrame"))
+            //    DefaultTrajectoryStartFrame = Config.GetInt("DefaultTrajectoryStartFrame");
+            //if (Config.KeyExists("MinTrajectoryStartFrame"))
+            //    MinTrajectoryStartFrame = Config.GetInt("MinTrajectoryStartFrame");
+            //if (Config.KeyExists("MaxTrajectoryStartFrame"))
+            //    MaxTrajectoryStartFrame = Config.GetInt("MaxTrajectoryStartFrame");
+            //if (Config.KeyExists("DefaultTrajectoryFrameCount"))
+            //    DefaultTrajectoryFrameCount = Config.GetInt("DefaultTrajectoryFrameCount");
+            //if (Config.KeyExists("MinTrajectoryFrameCount"))
+            //    MinTrajectoryFrameCount = Config.GetInt("MinTrajectoryFrameCount");
+            //if (Config.KeyExists("MaxTrajectoryFrameCount"))
+            //    MaxTrajectoryFrameCount = Config.GetInt("MaxTrajectoryFrameCount");
+            //if (Config.KeyExists("DefaultTrajectoryFrameFrequency"))
+            //    DefaultTrajectoryFrameFrequency = Config.GetInt("DefaultTrajectoryFrameFrequency");
+            //if (Config.KeyExists("MinTrajectoryFrameFrequency"))
+            //    MinTrajectoryFrameFrequency = Config.GetInt("MinTrajectoryFrameFrequency");
+            //if (Config.KeyExists("MaxTrajectoryFrameFrequency"))
+            //    MaxTrajectoryFrameFrequency = Config.GetInt("MaxTrajectoryFrameFrequency");
 
             // lighting options
             if (Config.KeyExists("GeneralLightBrightness"))

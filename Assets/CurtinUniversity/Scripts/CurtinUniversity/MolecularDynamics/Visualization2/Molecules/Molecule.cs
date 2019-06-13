@@ -58,7 +58,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 return renderSettings;
             }
             set {
+
                 renderSettings = value;
+                MoleculeBox.gameObject.SetActive(renderSettings.ShowSimulationBox);
                 updateRender = true;
             }
         }

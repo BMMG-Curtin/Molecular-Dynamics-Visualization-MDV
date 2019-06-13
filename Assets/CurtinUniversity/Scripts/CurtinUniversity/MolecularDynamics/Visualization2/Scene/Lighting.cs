@@ -30,7 +30,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 lights[light] = light.shadows;
             }
 
-            EnableShadows(Settings.ShowShadows);
+            EnableShadows(true);
         }
 
         // Update is called once per frame
@@ -86,7 +86,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             foreach (Light spotlight in SpotLights) {
                 spotlight.transform.LookAt(modelCentre);
-                if (!spotlight.gameObject.activeSelf && Settings.ShowLights) {
+                if (!spotlight.gameObject.activeSelf) { // && Settings.ShowLights) {
                     spotlight.gameObject.SetActive(true);
                 }
             }

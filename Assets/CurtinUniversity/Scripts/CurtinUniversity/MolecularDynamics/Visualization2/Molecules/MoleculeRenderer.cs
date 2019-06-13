@@ -87,7 +87,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             BypassSecondaryStructureBuild = false;
             BypassSecondaryStructureTrajectoryBuild = false;
 
-            yield return PrimaryStructureRenderer.Initialise(primaryStructure);
+            yield return PrimaryStructureRenderer.Initialise(primaryStructure, renderSettings);
             // yield return SecondaryStructureView.Initialise(primaryStructure);
 
             primaryStructureTrajectory = null;
@@ -151,7 +151,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             SecondaryStructure secondaryStructureToBuild = null;
 
-            if (Settings.EnableSecondaryStructure) {
+            if (renderSettings.EnableSecondaryStructure) {
 
                 if (frameNumber != null && secondaryStructureTrajectory != null && !BypassSecondaryStructureTrajectoryBuild) {
                     try {

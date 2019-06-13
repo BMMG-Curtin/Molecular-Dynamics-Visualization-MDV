@@ -23,10 +23,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public bool ShowTurns { get; set; }
 
         public bool EnableSimlationBoxToggle;
-        public bool UseFileSimulationBoxToggle;
         public bool CalculateBoxEveryFrameToggle;
 
-        public float ModelScale;
         public float AtomScale;
         public float BondScale;
 
@@ -44,8 +42,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 ShowBonds = true,
                 ShowStandardResidues = true,
                 ShowNonStandardResidues = true,
-                ShowMainChains = true,
-                ShowSimulationBox = false,
+                ShowMainChains = false,
 
                 Representation = MolecularRepresentation.CPK,
 
@@ -54,7 +51,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 ShowSheets = true,
                 ShowTurns = true,
 
-                ModelScale = Settings.DefaultModelScale,
+                ShowSimulationBox = true,
+                CalculateBoxEveryFrameToggle = false,
+
                 AtomScale = Settings.DefaultAtomScale,
                 BondScale = Settings.DefaultBondScale,
 
