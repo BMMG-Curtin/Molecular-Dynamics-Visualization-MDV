@@ -51,6 +51,21 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
+        public void ShowMolecule(int moleculeID, bool show) {
+
+            if (molecules.ContainsKey(moleculeID)) {
+                molecules[moleculeID].gameObject.SetActive(show);
+            }
+        }
+
+        public void RemoveMolecule(int moleculeID) {
+
+            if(molecules.ContainsKey(moleculeID)) {
+                GameObject.Destroy(molecules[moleculeID].gameObject);
+                molecules.Remove(moleculeID);
+            }
+        }
+
         private IEnumerator loadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
 
             loadingFile = true;

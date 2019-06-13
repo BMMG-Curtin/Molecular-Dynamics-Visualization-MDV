@@ -26,9 +26,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private void Start() {
 
-            // setup UI and Molecule Render events
+            // setup UI and Molecule events
             UserInterfaceEvents.OnSceneSettingsUpdated += onSceneSettingsUpdated;
             UserInterfaceEvents.OnLoadMolecule += molecules.LoadMolecule;
+            UserInterfaceEvents.OnRemoveMolecule += molecules.RemoveMolecule;
+            UserInterfaceEvents.OnShowMolecule += molecules.ShowMolecule;
 
             MoleculeEvents.OnMoleculeLoaded += onMoleculeLoaded;
             MoleculeEvents.OnMoleculeLoaded += userInterface.MoleculeLoaded;

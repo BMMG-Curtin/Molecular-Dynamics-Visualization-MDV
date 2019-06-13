@@ -18,7 +18,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private TextMeshProUGUI nameText;
 
         [SerializeField]
-        private Button listItemButton;
+        private Image listItemBackground;
 
         [SerializeField]
         private Color32 normalColor;
@@ -36,8 +36,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private float lastClickTime = 0;
         private float doubleClickTimeout = 0.5f;
 
-        private ColorBlock normalColorBlock;
-        private ColorBlock highlightedColorBlock;
+        private bool itemHighlighted = false;
 
         public void Initialise(int moleculeID, string name, OnMoleculeListItemClick onClick, OnMoleculeListItemDoubleClick onDoubleClick) {
 
@@ -49,15 +48,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             moleculeIDText.text = "";
             nameText.text = name;
 
-            normalColorBlock.normalColor = normalColor;
-            normalColorBlock.highlightedColor = normalColor;
-            normalColorBlock.pressedColor = normalColor;
-            normalColorBlock.disabledColor = normalColor;
-
-            highlightedColorBlock.normalColor = highlightedColor;
-            highlightedColorBlock.highlightedColor = highlightedColor;
-            highlightedColorBlock.pressedColor = highlightedColor;
-            highlightedColorBlock.disabledColor = highlightedColor;
+            SetHighlighted(false);
         }
 
         public int DisplayID {
@@ -92,13 +83,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        public void SetHighlighted(bool highlighted) {
+        public void SetHighlighted(bool setHighlighted) {
 
-            if(highlighted) {
-                listItemButton.colors = highlightedColorBlock;
+            if(setHighlighted) {
+                listItemBackground.color = highlightedColor;
             }
             else {
-                listItemButton.colors = normalColorBlock;
+                listItemBackground.color = normalColor;
             }
         }
     }
