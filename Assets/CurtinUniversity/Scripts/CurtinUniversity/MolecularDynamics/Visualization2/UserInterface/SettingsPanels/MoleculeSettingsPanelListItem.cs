@@ -6,10 +6,10 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
-    public delegate void OnMoleculeListItemClick(int moleculeID);
-    public delegate void OnMoleculeListItemDoubleClick(int moleculeID);
+    public delegate void OnMoleculeSettingsPanelListItemClick(int moleculeID);
+    public delegate void OnMoleculeSettingsPanelListItemDoubleClick(int moleculeID);
 
-    public class MoleculeListItem : MonoBehaviour {
+    public class MoleculeSettingsPanelListItem : MonoBehaviour {
 
         [SerializeField]
         private TextMeshProUGUI moleculeIDText;
@@ -30,15 +30,15 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private int displayID;
         private string displayName;
 
-        private OnMoleculeListItemClick onClick;
-        private OnMoleculeListItemDoubleClick onDoubleClick;
+        private OnMoleculeSettingsPanelListItemClick onClick;
+        private OnMoleculeSettingsPanelListItemDoubleClick onDoubleClick;
 
         private float lastClickTime = 0;
         private float doubleClickTimeout = 0.5f;
 
         private bool itemHighlighted = false;
 
-        public void Initialise(int moleculeID, string name, OnMoleculeListItemClick onClick, OnMoleculeListItemDoubleClick onDoubleClick) {
+        public void Initialise(int moleculeID, string name, OnMoleculeSettingsPanelListItemClick onClick, OnMoleculeSettingsPanelListItemDoubleClick onDoubleClick) {
 
             this.moleculeID = moleculeID;
             this.displayName = name;

@@ -47,6 +47,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public void UpdateMoleculeRenderSettings(int moleculeID, MoleculeRenderSettings settings) {
 
             if(molecules.ContainsKey(moleculeID)) {
+
+                Debug.Log("Molecule Manager: Updating molecule render settings");
                 molecules[moleculeID].RenderSettings = settings;
             }
         }

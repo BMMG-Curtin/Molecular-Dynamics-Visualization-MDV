@@ -25,7 +25,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public GameObject DirectoryContent;
         public ScrollRect ScrollView;
         public TextMeshProUGUI CurrentDirectoryText;
-        public TMP_InputField FileNameField;
+        public TextMeshProUGUI SelectedFileNameText;
 
         private string currentFilePath;
         private OnFileBrowserOpenFileSubmit onSubmit;
@@ -76,12 +76,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         }
 
         public void SetFileName(string fileName) {
-            FileNameField.text = fileName;
+            SelectedFileNameText.text = fileName;
         }
 
         public void SubmitFileName(string fileName) {
 
-            FileNameField.text = fileName;
+            SelectedFileNameText.text = fileName;
             OnSubmitButton();
         }
 
@@ -157,7 +157,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         public void OnSubmitButton() {
 
-            string fileName = FileNameField.text;
+            string fileName = SelectedFileNameText.text;
             string filePath = currentFilePath;
 
             if (fileName == null || fileName.Trim() == "" || fileName == defaultFileName || filePath == null || filePath.Trim() == "") {

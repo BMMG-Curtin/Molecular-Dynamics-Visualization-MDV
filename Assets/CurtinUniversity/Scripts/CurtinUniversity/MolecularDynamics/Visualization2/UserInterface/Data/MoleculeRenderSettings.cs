@@ -13,7 +13,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public bool ShowStandardResidues { get; set; }
         public bool ShowNonStandardResidues { get; set; }
         public bool ShowMainChains { get; set; }
-        public bool ShowSimulationBox { get; set; }
 
         public MolecularRepresentation Representation { get; set; }
 
@@ -22,8 +21,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public bool ShowSheets { get; set; }
         public bool ShowTurns { get; set; }
 
-        public bool EnableSimlationBoxToggle;
-        public bool CalculateBoxEveryFrameToggle;
+        public bool ShowSimulationBox { get; set; }
+        public bool CalculateBoxEveryFrame { get; set; }
 
         public float AtomScale;
         public float BondScale;
@@ -52,7 +51,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 ShowTurns = true,
 
                 ShowSimulationBox = true,
-                CalculateBoxEveryFrameToggle = false,
+                CalculateBoxEveryFrame = false,
 
                 AtomScale = Settings.DefaultAtomScale,
                 BondScale = Settings.DefaultBondScale,
