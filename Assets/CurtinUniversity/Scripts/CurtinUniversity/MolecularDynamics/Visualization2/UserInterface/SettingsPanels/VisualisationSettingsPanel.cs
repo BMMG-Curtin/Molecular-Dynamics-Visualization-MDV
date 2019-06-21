@@ -120,7 +120,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public void LoadSettings() {
 
             // primary structure options
-            EnablePrimaryStructureToggle.isOn = selectedMolecule.RenderSettings.EnablePrimaryStructure;
+            EnablePrimaryStructureToggle.isOn = selectedMolecule.RenderSettings.ShowPrimaryStructure;
             ShowAtomsToggle.isOn = selectedMolecule.RenderSettings.ShowAtoms;
             ShowBondsToggle.isOn = selectedMolecule.RenderSettings.ShowBonds;
             ShowStandardResiduesToggle.isOn = selectedMolecule.RenderSettings.ShowStandardResidues;
@@ -140,7 +140,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
 
             // secondary structure options
-            EnableSecondaryStructureToggle.isOn = selectedMolecule.RenderSettings.EnableSecondaryStructure;
+            EnableSecondaryStructureToggle.isOn = selectedMolecule.RenderSettings.ShowSecondaryStructure;
             ShowHelicesToggle.isOn = selectedMolecule.RenderSettings.ShowHelices;
             ShowSheetsToggle.isOn = selectedMolecule.RenderSettings.ShowSheets;
             ShowTurnsToggle.isOn = selectedMolecule.RenderSettings.ShowTurns;
@@ -157,11 +157,15 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         public void SaveSettings() {
 
+            if (selectedMolecule == null) {
+                return;
+            }
+
             bool visualisationUpdateRequired = false;
 
             // primary structure options
-            if (selectedMolecule.RenderSettings.EnablePrimaryStructure != EnablePrimaryStructureToggle.isOn) {
-                selectedMolecule.RenderSettings.EnablePrimaryStructure = EnablePrimaryStructureToggle.isOn;
+            if (selectedMolecule.RenderSettings.ShowPrimaryStructure != EnablePrimaryStructureToggle.isOn) {
+                selectedMolecule.RenderSettings.ShowPrimaryStructure = EnablePrimaryStructureToggle.isOn;
                 visualisationUpdateRequired = true;
             }
 
@@ -201,8 +205,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
 
             // secondary structure options
-            if (selectedMolecule.RenderSettings.EnableSecondaryStructure != EnableSecondaryStructureToggle.isOn) {
-                selectedMolecule.RenderSettings.EnableSecondaryStructure = EnableSecondaryStructureToggle.isOn;
+            if (selectedMolecule.RenderSettings.ShowSecondaryStructure != EnableSecondaryStructureToggle.isOn) {
+                selectedMolecule.RenderSettings.ShowSecondaryStructure = EnableSecondaryStructureToggle.isOn;
                 visualisationUpdateRequired = true;
             }
 

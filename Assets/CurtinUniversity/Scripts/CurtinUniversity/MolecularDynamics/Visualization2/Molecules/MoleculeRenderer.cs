@@ -18,16 +18,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public PrimaryStructureRenderer PrimaryStructureRenderer;
         public SecondaryStructureRenderer SecondaryStructureRenderer;
 
-        [NonSerialized]
-        public bool Initialised = false;
-
         //public int AtomCount { get { return primaryStructure == null ? 0 : primaryStructure.AtomCount(); } }
         //public int ResidueCount { get { return primaryStructure == null ? 0 : primaryStructure.ResidueCount(); } }
         //public string Title { get { return primaryStructure == null || primaryStructure.Title == null ? "-- none --" : primaryStructure.Title.Trim(); } }
         //public int BondCount { get { return PrimaryStructureRenderer.Bonds == null ? 0 : PrimaryStructureRenderer.Bonds.Count; } }
         //public int FrameCount { get { return primaryStructureTrajectory == null ? 0 : primaryStructureTrajectory.FrameCount(); } }
 
-        public bool Initialising { get { return initialising; } }
         public bool BuildingModel { get { return buildingModel; } }
 
         // this should really be a check to see if model is a protein
@@ -51,7 +47,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private float secondsBetweenFrames;
 
-        private bool initialising = false;
         private bool buildingModel = false;
 
         void Start() {
@@ -77,100 +72,82 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             yield break;
         }
 
-        public IEnumerator Render(PrimaryStructure primaryStructure, SecondaryStructure secondaryStructure, MoleculeRenderSettings settings) {
-
-            initialising = true;
+        public IEnumerator Initialise(PrimaryStructure primaryStructure, SecondaryStructure secondaryStructure, MoleculeRenderSettings settings) {
 
             this.primaryStructure = primaryStructure;
             this.secondaryStructure = secondaryStructure;
             this.renderSettings = settings;
+
             BypassSecondaryStructureBuild = false;
             BypassSecondaryStructureTrajectoryBuild = false;
 
-            yield return PrimaryStructureRenderer.Initialise(primaryStructure, renderSettings);
+            yield return PrimaryStructureRenderer.Initialise(primaryStructure);
             // yield return SecondaryStructureView.Initialise(primaryStructure);
 
             primaryStructureTrajectory = null;
             secondaryStructureTrajectory = null;
             displayTrajectory = false;
 
-            yield return StartCoroutine(buildModel(true, true));
-
-            Initialised = true;
-            initialising = false;
-
             UnityEngine.Debug.Log("Initialised model");
         }
 
-        public IEnumerator Rebuild(bool primaryStructure, bool secondaryStructure) {
+        //public IEnumerator Render(MoleculeRenderSettings settings) {
 
-            if (!buildingModel) {
+        //    if (!buildingModel) {
+        //        yield return StartCoroutine(buildModel(primaryStructure, secondaryStructure));
+        //    }
 
-                if (primaryStructureTrajectory != null && displayTrajectory && !buildingModel)
-                    yield return StartCoroutine(buildModel(primaryStructure, secondaryStructure, currentFrameIndex));
-                else
-                    yield return StartCoroutine(buildModel(primaryStructure, secondaryStructure));
-            }
+        //    yield break;
+        //}
 
-            yield break;
-        }
+        //private IEnumerator buildModel() {
+        //    buildingModel = true;
+        //    yield return StartCoroutine(buildModel(true, true, null));
+        //}
 
-        public void ResetModelView() {
-            PrimaryStructureRenderer.ResetModelView();
-        }
+        //private IEnumerator buildModel(int? frameNumber) {
+        //    buildingModel = true;
+        //    yield return StartCoroutine(buildModel(true, true, frameNumber));
+        //}
 
-        public void ShowModelView(bool show) {
-            PrimaryStructureRenderer.ShowModelView(show);
-        }
-
-        private IEnumerator buildModel() {
-            buildingModel = true;
-            yield return StartCoroutine(buildModel(true, true, null));
-        }
-
-        private IEnumerator buildModel(int? frameNumber) {
-            buildingModel = true;
-            yield return StartCoroutine(buildModel(true, true, frameNumber));
-        }
-
-        private IEnumerator buildModel(bool buildPrimaryStructure, bool buildSecondaryStructure, int? frameNumber = null) {
+        private IEnumerator Render(MoleculeRenderSettings settings) {
 
             //UnityEngine.Debug.Log("Starting model build");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            buildingModel = true;
+            //buildingModel = true;
 
-            //UnityEngine.Debug.Log("Building frame number: " + frameNumber);
+            ////UnityEngine.Debug.Log("Building frame number: " + frameNumber);
 
-            PrimaryStructureFrame frame = null;
-            if (frameNumber != null) {
-                frame = primaryStructureTrajectory.GetFrame((int)frameNumber);
-            }
+            //PrimaryStructureFrame frame = null;
+            //if (frameNumber != null) {
+            //    frame = primaryStructureTrajectory.GetFrame((int)frameNumber);
+            //}
 
-            SecondaryStructure secondaryStructureToBuild = null;
+            //SecondaryStructure secondaryStructureToBuild = null;
 
-            if (renderSettings.EnableSecondaryStructure) {
+            //if (renderSettings.EnableSecondaryStructure) {
 
-                if (frameNumber != null && secondaryStructureTrajectory != null && !BypassSecondaryStructureTrajectoryBuild) {
-                    try {
-                        secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
-                    }
-                    catch (Exception ex) {
-                        MoleculeEvents.RaiseRenderMessage(ex.Message + " - Aborting trajectory secondary structure builds.", true);
-                        BypassSecondaryStructureTrajectoryBuild = true;
-                    }
-                }
-                else {
-                    secondaryStructureToBuild = secondaryStructure;
-                }
-            }
+            //    if (frameNumber != null && secondaryStructureTrajectory != null && !BypassSecondaryStructureTrajectoryBuild) {
+            //        try {
+            //            secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
+            //        }
+            //        catch (Exception ex) {
+            //            MoleculeEvents.RaiseRenderMessage(ex.Message + " - Aborting trajectory secondary structure builds.", true);
+            //            BypassSecondaryStructureTrajectoryBuild = true;
+            //        }
+            //    }
+            //    else {
+            //        secondaryStructureToBuild = secondaryStructure;
+            //    }
+            //}
 
-            if (buildPrimaryStructure) {
-                yield return StartCoroutine(PrimaryStructureRenderer.BuildModel(renderSettings, frame));
-                //UnityEngine.Debug.Log("Completed primary structure build");
-            }
+            //if (buildPrimaryStructure) {
+            //    yield return StartCoroutine(PrimaryStructureRenderer.Render(renderSettings, frame));
+            //    //UnityEngine.Debug.Log("Completed primary structure build");
+            //}
 
             //if (buildSecondaryStructure) {
             //    yield return SecondaryStructureView.BuildModel(frame, secondaryStructureToBuild);

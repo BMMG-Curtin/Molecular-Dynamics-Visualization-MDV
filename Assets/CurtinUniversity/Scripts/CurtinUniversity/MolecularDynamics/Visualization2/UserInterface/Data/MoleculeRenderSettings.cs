@@ -7,7 +7,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public struct MoleculeRenderSettings {
 
-        public bool EnablePrimaryStructure { get; set; }
+        public bool ShowPrimaryStructure { get; set; }
         public bool ShowBonds { get; set; }
         public bool ShowAtoms { get; set; }
         public bool ShowStandardResidues { get; set; }
@@ -16,7 +16,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         public MolecularRepresentation Representation { get; set; }
 
-        public bool EnableSecondaryStructure { get; set; }
+        public bool ShowSecondaryStructure { get; set; }
         public bool ShowHelices { get; set; }
         public bool ShowSheets { get; set; }
         public bool ShowTurns { get; set; }
@@ -36,7 +36,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             return new MoleculeRenderSettings() {
 
-                EnablePrimaryStructure = true,
+                ShowPrimaryStructure = true,
                 ShowAtoms = true,
                 ShowBonds = true,
                 ShowStandardResidues = true,
@@ -45,7 +45,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                 Representation = MolecularRepresentation.CPK,
 
-                EnableSecondaryStructure = false,
+                ShowSecondaryStructure = false,
                 ShowHelices = true,
                 ShowSheets = true,
                 ShowTurns = true,

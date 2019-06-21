@@ -47,9 +47,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public void UpdateMoleculeRenderSettings(int moleculeID, MoleculeRenderSettings settings) {
 
             if(molecules.ContainsKey(moleculeID)) {
-
-                Debug.Log("Molecule Manager: Updating molecule render settings");
-                molecules[moleculeID].RenderSettings = settings;
+                StartCoroutine(molecules[moleculeID].Render(settings));
             }
         }
 
@@ -97,7 +95,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 yield break;
             }
 
-
             watch.Stop();
             MoleculeEvents.RaiseRenderMessage("Structure File Load Complete [" + watch.ElapsedMilliseconds + "ms]", false);
             yield return new WaitForSeconds(0.05f);
@@ -109,8 +106,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 moleculeGO.SetActive(true);
 
                 Molecule molecule = moleculeGO.GetComponent<Molecule>();
-                molecule.RenderSettings = settings;
-                molecule.PrimaryStructure = primaryStructure;
+                molecule.Initialise(primaryStructure, settings);
+                yield return StartCoroutine(molecule.Render(settings));
 
                 molecules.Add(moleculeID, molecule);
 

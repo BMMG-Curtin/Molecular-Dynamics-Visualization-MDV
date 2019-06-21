@@ -42,7 +42,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         // model data store
         private PrimaryStructure primaryStructure;
         private PrimaryStructureTrajectory modelTrajectory;
-        private MoleculeRenderSettings renderSettings;
 
         private float atomScale = 1f;
         private float bondScale = 1f;
@@ -55,12 +54,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             meshBuilder = GetComponent<MeshBuilder>();
         }
 
-        public IEnumerator Initialise(PrimaryStructure structure, MoleculeRenderSettings settings) {
+        public IEnumerator Initialise(PrimaryStructure structure) {
 
             initialising = true;
 
             primaryStructure = structure;
-            renderSettings = settings;
 
             if (Bonds != null) {
                 Bonds.Clear();
@@ -74,7 +72,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             initialising = false;
         }
 
-        public IEnumerator BuildModel(MoleculeRenderSettings settings, PrimaryStructureFrame frame) {
+        public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame) {
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -98,14 +96,14 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
 
             // create the new model objects
-            if (renderSettings.EnablePrimaryStructure) {
+            if (settings.ShowPrimaryStructure) {
 
 
-                if (renderSettings.ShowAtoms) {
+                if (settings.ShowAtoms) {
                     yield return StartCoroutine(createModelAtoms(settings, frame));
                 }
 
-                if (renderSettings.Representation != MolecularRepresentation.VDW && renderSettings.ShowBonds) {
+                if (settings.Representation != MolecularRepresentation.VDW && settings.ShowBonds) {
 
                     if (Settings.GenerateBonds && Bonds == null)
                         yield return StartCoroutine(calculateBonds());
@@ -114,7 +112,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                         yield return StartCoroutine(createModelBonds(settings, frame));
                 }
 
-                if (renderSettings.ShowMainChains) {
+                if (settings.ShowMainChains) {
                     yield return StartCoroutine(createMainChains(frame));
                 }
 
@@ -151,16 +149,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //    console.BannerBuildTime = watch.ElapsedMilliseconds.ToString();
 
             yield break;
-        }
-
-        public void ResetModelView() {
-            AtomParent.SetActive(renderSettings.ShowAtoms);
-            BondParent.SetActive(renderSettings.ShowBonds);
-        }
-
-        public void ShowModelView(bool show) {
-            AtomParent.SetActive(show);
-            BondParent.SetActive(show);
         }
 
         //public float AtomScale {
@@ -513,7 +501,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //    customDisplayResidues = sceneManager.GUIManager.ResiduesPanel.CustomDisplayResidues;
             //}
 
-            atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, enabledElements, enabledResidues);
+            atoms = primaryStructure.GetAtoms(settings.ShowStandardResidues, settings.ShowNonStandardResidues, enabledElements, enabledResidues);
 
             Dictionary<string, ResidueDisplayOptions> residueOptions = null;
             //if (customDisplayResidues != null) {
@@ -720,12 +708,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             float atomSize = 1;
             float representationScale = 1;
 
-            if (renderSettings.Representation == MolecularRepresentation.VDW) {
+            if (settings.Representation == MolecularRepresentation.VDW) {
                 if (!MolecularConstants.VDWRadius.TryGetValue(elementName, out representationScale)) {
                     MolecularConstants.VDWRadius.TryGetValue("Other", out representationScale);
                 }
             }
-            else if (renderSettings.Representation == MolecularRepresentation.CPK) {
+            else if (settings.Representation == MolecularRepresentation.CPK) {
                 if (!MolecularConstants.AtomicRadius.TryGetValue(elementName, out representationScale)) {
                     MolecularConstants.AtomicRadius.TryGetValue("Other", out representationScale);
                 }

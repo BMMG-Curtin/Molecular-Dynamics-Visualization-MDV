@@ -17,9 +17,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         [SerializeField]
         private MoleculeManager molecules;
 
-        private string testStructureFile = @"D:\MolecularModels\MDV\Demo Files\Final Systems\AB.gro";
-        private string testTrajectoryFile = @"D:\MolecularModels\MDV\Demo Files\Final Systems\AB_traj.xtc";
-
         private void Awake() {
             Settings.Load();
         }

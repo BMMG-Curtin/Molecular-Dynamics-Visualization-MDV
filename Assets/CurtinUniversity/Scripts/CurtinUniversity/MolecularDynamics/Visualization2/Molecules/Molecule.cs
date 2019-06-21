@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 using UnityEngine;
 
+using CurtinUniversity.MolecularDynamics.Model.Analysis;
 using CurtinUniversity.MolecularDynamics.Model.Model;
+using CurtinUniversity.MolecularDynamics.Model.FileParser;
 
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
@@ -13,14 +16,14 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public GameObject MoleculeRender;
         public MoleculeBox MoleculeBox;
 
+        public PrimaryStructureRenderer PrimaryStructureRenderer;
+        public SecondaryStructureRenderer SecondaryStructureRenderer;
+
         private PrimaryStructure primaryStructure;
         private SecondaryStructure secondaryStructure;
         private PrimaryStructureTrajectory trajectory;
         private BoundingBox boundingBox;
         private Vector3 boundingBoxCentre; // cannot use original bounding box centre as z coords need to be flipped
-        private MoleculeRenderSettings renderSettings;
-
-        private MoleculeRenderer moleculeRenderer;
 
         private bool centredAtOrigin = false;
 
@@ -31,83 +34,111 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private float scale = 1;
         private float scaleIncrementAmount = 0.1f;
 
-        private bool rendering;
-        private bool updateRender;
+        private bool displayTrajectory = false;
 
-        private void Awake() {
+        private int currentFrameIndex = 0;
+        private bool animating = false;
+        private float lastAnimationUpdate = 0;
 
-            rendering = false;
-            updateRender = false;
+        private float secondsBetweenFrames;
 
-            renderSettings = MoleculeRenderSettings.Default();
-            moleculeRenderer = MoleculeRender.GetComponent<MoleculeRenderer>();
-        }
+        private bool initialised = false;
+        private bool rendering = false;
+        private bool awaitingRender = false;
+        private MoleculeRenderSettings awaitingRenderSettings;
 
-        private void Update() {
+        private bool hasSecondaryStructure = false;
 
-            if(!rendering && updateRender) {
-                StartCoroutine(render());
-            }
-        }
+
+
 
         public int ID { get { return this.GetInstanceID(); } }
 
-        public MoleculeRenderSettings RenderSettings {
+        public void Initialise(PrimaryStructure primaryStructure, MoleculeRenderSettings renderSettings) {
 
-            get {
-                return renderSettings;
-            }
-            set {
+            this.primaryStructure = primaryStructure;
 
-                renderSettings = value;
-                MoleculeBox.gameObject.SetActive(renderSettings.ShowSimulationBox);
-                updateRender = true;
+            MoleculeBox.gameObject.SetActive(renderSettings.ShowSimulationBox);
+
+            boundingBox = new BoundingBox(primaryStructure); //.OriginalBoundingBox;
+            MoleculeRender.transform.position = new Vector3(-1 * boundingBox.Centre.x, -1 * boundingBox.Centre.y, boundingBox.Centre.z);
+            transform.position = new Vector3(transform.position.x, (boundingBox.Height / 2f) + 0.5f, transform.position.z);
+
+            MoleculeBox.Build(boundingBox);
+            //StartCoroutine(moleculeRenderer.Initialise(primaryStructure, null, renderSettings));
+
+            StartCoroutine(PrimaryStructureRenderer.Initialise(primaryStructure));
+            SecondaryStructureRenderer.Initialise(primaryStructure);
+
+            initialised = true;
+        }
+
+        private void Update() {
+            if(!rendering && awaitingRender) {
+                StartCoroutine(Render(awaitingRenderSettings));
             }
         }
 
-        public PrimaryStructure PrimaryStructure {
+        public IEnumerator Render(MoleculeRenderSettings renderSettings) {
 
-            get {
-                return primaryStructure;
+            if(rendering) {
+                awaitingRenderSettings = renderSettings;
+                awaitingRender = true;
+                yield break;
             }
-            set {
 
-                primaryStructure = value;
-                boundingBox = new BoundingBox(primaryStructure); //.OriginalBoundingBox;
-                MoleculeRender.transform.position = new Vector3(-1 * boundingBox.Centre.x, -1 * boundingBox.Centre.y, boundingBox.Centre.z);
-                transform.position = new Vector3(transform.position.x, (boundingBox.Height / 2f) + 0.5f, transform.position.z);
+            rendering = true;
 
-                updateRender = true;
+            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
+
+            PrimaryStructureFrame frame = null;
+            //if (frameNumber != null) {
+            //    frame = primaryStructureTrajectory.GetFrame((int)frameNumber);
+            //}
+
+            SecondaryStructure secondaryStructureToBuild = null;
+
+            //if (renderSettings.EnableSecondaryStructure) {
+
+            //    if (frameNumber != null && secondaryStructureTrajectory != null && !BypassSecondaryStructureTrajectoryBuild) {
+            //        try {
+            //            secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
+            //        }
+            //        catch (Exception ex) {
+            //            MoleculeEvents.RaiseRenderMessage(ex.Message + " - Aborting trajectory secondary structure builds.", true);
+            //            BypassSecondaryStructureTrajectoryBuild = true;
+            //        }
+            //    }
+            //    else {
+                    secondaryStructureToBuild = secondaryStructure;
+            //    }
+            //}
+
+            yield return StartCoroutine(PrimaryStructureRenderer.Render(renderSettings, frame));
+            yield return SecondaryStructureRenderer.Render(renderSettings, frame);
+
+            //if (Settings.CalculateBoxEveryFrame) {
+            //    sceneManager.UpdateModelBox(frame);
+            //}
+
+            //Cleanup.ForeceGC();
+
+            rendering = false;
+            watch.Stop();
+            if (Settings.DebugMessages) {
+                //console.BannerBuildTime = watch.ElapsedMilliseconds.ToString();
             }
+
+            //UnityEngine.Debug.Log("Ending model build. Elapsed time [" + watch.ElapsedMilliseconds.ToString() + "]");
+            yield break;
         }
 
-        public SecondaryStructure SecondaryStructure {
+        private IEnumerator loadSecondaryStructure() {
 
-            get {
-                return secondaryStructure;
-            }
-            set {
-                secondaryStructure = value;
-                updateRender = true;
-            }
-        }
 
-        private IEnumerator render() {
 
-            if(!rendering) {
-
-                updateRender = false;
-
-                if (primaryStructure != null) {
-
-                    rendering = true;
-
-                    MoleculeBox.Build(boundingBox);
-                    yield return StartCoroutine(moleculeRenderer.Render(primaryStructure, null, renderSettings));
-
-                    rendering = false;
-                }
-            }
+            yield return new WaitForSeconds(0.05f);
         }
     }
 }
