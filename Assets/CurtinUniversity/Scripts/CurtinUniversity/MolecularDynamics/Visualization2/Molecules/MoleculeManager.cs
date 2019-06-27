@@ -111,7 +111,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                 molecules.Add(moleculeID, molecule);
 
-                MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure.Title);
+                MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure.Title, primaryStructure.ElementNames, primaryStructure.ResidueNames);
             }
 
             loadingFile = false;

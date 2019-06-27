@@ -82,7 +82,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             BypassSecondaryStructureTrajectoryBuild = false;
 
             yield return PrimaryStructureRenderer.Initialise(primaryStructure);
-            // yield return SecondaryStructureView.Initialise(primaryStructure);
+            yield return SecondaryStructureRenderer.Initialise(primaryStructure);
 
             primaryStructureTrajectory = null;
             secondaryStructureTrajectory = null;

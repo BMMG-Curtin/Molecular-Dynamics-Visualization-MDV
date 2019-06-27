@@ -1,13 +1,17 @@
-﻿
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class MoleculeEvents {
 
-        public delegate void MoleculeLoaded(int moleculeID, string name, string description);
+        public delegate void MoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, HashSet<string> residues);
         public static event MoleculeLoaded OnMoleculeLoaded;
-        public static void RaiseMoleculeLoaded(int moleculeID, string name, string description) {
+        public static void RaiseMoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, HashSet<string> residues) {
             if (OnMoleculeLoaded != null) {
-                OnMoleculeLoaded(moleculeID, name, description);
+                OnMoleculeLoaded(moleculeID, name, description, elements, residues);
             }
         }
 

@@ -7,64 +7,81 @@ using System.Collections.Generic;
 using CurtinUniversity.MolecularDynamics.Model.Model;
 using CurtinUniversity.MolecularDynamics.Visualization.Utility;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization {
+namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
-    public class ElementsPanel : MonoBehaviour {
+    public class ElementsSettingsPanel : MonoBehaviour {
+
+        [SerializeField]
+        private MoleculeList molecules;
 
         public GameObject ElementPanel;
         public GameObject ButtonEnabledPrefab; // for elements in model. Interactive
         public GameObject ButtonDisabledPrefab; // for elements not in model. Non interactive
 
-        [HideInInspector]
-        public HashSet<string> EnabledElements { get { return enabledElements; } }
+        private Dictionary<int, HashSet<string>> modelElements;
 
-        private SceneManager sceneManager;
-
-        private HashSet<string> modelElements;
-        private HashSet<string> enabledElements;
+        private MoleculeSettings selectedMolecule;
 
         void Start() {
 
-            sceneManager = SceneManager.instance;
-
             if (modelElements == null) {
-                modelElements = new HashSet<string>();
+                modelElements = new Dictionary<int, HashSet<string>>();
                 Initialise();
             }
         }
 
-        public void SetModelElements(HashSet<string> elements) {
-            modelElements = elements;
+        public void OnEnable() {
+
             Initialise();
+
+            selectedMolecule = molecules.GetSelected();
+
+            if (selectedMolecule != null) {
+
+                if (selectedMolecule.RenderSettings.EnabledElements == null) {
+
+                    if(modelElements.ContainsKey(selectedMolecule.ID)) {
+                        selectedMolecule.RenderSettings.EnabledElements = new HashSet<string>(modelElements[selectedMolecule.ID]);
+                    }
+                    else {
+                        selectedMolecule.RenderSettings.EnabledElements = new HashSet<string>();
+                    }
+                }
+
+                Initialise();
+                //helpText.text = initialHelpText + " - " + selectedMolecule.Name;
+                //EnableSettings(true);
+                //LoadSettings();
+            }
+            else {
+
+                //enabledElements = new HashSet<string>();
+                //helpText.text = "< no molecule selected >";
+                //EnableSettings(false);
+                //ClearSettings();
+            }
         }
 
-        public bool HasHiddenElements {
-
-            get {
-                if (modelElements.Count > enabledElements.Count) {
-                    return true;
-                }
-                return false;
-            }
+        public void SetModelElements(int moleculeID, HashSet<string> elements) {
+            modelElements.Add(moleculeID, elements);
         }
 
         public void Initialise() {
 
             Cleanup.DestroyGameObjects(ElementPanel);
 
-            if (modelElements != null) {
-                enabledElements = new HashSet<string>(modelElements);
+            if (selectedMolecule == null) {
+                return;
             }
-            else {
-                enabledElements = new HashSet<string>();
-            }
+
+            HashSet<string> displayElements = modelElements[selectedMolecule.ID];
 
             for (int i = 0; i < MolecularConstants.ElementNamesByAtomicNumber.Count; i++) {
 
                 GameObject button;
                 string symbol = MolecularConstants.ElementNamesByAtomicNumber[i][0];
 
-                if (modelElements.Contains(symbol.ToUpper())) {
+                if (displayElements.Contains(symbol.ToUpper())) {
 
                     button = (GameObject)Instantiate(ButtonEnabledPrefab, Vector3.zero, Quaternion.identity);
                     button.GetComponent<Image>().color = new Color(1, 1, 1);
@@ -104,18 +121,22 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void SetElement(string elementName, bool enabled) {
 
-            if (enabledElements.Contains(elementName)) {
+            if (selectedMolecule == null || selectedMolecule.RenderSettings.EnabledElements == null) {
+                return;
+            }
+
+            if (selectedMolecule.RenderSettings.EnabledElements.Contains(elementName)) {
                 if (!enabled) {
-                    enabledElements.Remove(elementName);
+                    selectedMolecule.RenderSettings.EnabledElements.Remove(elementName);
                 }
             }
             else {
                 if (enabled) {
-                    enabledElements.Add(elementName);
+                    selectedMolecule.RenderSettings.EnabledElements.Add(elementName);
                 }
             }
 
-            StartCoroutine(sceneManager.ReloadModelView(true, false));
+            //StartCoroutine(sceneManager.ReloadModelView(true, false));
         }
     }
 }

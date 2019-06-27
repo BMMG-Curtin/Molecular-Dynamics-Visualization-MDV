@@ -33,11 +33,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public Toggle ShowVDWToggle;
 
         public Toggle EnableSimlationBoxToggle;
-        public Toggle UseFileSimulationBoxToggle;
         public Toggle CalculateBoxEveryFrameToggle;
 
         public Text AtomScale;
         public Text BondScale;
+        private float scaleIncrementAmount = 0.1f;
 
         public bool SettingsChanged { get; set; }
 
@@ -85,10 +85,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             ShowSheetsToggle.isOn = false;
             ShowTurnsToggle.isOn = false;
 
-            // TODO
             // scale options
-            //AtomScale.text = sceneManager.StructureView.PrimaryStructureView.AtomScale.ToString("F1");
-            //BondScale.text = sceneManager.StructureView.PrimaryStructureView.BondScale.ToString("F1");
+            AtomScale.text = "";
+            BondScale.text = "";
 
             // other options
             EnableSimlationBoxToggle.isOn = false;
@@ -145,10 +144,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             ShowSheetsToggle.isOn = selectedMolecule.RenderSettings.ShowSheets;
             ShowTurnsToggle.isOn = selectedMolecule.RenderSettings.ShowTurns;
 
-            // TODO
             // scale options
-            //AtomScale.text = sceneManager.StructureView.PrimaryStructureView.AtomScale.ToString("F1");
-            //BondScale.text = sceneManager.StructureView.PrimaryStructureView.BondScale.ToString("F1");
+            AtomScale.text = selectedMolecule.RenderSettings.AtomScale.ToString("F1");
+            BondScale.text = selectedMolecule.RenderSettings.BondScale.ToString("F1");
 
             // other options
             EnableSimlationBoxToggle.isOn = selectedMolecule.RenderSettings.ShowSimulationBox;
@@ -237,29 +235,33 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        //public void InreaseAtomScale() {
-        //    sceneManager.StructureView.PrimaryStructureView.IncreaseAtomScale();
-        //    AtomScale.text = sceneManager.StructureView.PrimaryStructureView.AtomScale.ToString("F1");
-        //    StartCoroutine(sceneManager.ReloadModelView(true, false));
-        //}
+        public void InreaseAtomScale() {
 
-        //public void DecreaseAtomScale() {
-        //    sceneManager.StructureView.PrimaryStructureView.DecreaseAtomScale();
-        //    AtomScale.text = sceneManager.StructureView.PrimaryStructureView.AtomScale.ToString("F1");
-        //    StartCoroutine(sceneManager.ReloadModelView(true, false));
-        //}
+            selectedMolecule.RenderSettings.AtomScale += scaleIncrementAmount;
+            AtomScale.text = selectedMolecule.RenderSettings.AtomScale.ToString("F1");
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+        }
 
-        //public void InreaseBondScale() {
-        //    sceneManager.StructureView.PrimaryStructureView.IncreaseBondScale();
-        //    BondScale.text = sceneManager.StructureView.PrimaryStructureView.BondScale.ToString("F1");
-        //    StartCoroutine(sceneManager.ReloadModelView(true, false));
-        //}
+        public void DecreaseAtomScale() {
 
-        //public void DecreaseBondScale() {
-        //    sceneManager.StructureView.PrimaryStructureView.DecreaseBondScale();
-        //    BondScale.text = sceneManager.StructureView.PrimaryStructureView.BondScale.ToString("F1");
-        //    StartCoroutine(sceneManager.ReloadModelView(true, false));
-        //}
+            selectedMolecule.RenderSettings.AtomScale -= scaleIncrementAmount;
+            AtomScale.text = selectedMolecule.RenderSettings.AtomScale.ToString("F1");
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+        }
+
+        public void InreaseBondScale() {
+
+            selectedMolecule.RenderSettings.BondScale += scaleIncrementAmount;
+            BondScale.text = selectedMolecule.RenderSettings.BondScale.ToString("F1");
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+        }
+
+        public void DecreaseBondScale() {
+
+            selectedMolecule.RenderSettings.BondScale -= scaleIncrementAmount;
+            BondScale.text = selectedMolecule.RenderSettings.BondScale.ToString("F1");
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+        }
     }
 }
 

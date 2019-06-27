@@ -24,11 +24,48 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public bool ShowSimulationBox { get; set; }
         public bool CalculateBoxEveryFrame { get; set; }
 
-        public float AtomScale;
-        public float BondScale;
+        private float atomScale;
+        public float AtomScale {
 
-        // need to do element settings and residue settings
-        public bool HasHiddenElements { get; set; }
+            get {
+                return atomScale;
+            }
+
+            set {
+
+                atomScale = value;
+
+                if (atomScale > Settings.MaxAtomScale) {
+                    atomScale = Settings.MaxAtomScale;
+                }
+
+                if (atomScale < Settings.MinAtomScale) {
+                    atomScale = Settings.MinAtomScale;
+                }
+            }
+        }
+
+        private float bondScale;
+        public float BondScale {
+
+            get {
+                return bondScale;
+            }
+
+            set {
+
+                bondScale = value;
+
+                if (bondScale > Settings.MaxBondScale) {
+                    bondScale = Settings.MaxBondScale;
+                }
+
+                if (bondScale < Settings.MinBondScale) {
+                    bondScale = Settings.MinBondScale;
+                }
+            }
+        }
+
         public HashSet<string> EnabledElements { get; set; }
         public List<Color32> ResidueColours { get; set; }
 
@@ -55,8 +92,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                 AtomScale = Settings.DefaultAtomScale,
                 BondScale = Settings.DefaultBondScale,
-
-                HasHiddenElements = false,
             };
         }
     }

@@ -43,10 +43,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private PrimaryStructure primaryStructure;
         private PrimaryStructureTrajectory modelTrajectory;
 
-        private float atomScale = 1f;
-        private float bondScale = 1f;
-        private float scaleIncrementAmount = 0.1f;
-
         private bool initialising = false;
         private bool buildingModel = false;
 
@@ -100,7 +96,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
 
                 if (settings.ShowAtoms) {
-                    yield return StartCoroutine(createModelAtoms(settings, frame));
+                    yield return StartCoroutine(createModelAtomsByElement(settings, frame));
                 }
 
                 if (settings.Representation != MolecularRepresentation.VDW && settings.ShowBonds) {
@@ -151,62 +147,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             yield break;
         }
 
-        //public float AtomScale {
-
-        //    get {
-        //        return atomScale;
-        //    }
-
-        //    set {
-
-        //        atomScale = value;
-
-        //        if (atomScale > Settings.MaxAtomScale) {
-        //            atomScale = Settings.MaxAtomScale;
-        //        }
-
-        //        if (atomScale < Settings.MinAtomScale) {
-        //            atomScale = Settings.MinAtomScale;
-        //        }
-        //    }
-        //}
-
-        //public void IncreaseAtomScale() {
-        //    AtomScale += scaleIncrementAmount;
-        //}
-
-        //public void DecreaseAtomScale() {
-        //    AtomScale -= scaleIncrementAmount;
-        //}
-
-        //public float BondScale {
-
-        //    get {
-        //        return bondScale;
-        //    }
-
-        //    set {
-
-        //        bondScale = value;
-
-        //        if (bondScale > Settings.MaxBondScale) {
-        //            bondScale = Settings.MaxBondScale;
-        //        }
-
-        //        if (bondScale < Settings.MinBondScale) {
-        //            bondScale = Settings.MinBondScale;
-        //        }
-        //    }
-        //}
-
-        //public void IncreaseBondScale() {
-        //    BondScale += scaleIncrementAmount;
-        //}
-
-        //public void DecreaseBondScale() {
-        //    BondScale -= scaleIncrementAmount;
-        //}
-
         private IEnumerator calculateBonds() {
 
             MoleculeEvents.RaiseRenderMessage("Calculating Bonds", false);
@@ -223,16 +163,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             MoleculeEvents.RaiseRenderMessage("Bonds Calculated [" + watch.ElapsedMilliseconds + "ms]", false);
         }
 
-        private IEnumerator createModelAtoms(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame) {
-
-            //if (frame != null && frame.Colours != null) {
-            //    yield return StartCoroutine(createModelAtomsByColour(renderSettings, frame));
-            //}
-            //else {
-                yield return StartCoroutine(createModelAtomsByElement(renderSettings, frame));
-            //}
-        }
-
         private IEnumerator createModelAtomsByElement(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame) {
 
             Quaternion atomOrientation = Quaternion.Euler(45, 45, 45);
@@ -247,9 +177,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
 // needs to be updated to work with element and residue settings
 
-            //if (settings.HasHiddenElements) {
-            //    enabledElementNames = sceneManager.GUIManager.ElementsPanel.EnabledElements;
-            //}
+            if (renderSettings.EnabledElements == null || primaryStructure.ElementNames.Count > renderSettings.EnabledElements.Count) {
+                enabledElementNames = renderSettings.EnabledElements;
+            }
+
             //if (settings.HasHiddenResidues) {
             //    enabledResiduesNames = sceneManager.GUIManager.ResiduesPanel.EnabledResidueNames;
             //}
@@ -335,136 +266,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 yield return StartCoroutine(meshBuilder.CombinedMesh(prefab, item.Value.ToArray(), item.Key, parent));
             }
 
-            AddMeshToModel(parent, AtomParent);
+            parent.transform.SetParent(AtomParent.transform, false);
 
             yield break;
         }
-
-        //private IEnumerator createModelAtomsByColour(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame) {
-
-        //    Quaternion atomOrientation = Quaternion.Euler(45, 45, 45);
-
-        //    Dictionary<Color32, Dictionary<int, Atom>> atomsByColour = GetAtomsByColour(primaryStructure, frame);
-
-        //    // generate combined meshes (i.e single GameObject) for atoms with same element
-        //    foreach (KeyValuePair<Color32, Dictionary<int, Atom>> colourAtoms in atomsByColour) {
-
-        //        Matrix4x4[] mergeTransforms = new Matrix4x4[colourAtoms.Value.Count];
-        //        int index = 0;
-
-        //        foreach (KeyValuePair<int, Atom> atom in colourAtoms.Value) {
-
-        //            Vector3 position;
-
-        //            // if no frame number use the base structure coordinates.
-        //            if (frame == null) {
-        //                position = new Vector3(atom.Value.Position.x, atom.Value.Position.y, atom.Value.Position.z);
-        //            }
-        //            else {
-        //                if (atom.Key >= frame.AtomCount) {
-        //                    MoleculeEvents.RaiseRenderMessage("Incomplete atom information in frame. Aborting frame render.", true);
-        //                    yield break;
-        //                }
-        //                position = new Vector3(frame.Coords[atom.Key * 3], frame.Coords[(atom.Key * 3) + 1], frame.Coords[(atom.Key * 3) + 2]);
-        //            }
-
-        //            if (Settings.FlipZCoordinates) {
-        //                position.z = position.z * -1;
-        //            }
-
-        //            float atomSize = getAtomScale(atom.Value.Element.ToString(), renderSettings);
-        //            Vector3 scale = new Vector3(atomSize, atomSize, atomSize);
-
-        //            mergeTransforms[index] = Matrix4x4.TRS(position, atomOrientation, scale);
-        //            index++;
-        //        }
-
-        //        GameObject prefab = AtomPrefabs[Settings.AtomMeshQuality];
-
-        //        // yield return StartCoroutine(prefabMerger.Merge(prefab, colourAtoms.Key, mergeTransforms, SceneManager.Model.ModelCentre, AtomParent));
-
-        //        GameObject parent = new GameObject("CombinedMeshParent");
-        //        parent.SetActive(false);
-        //        yield return StartCoroutine(meshBuilder.CombinedMesh(prefab, mergeTransforms, colourAtoms.Key, parent));
-        //        AddMeshToModel(parent, AtomParent);
-        //    }
-
-        //    yield break;
-        //}
-
-        //private Dictionary<Color32, Dictionary<int, Atom>> GetAtomsByColour(PrimaryStructure model, PrimaryStructureFrame frame) {
-
-        //    Dictionary<Color32, Dictionary<int, Atom>> output = new Dictionary<Color32, Dictionary<int, Atom>>();
-
-        //    Dictionary<int, Atom> atoms = model.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues);
-
-        //    int atomCount = 0;
-
-        //    foreach (KeyValuePair<int, Atom> atom in atoms) {
-
-        //        float colour;
-        //        try {
-        //            colour = frame.Colours[atom.Key];
-        //        }
-        //        catch (IndexOutOfRangeException) {
-        //            colour = 0f;
-        //        }
-
-        //        // discard atoms with no colour value
-        //        if (colour == 0) {
-        //            continue;
-        //        }
-
-        //        atomCount++;
-
-        //        Color32 colourRGB = mapValueToColour32(colour);
-
-        //        if (!output.ContainsKey(colourRGB)) {
-        //            Dictionary<int, Atom> colourAtoms = new Dictionary<int, Atom>();
-        //            colourAtoms.Add(atom.Key, atom.Value);
-        //            output.Add(colourRGB, colourAtoms);
-        //        }
-        //        else {
-        //            Dictionary<int, Atom> colourAtoms;
-        //            if (output.TryGetValue(colourRGB, out colourAtoms)) {
-        //                colourAtoms.Add(atom.Key, atom.Value);
-        //            }
-        //        }
-        //    }
-
-        //    return output;
-        //}
-
-        //private Color32 mapValueToColour32(float value) {
-
-        //    if (value >= Settings.MidColourValue && value <= 1) {
-
-        //        // blue gradient from white at midColourValue to blue at maxColourValue. 
-        //        value = Mathf.Clamp(value, Settings.MidColourValue, Settings.MaxColourValue);
-        //        float normalised = (value - Settings.MidColourValue) / (Settings.MaxColourValue - Settings.MidColourValue);
-        //        int step = (int)(normalised * Settings.ColourBands);
-        //        float saturation = (float)step / (float)Settings.ColourBands;
-
-        //        Color32 colour = Colour.HSVToRGB(Settings.MaxColourHue, saturation, 1f);
-
-        //        return colour;
-        //    }
-        //    else if (value < Settings.MidColourValue && value >= 0) {
-
-        //        // red gradient from red at minColourValue to white at midColourValue
-        //        value = Mathf.Clamp(value, Settings.MinColourValue, Settings.MidColourValue);
-        //        float normalised = 1f - ((value - Settings.MinColourValue) / (Settings.MidColourValue - Settings.MinColourValue));
-        //        int step = (int)(normalised * Settings.ColourBands);
-        //        float saturation = (float)step / (float)Settings.ColourBands;
-
-        //        Color32 colour = Colour.HSVToRGB(Settings.MinColourHue, saturation, 1f);
-
-        //        return colour;
-        //    }
-        //    else {
-        //        return new Color32(224, 0, 194, 1); // purple
-        //    }
-        //}
 
         private IEnumerator createModelBonds(MoleculeRenderSettings settings, PrimaryStructureFrame frame) {
 
@@ -479,8 +284,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             List<Matrix4x4> standardTransforms = new List<Matrix4x4>();
             Dictionary<Color, List<Matrix4x4>> highlightedTransforms = new Dictionary<Color, List<Matrix4x4>>();
 
-            float standardCylinderWidth = 0.015f * bondScale;
-            float enlargedCylinderWidth = 0.040f * bondScale;
+            float standardCylinderWidth = 0.015f * settings.BondScale;
+            float enlargedCylinderWidth = 0.040f * settings.BondScale;
 
             // get atoms for bonds
             Dictionary<int, Atom> atoms;
@@ -609,8 +414,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             GameObject parent = new GameObject("StandardCombinedMeshParent");
             parent.SetActive(false);
             yield return StartCoroutine(meshBuilder.CombinedMesh(prefab, standardTransforms.ToArray(), bondColour, parent));
-            AddMeshToModel(parent, BondParent);
-
+            parent.transform.SetParent(BondParent.transform, false);
 
             parent = new GameObject("HighligtedCombinedMeshParent");
             parent.SetActive(false);
@@ -619,7 +423,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 yield return StartCoroutine(meshBuilder.CombinedMesh(prefab, item.Value.ToArray(), item.Key, parent));
             }
 
-            AddMeshToModel(parent, BondParent);
+            parent.transform.SetParent(BondParent.transform, false);
         }
 
         private IEnumerator createMainChains(PrimaryStructureFrame frame) {
@@ -682,24 +486,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 chainStructure.GetComponent<MeshFilter>().sharedMesh = chainMesh;
 
                 chainStructure.SetActive(false);
-                AddMeshToModel(chainStructure, ChainParent);
+                chainStructure.transform.SetParent(ChainParent.transform, false);
 
                 currentIndex++;
                 yield return null;
             }
-        }
-
-        private void AddMeshToModel(GameObject meshObject, GameObject modelObject) {
-
-            meshObject.transform.SetParent(modelObject.transform, false);
-
-            //Molecule.SaveTransform();
-            //Molecule.ResetTransform();
-            //float modelHover = Molecule.HoverHeight();
-            //UnityEngine.Debug.Log("Add mesh to model. Hover height: " + modelHover);
-            //meshObject.transform.position = new Vector3(-1 * Molecule.MoleculeCentre.x, modelHover, -1 * Molecule.MoleculeCentre.z);
-            //meshObject.transform.parent = modelObject.transform;
-            //Molecule.RestoreTransform();
         }
 
         private float getAtomScale(string elementName, MoleculeRenderSettings settings) {

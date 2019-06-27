@@ -1,4 +1,6 @@
-﻿// using System;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,8 +35,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         //public TrajectoryControls TrajectoryControls;
         //public ApplicationPanel ApplicationPanel;
         //public VisualisationPanel VisualisationPanel;
-        //public ElementsPanel ElementsPanel;
-        //public ResiduesPanel ResiduesPanel;
+        public ElementsSettingsPanel ElementsPanel;
+        //public ResiduesSettingsPanel ResiduesPanel;
         //public FileBrowser FileBrowser;
         //public InfoPanel InfoPanel;
 
@@ -92,8 +94,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             applicationSettings.SetSceneSettings(settings);
         }
 
-        public void MoleculeLoaded(int id, string name, string description) {
+        public void MoleculeLoaded(int id, string name, string description, HashSet<string> elements, HashSet<string> residues) {
+
             moleculeSettings.MoleculeLoaded(id, name, description);
+            ElementsPanel.SetModelElements(id, elements);
         }
 
         public void ToogleUserInterface() {

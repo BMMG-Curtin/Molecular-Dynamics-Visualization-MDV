@@ -61,7 +61,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        private void onMoleculeLoaded(int id, string name, string desc) {
+        private void onMoleculeLoaded(int id, string name, string desc, HashSet<string> elements, HashSet<string> residues) {
             StartCoroutine(scene.Lighting.LightToDefaults(1f));
         }
 

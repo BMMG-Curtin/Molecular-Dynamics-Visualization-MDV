@@ -9,11 +9,15 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public GameObject ApplicationPanel;
         public GameObject MoleculesPanel;
         public GameObject VisualisationPanel;
+        public GameObject ElementsPanel;
+        public GameObject ResiduesPanel;
         public GameObject PhysicsPanel;
 
         public GameObject ApplicationPanelButton;
         public GameObject MoleculesPanelButton;
         public GameObject VisualisationPanelButton;
+        public GameObject ElementsPanelButton;
+        public GameObject ResiduesPanelButton;
         public GameObject PhysicsPanelButton;
 
         private Color enabledColor = new Color(96f / 255f, 39f / 255f, 13f / 255f, 100f);
@@ -44,6 +48,20 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             VisualisationPanel.SetActive(true);
         }
 
+        public void ShowElementsPanel() {
+
+            disablePanels();
+            ElementsPanelButton.GetComponent<Image>().color = enabledColor;
+            ElementsPanel.SetActive(true);
+        }
+
+        public void ShowResiduesPanel() {
+
+            disablePanels();
+            ResiduesPanelButton.GetComponent<Image>().color = enabledColor;
+            ResiduesPanel.SetActive(true);
+        }
+
         public void ShowPhysicsPanel() {
 
             disablePanels();
@@ -63,11 +81,15 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             ApplicationPanelButton.GetComponent<Image>().color = disabledColor;
             MoleculesPanelButton.GetComponent<Image>().color = disabledColor;
             VisualisationPanelButton.GetComponent<Image>().color = disabledColor;
+            ElementsPanelButton.GetComponent<Image>().color = disabledColor;
+            ResiduesPanelButton.GetComponent<Image>().color = disabledColor;
             PhysicsPanelButton.GetComponent<Image>().color = disabledColor;
 
             ApplicationPanel.SetActive(false);
             MoleculesPanel.SetActive(false);
             VisualisationPanel.SetActive(false);
+            ElementsPanel.SetActive(false);
+            ResiduesPanel.SetActive(false);
             PhysicsPanel.SetActive(false);
         }
     }
