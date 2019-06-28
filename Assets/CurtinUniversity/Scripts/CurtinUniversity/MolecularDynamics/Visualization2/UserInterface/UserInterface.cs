@@ -36,7 +36,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         //public ApplicationPanel ApplicationPanel;
         //public VisualisationPanel VisualisationPanel;
         public ElementsSettingsPanel ElementsPanel;
-        //public ResiduesSettingsPanel ResiduesPanel;
+        public Visualization.ResiduesSettingsPanel ResiduesPanel;
         //public FileBrowser FileBrowser;
         //public InfoPanel InfoPanel;
 
@@ -98,6 +98,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             moleculeSettings.MoleculeLoaded(id, name, description);
             ElementsPanel.SetModelElements(id, elements);
+            ResiduesPanel.SetModelResidues(id, residues);
         }
 
         public void ToogleUserInterface() {

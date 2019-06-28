@@ -133,14 +133,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             SecondaryStructureType lastType = SecondaryStructureType.Coil;
 
             HashSet<string> customDisplayResidues = null;
-            if (sceneManager.GUIManager.ResiduesPanel.HasCustomDisplayResidues) {
-                customDisplayResidues = sceneManager.GUIManager.ResiduesPanel.CustomDisplayResidues;
-            }
+            //if (sceneManager.GUIManager.ResiduesPanel.HasCustomDisplayResidues) {
+            //    customDisplayResidues = sceneManager.GUIManager.ResiduesPanel.CustomDisplayResidues;
+            //}
 
-            Dictionary<string, ResidueDisplayOptions> residueOptions = null;
-            if (customDisplayResidues != null) {
-                residueOptions = sceneManager.GUIManager.ResiduesPanel.ResidueOptions;
-            }
+            //Dictionary<string, ResidueDisplayOptions> residueOptions = null;
+            //if (customDisplayResidues != null) {
+            //    residueOptions = sceneManager.GUIManager.ResiduesPanel.ResidueOptions;
+            //}
 
             for (int i = 0; i < chain.MainChainResidues.Count; i++) {
 
@@ -219,13 +219,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                     if (customDisplayResidues != null && customDisplayResidues.Contains(residue.Name)) {
 
-                        ResidueDisplayOptions displayOptions = residueOptions[residue.Name];
+                        //ResidueDisplayOptions displayOptions = residueOptions[residue.Name];
 
-                        if (displayOptions != null && displayOptions.ColourSecondaryStructure) {
+                        //if (displayOptions != null && displayOptions.ColourSecondaryStructure) {
 
-                            node.VertexColor = displayOptions.CustomColour;
-                            foundColour = true;
-                        }
+                        //    node.VertexColor = displayOptions.CustomColour;
+                        //    foundColour = true;
+                        //}
                     }
 
                     if (foundColour == false) {

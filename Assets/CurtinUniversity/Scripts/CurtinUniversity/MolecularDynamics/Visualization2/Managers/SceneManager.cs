@@ -41,6 +41,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             loadDefaultModel();
         }
 
+        // still todo
         private void loadDefaultModel() {
 
             if (Config.GetString("LoadMoleculeOnStart") == "True") {

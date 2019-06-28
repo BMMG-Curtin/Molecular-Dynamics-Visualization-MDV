@@ -8,7 +8,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class ResidueDisplayOptionsPanel : MonoBehaviour {
 
-        public ResiduesPanel ResiduesPanel;
+        public ResiduesSettingsPanel ResiduesPanel;
         public GameObject ColorSelectPanel;
         public GameObject ColorSelectPanelButtonList;
         public GameObject ColorSelectButtonPrefab;

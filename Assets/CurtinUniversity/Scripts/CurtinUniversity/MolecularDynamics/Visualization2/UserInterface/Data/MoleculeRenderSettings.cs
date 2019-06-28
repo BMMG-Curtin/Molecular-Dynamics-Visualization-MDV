@@ -67,7 +67,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         }
 
         public HashSet<string> EnabledElements { get; set; }
-        public List<Color32> ResidueColours { get; set; }
+
+        public bool FilterByNumber;
+        public HashSet<int> EnabledResidueNumbers;
+
+        public HashSet<string> EnabledResidueNames;
+        public HashSet<string> CustomDisplayResidues;
+        public Dictionary<string, Visualization.ResidueDisplayOptions> ResidueOptions;
 
         public static MoleculeRenderSettings Default() {
 

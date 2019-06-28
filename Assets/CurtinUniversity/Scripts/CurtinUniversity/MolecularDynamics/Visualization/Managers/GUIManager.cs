@@ -17,7 +17,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public ApplicationPanel ApplicationPanel;
         public VisualisationPanel VisualisationPanel;
         public ElementsPanel ElementsPanel;
-        public ResiduesPanel ResiduesPanel;
+        public ResiduesSettingsPanel ResiduesPanel;
         public FileBrowser FileBrowser;
         public InfoPanel InfoPanel;
         public TrajectoryControls TrajectoryControls;

@@ -140,7 +140,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //    customDisplayResidues = sceneManager.GUIManager.ResiduesPanel.CustomDisplayResidues;
             //}
 
-            Dictionary<string, ResidueDisplayOptions> residueOptions = null;
+            //Dictionary<string, ResidueDisplayOptions> residueOptions = null;
             //if (customDisplayResidues != null) {
             //    residueOptions = sceneManager.GUIManager.ResiduesPanel.ResidueOptions;
             //}
@@ -222,13 +222,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                     if (customDisplayResidues != null && customDisplayResidues.Contains(residue.Name)) {
 
-                        ResidueDisplayOptions displayOptions = residueOptions[residue.Name];
+                        //ResidueDisplayOptions displayOptions = residueOptions[residue.Name];
 
-                        if (displayOptions != null && displayOptions.ColourSecondaryStructure) {
+                        //if (displayOptions != null && displayOptions.ColourSecondaryStructure) {
 
-                            node.VertexColor = displayOptions.CustomColour;
-                            foundColour = true;
-                        }
+                        //    node.VertexColor = displayOptions.CustomColour;
+                        //    foundColour = true;
+                        //}
                     }
 
                     if (foundColour == false) {

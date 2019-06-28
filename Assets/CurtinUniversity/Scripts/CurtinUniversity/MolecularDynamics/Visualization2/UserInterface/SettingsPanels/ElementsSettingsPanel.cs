@@ -22,56 +22,43 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private MoleculeSettings selectedMolecule;
 
-        void Start() {
-
+        private void Awake() {
             if (modelElements == null) {
                 modelElements = new Dictionary<int, HashSet<string>>();
-                Initialise();
             }
         }
 
         public void OnEnable() {
 
-            Initialise();
-
             selectedMolecule = molecules.GetSelected();
-
-            if (selectedMolecule != null) {
-
-                if (selectedMolecule.RenderSettings.EnabledElements == null) {
-
-                    if(modelElements.ContainsKey(selectedMolecule.ID)) {
-                        selectedMolecule.RenderSettings.EnabledElements = new HashSet<string>(modelElements[selectedMolecule.ID]);
-                    }
-                    else {
-                        selectedMolecule.RenderSettings.EnabledElements = new HashSet<string>();
-                    }
-                }
-
-                Initialise();
-                //helpText.text = initialHelpText + " - " + selectedMolecule.Name;
-                //EnableSettings(true);
-                //LoadSettings();
-            }
-            else {
-
-                //enabledElements = new HashSet<string>();
-                //helpText.text = "< no molecule selected >";
-                //EnableSettings(false);
-                //ClearSettings();
-            }
+            initialise();
         }
 
         public void SetModelElements(int moleculeID, HashSet<string> elements) {
+
+            if (modelElements == null) {
+                modelElements = new Dictionary<int, HashSet<string>>();
+            }
+
             modelElements.Add(moleculeID, elements);
         }
 
-        public void Initialise() {
+        private void initialise() {
 
             Cleanup.DestroyGameObjects(ElementPanel);
 
             if (selectedMolecule == null) {
                 return;
+            }
+
+            if (selectedMolecule.RenderSettings.EnabledElements == null) {
+
+                if (modelElements.ContainsKey(selectedMolecule.ID)) {
+                    selectedMolecule.RenderSettings.EnabledElements = new HashSet<string>(modelElements[selectedMolecule.ID]);
+                }
+                else {
+                    selectedMolecule.RenderSettings.EnabledElements = new HashSet<string>();
+                }
             }
 
             HashSet<string> displayElements = modelElements[selectedMolecule.ID];
@@ -87,7 +74,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                     button.GetComponent<Image>().color = new Color(1, 1, 1);
 
                     ElementButton buttonScript = button.GetComponent<ElementButton>();
-                    buttonScript.SetCallback(new SetElementDelegate(SetElement));
+                    buttonScript.SetCallback(new SetElementDelegate(setElement));
                     buttonScript.ElementName = symbol;
                 }
                 else {
@@ -119,7 +106,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        public void SetElement(string elementName, bool enabled) {
+        private void setElement(string elementName, bool enabled) {
 
             if (selectedMolecule == null || selectedMolecule.RenderSettings.EnabledElements == null) {
                 return;
@@ -136,7 +123,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 }
             }
 
-            //StartCoroutine(sceneManager.ReloadModelView(true, false));
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
         }
     }
 }

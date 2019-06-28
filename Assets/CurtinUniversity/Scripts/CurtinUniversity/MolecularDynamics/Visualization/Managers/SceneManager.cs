@@ -174,7 +174,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     ModelBox.Initialise(primaryStructureBoundingBox);
                     Lighting.SetLighting(primaryStructure, primaryStructureBoundingBox);
                     GUIManager.ElementsPanel.SetModelElements(primaryStructure.ElementNames);
-                    GUIManager.ResiduesPanel.SetModelResidues(primaryStructure.ResidueNames);
+                    //GUIManager.ResiduesPanel.SetModelResidues(primaryStructure.ResidueNames);
 
                     if (primaryStructure.AtomCount() > Settings.LowMeshQualityThreshold) {
                         Settings.AtomMeshQuality = Settings.LowMeshQualityValue;
