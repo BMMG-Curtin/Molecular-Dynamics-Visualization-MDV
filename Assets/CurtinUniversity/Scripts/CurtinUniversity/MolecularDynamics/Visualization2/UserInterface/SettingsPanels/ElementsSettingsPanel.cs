@@ -123,7 +123,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 }
             }
 
-            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+            if (selectedMolecule.Hidden) {
+                selectedMolecule.PendingRerender = true;
+            }
+            else {
+                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+            }
         }
     }
 }

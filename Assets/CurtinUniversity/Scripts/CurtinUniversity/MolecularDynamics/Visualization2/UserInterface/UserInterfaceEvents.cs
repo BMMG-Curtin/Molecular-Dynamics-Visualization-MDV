@@ -44,11 +44,19 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        public delegate void ShowMolecule(int moleculeID, bool show);
+        public delegate void ShowMolecule(int moleculeID);
         public static event ShowMolecule OnShowMolecule;
-        public static void RaiseShowMolecule(int moleculeID, bool show) {
+        public static void RaiseShowMolecule(int moleculeID) {
             if (OnShowMolecule != null) {
-                OnShowMolecule(moleculeID, show);
+                OnShowMolecule(moleculeID);
+            }
+        }
+
+        public delegate void HideMolecule(int moleculeID);
+        public static event HideMolecule OnHideMolecule;
+        public static void RaiseHideMolecule(int moleculeID) {
+            if (OnHideMolecule != null) {
+                OnHideMolecule(moleculeID);
             }
         }
     }

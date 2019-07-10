@@ -7,6 +7,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public struct MoleculeRenderSettings {
 
+        // primary structure settings
         public bool ShowPrimaryStructure { get; set; }
         public bool ShowBonds { get; set; }
         public bool ShowAtoms { get; set; }
@@ -15,14 +16,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public bool ShowMainChains { get; set; }
 
         public MolecularRepresentation Representation { get; set; }
-
-        public bool ShowSecondaryStructure { get; set; }
-        public bool ShowHelices { get; set; }
-        public bool ShowSheets { get; set; }
-        public bool ShowTurns { get; set; }
-
-        public bool ShowSimulationBox { get; set; }
-        public bool CalculateBoxEveryFrame { get; set; }
 
         private float atomScale;
         public float AtomScale {
@@ -66,9 +59,21 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
+        // secondary structure settings
+        public bool ShowSecondaryStructure { get; set; }
+        public bool ShowHelices { get; set; }
+        public bool ShowSheets { get; set; }
+        public bool ShowTurns { get; set; }
+
+        // box settings
+        public bool ShowSimulationBox { get; set; }
+        public bool CalculateBoxEveryFrame { get; set; }
+
+        // element settings
         public HashSet<string> EnabledElements { get; set; }
 
-        public bool FilterByNumber;
+        // residue settings
+        public bool FilterResiduesByNumber;
         public HashSet<int> EnabledResidueNumbers;
 
         public HashSet<string> EnabledResidueNames;
@@ -99,6 +104,70 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 AtomScale = Settings.DefaultAtomScale,
                 BondScale = Settings.DefaultBondScale,
             };
+        }
+
+        public override bool Equals(object obj) {
+
+            if (obj.GetType() == typeof(MoleculeRenderSettings)) {
+                return Equals((MoleculeRenderSettings)obj);
+            }
+
+            return false;
+        }
+
+        public bool Equals(MoleculeRenderSettings otherSettings) {
+
+            return
+                EqualPrimaryStructureSettings(otherSettings) &&
+                EqualSecondaryStructureSettings(otherSettings) &&
+                EqualBoxSettings(otherSettings) &&
+                EqualElementSettings(otherSettings) &&
+                EqualResidueSettings(otherSettings);
+        }
+
+
+        public bool EqualPrimaryStructureSettings(MoleculeRenderSettings otherSettings) {
+
+            return
+                otherSettings.ShowPrimaryStructure == ShowPrimaryStructure &&
+                otherSettings.ShowBonds == ShowBonds &&
+                otherSettings.ShowAtoms == ShowAtoms &&
+                otherSettings.ShowStandardResidues == ShowStandardResidues &&
+                otherSettings.ShowNonStandardResidues == ShowNonStandardResidues &&
+                otherSettings.ShowMainChains == ShowMainChains &&
+                otherSettings.Representation == Representation && 
+                otherSettings.AtomScale == AtomScale &&
+                otherSettings.BondScale == BondScale;
+        }
+
+        public bool EqualSecondaryStructureSettings(MoleculeRenderSettings otherSettings) {
+
+            return
+                otherSettings.ShowSecondaryStructure == ShowSecondaryStructure &&
+                otherSettings.ShowHelices == ShowHelices &&
+                otherSettings.ShowSheets == ShowSheets &&
+                otherSettings.ShowTurns == ShowTurns;
+        }
+
+        public bool EqualBoxSettings(MoleculeRenderSettings otherSettings) {
+
+            return
+                otherSettings.ShowSimulationBox == ShowSimulationBox &&
+                otherSettings.CalculateBoxEveryFrame == CalculateBoxEveryFrame;
+        }
+
+        public bool EqualElementSettings(MoleculeRenderSettings otherSettings) {
+            return otherSettings.EnabledElements == EnabledElements;
+        }
+
+        public bool EqualResidueSettings(MoleculeRenderSettings otherSettings) {
+
+            return
+                otherSettings.FilterResiduesByNumber == FilterResiduesByNumber &&
+                otherSettings.EnabledResidueNumbers == EnabledResidueNumbers &&
+                otherSettings.EnabledResidueNames == EnabledResidueNames &&
+                otherSettings.CustomDisplayResidues == CustomDisplayResidues &&
+                otherSettings.ResidueOptions == ResidueOptions;
         }
     }
 }

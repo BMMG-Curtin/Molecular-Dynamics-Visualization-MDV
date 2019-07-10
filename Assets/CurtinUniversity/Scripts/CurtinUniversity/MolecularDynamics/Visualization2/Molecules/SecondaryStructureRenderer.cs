@@ -121,7 +121,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        private Mesh BuildStructureMesh(MoleculeRenderSettings settings, Chain chain, PrimaryStructureFrame frame, SecondaryStructure secondaryStructure) {
+        private Mesh BuildStructureMesh(MoleculeRenderSettings renderSettings, Chain chain, PrimaryStructureFrame frame, SecondaryStructure secondaryStructure) {
 
             Mesh structureMesh = null;
             int interpolation = 20;
@@ -136,14 +136,14 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             SecondaryStructureType lastType = SecondaryStructureType.Coil;
 
             HashSet<string> customDisplayResidues = null;
-            //if (sceneManager.GUIManager.ResiduesPanel.HasCustomDisplayResidues) {
-            //    customDisplayResidues = sceneManager.GUIManager.ResiduesPanel.CustomDisplayResidues;
-            //}
+            if (renderSettings.CustomDisplayResidues != null && renderSettings.CustomDisplayResidues.Count > 0) {
+                customDisplayResidues = renderSettings.CustomDisplayResidues;
+            }
 
-            //Dictionary<string, ResidueDisplayOptions> residueOptions = null;
-            //if (customDisplayResidues != null) {
-            //    residueOptions = sceneManager.GUIManager.ResiduesPanel.ResidueOptions;
-            //}
+            Dictionary<string, Visualization.ResidueDisplayOptions> residueOptions = null;
+            if (customDisplayResidues != null) {
+                residueOptions = renderSettings.ResidueOptions;
+            }
 
             for (int i = 0; i < chain.MainChainResidues.Count; i++) {
 
@@ -189,14 +189,14 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 // store the node type
                 if (structureInformation != null) {
 
-                    if (settings.ShowHelices &&
+                    if (renderSettings.ShowHelices &&
                         (structureInformation.type == SecondaryStructureType.ThreeHelix ||
                         structureInformation.type == SecondaryStructureType.AlphaHelix ||
                         structureInformation.type == SecondaryStructureType.FiveHelix)) {
 
                         node.Type = DynamicMeshNodeType.SpiralRibbon;
                     }
-                    else if (settings.ShowSheets &&
+                    else if (renderSettings.ShowSheets &&
                         structureInformation.type == SecondaryStructureType.BetaSheet) {
 
                         if (nextResidue == null || (nextResidueStructureInfo != null && nextResidueStructureInfo.type != SecondaryStructureType.BetaSheet)) {
@@ -206,7 +206,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                             node.Type = DynamicMeshNodeType.Ribbon;
                         }
                     }
-                    else if (settings.ShowTurns &&
+                    else if (renderSettings.ShowTurns &&
                         structureInformation.type == SecondaryStructureType.Turn) {
 
                         node.Type = DynamicMeshNodeType.LargeTube;
@@ -222,13 +222,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                     if (customDisplayResidues != null && customDisplayResidues.Contains(residue.Name)) {
 
-                        //ResidueDisplayOptions displayOptions = residueOptions[residue.Name];
+                        Visualization.ResidueDisplayOptions displayOptions = residueOptions[residue.Name];
 
-                        //if (displayOptions != null && displayOptions.ColourSecondaryStructure) {
+                        if (displayOptions != null && displayOptions.ColourSecondaryStructure) {
 
-                        //    node.VertexColor = displayOptions.CustomColour;
-                        //    foundColour = true;
-                        //}
+                            node.VertexColor = displayOptions.CustomColour;
+                            foundColour = true;
+                        }
                     }
 
                     if (foundColour == false) {

@@ -231,7 +231,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             // recreate structures if necessary
             if (visualisationUpdateRequired) {
-                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+
+                if (selectedMolecule.Hidden) {
+                    selectedMolecule.PendingRerender = true;
+                }
+                else {
+                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+                }
             }
         }
 

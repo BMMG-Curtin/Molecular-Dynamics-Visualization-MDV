@@ -187,7 +187,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 customDisplayResidueNames = renderSettings.CustomDisplayResidues;
             }
 
-            bool filterByNumber = renderSettings.FilterByNumber;
+            bool filterByNumber = renderSettings.FilterResiduesByNumber;
 
             HashSet<int> enabledResidueNumbers = renderSettings.EnabledResidueNumbers;
 
@@ -312,7 +312,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 residueOptions = renderSettings.ResidueOptions;
             }
 
-            bool filterByNumber = renderSettings.FilterByNumber;
+            bool filterByNumber = renderSettings.FilterResiduesByNumber;
             HashSet<int> enabledResidueNumbers = renderSettings.EnabledResidueNumbers;
             
             foreach (KeyValuePair<int, Bond> bond in Bonds) {

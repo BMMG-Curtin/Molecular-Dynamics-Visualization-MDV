@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+
+using UnityEngine;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
@@ -55,6 +57,27 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             ColourAtoms = newOptions.ColourAtoms;
             ColourBonds = newOptions.ColourBonds;
             ColourSecondaryStructure = newOptions.ColourSecondaryStructure;
+        }
+
+        public override bool Equals(object obj) {
+
+            if(obj.GetType() == typeof(ResidueDisplayOptions)) {
+                return Equals((ResidueDisplayOptions)obj);
+            }
+
+            return false;
+        }
+
+        public bool Equals(ResidueDisplayOptions otherOptions) {
+
+            return 
+                otherOptions.ResidueName == ResidueName &&
+                otherOptions.Enabled == Enabled &&
+                otherOptions.LargeBonds == LargeBonds &&
+                otherOptions.ColourAtoms == ColourAtoms &&
+                otherOptions.ColourBonds == ColourBonds &&
+                otherOptions.CustomColour.Equals(CustomColour) &&
+                otherOptions.ColourSecondaryStructure == ColourSecondaryStructure;
         }
     }
 }

@@ -189,9 +189,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 ResiduesEnableAllButtonText.text = "Hide All";
             }
 
-            selectedMolecule.RenderSettings.FilterByNumber = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn;
+            selectedMolecule.RenderSettings.FilterResiduesByNumber = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn;
             selectedMolecule.RenderSettings.EnabledResidueNumbers = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnabledResiduesNumbers;
-            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+
+            if (selectedMolecule.Hidden) {
+                selectedMolecule.PendingRerender = true;
+            }
+            else {
+                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+            }
         }
 
         public void OpenResidueDisplayOptions(string residueName) {
@@ -206,13 +212,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void OpenResidueDisplayOptionsForAllResidues() {
 
-            ResidueDisplayOptions displayOptions = new ResidueDisplayOptions(UpdateAllResiduesKey, Settings.ResidueColourDefault);
+            ResidueDisplayOptions displayOptions = new ResidueDisplayOptions(UpdateAllResiduesKey, VisualizationP3.Settings.ResidueColourDefault);
             ResidueDisplayOptions.SetActive(true);
 
             ResidueDisplayOptionsPanel displayOptionsPanel = ResidueDisplayOptions.GetComponent<ResidueDisplayOptionsPanel>();
             displayOptionsPanel.Initialise(displayOptions);
         }
-
 
         public void SaveResidueDisplayOptions(ResidueDisplayOptions options, bool updateButton, bool updateModel = true) {
 
@@ -264,9 +269,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (updateModel) {
 
-                selectedMolecule.RenderSettings.FilterByNumber = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn;
+                selectedMolecule.RenderSettings.FilterResiduesByNumber = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn;
                 selectedMolecule.RenderSettings.EnabledResidueNumbers = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnabledResiduesNumbers;
-                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+
+                if (selectedMolecule.Hidden) {
+                    selectedMolecule.PendingRerender = true;
+                }
+                else {
+                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+                }
             }
         }
 
@@ -288,14 +299,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 options.Value.SetDefaultOptions();
 
-                selectedMolecule.RenderSettings.FilterByNumber = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn;
+                selectedMolecule.RenderSettings.FilterResiduesByNumber = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn;
                 selectedMolecule.RenderSettings.EnabledResidueNumbers = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnabledResiduesNumbers;
                 SaveResidueDisplayOptions(options.Value, true, false);
             }
 
             ResidueFilterPanel.GetComponent<ResidueFilterPanel>().SetDefaultOptions();
 
-            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+            if (selectedMolecule.Hidden) {
+                selectedMolecule.PendingRerender = true;
+            }
+            else {
+                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+            }
         }
 
         public void ScrollPanelToTop() {

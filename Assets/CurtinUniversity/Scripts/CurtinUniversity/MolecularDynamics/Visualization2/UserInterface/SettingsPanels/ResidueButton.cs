@@ -42,7 +42,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ResidueClick() {
 
-            if (sceneManager.InputManager.ShiftPressed) {
+            if (VisualizationP3.InputManager.Instance.ShiftPressed) {
 
                 if (OpenDisplayOptionsCallback != null) {
                     OpenDisplayOptionsCallback(ResidueName);
@@ -73,8 +73,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             else {
                 SetButtonColours(DisabledColour);
             }
-
-
         }
 
         private void SetButtonColours(Color32 color) {

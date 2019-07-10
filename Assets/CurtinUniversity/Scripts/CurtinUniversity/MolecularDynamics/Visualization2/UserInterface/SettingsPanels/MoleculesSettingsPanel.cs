@@ -94,12 +94,20 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             int moleculeID = (int)molecules.SelectedMoleculeID;
 
             if (hiddenMolecules.Contains(moleculeID)) {
-                UserInterfaceEvents.RaiseShowMolecule(moleculeID, true);
+
+                molecules.GetSelected().Hidden = false;
+                UserInterfaceEvents.RaiseShowMolecule(moleculeID);
+                if(molecules.GetSelected().PendingRerender) {
+                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(moleculeID, molecules.GetSelected().RenderSettings);
+                }
+
                 hiddenMolecules.Remove(moleculeID);
                 showHideMoleculeButtonText.text = "Hide Molecule";
             }
             else {
-                UserInterfaceEvents.RaiseShowMolecule(moleculeID, false);
+
+                molecules.GetSelected().Hidden = true;
+                UserInterfaceEvents.RaiseHideMolecule(moleculeID);
                 hiddenMolecules.Add(moleculeID);
                 showHideMoleculeButtonText.text = "Show Molecule";
             }
