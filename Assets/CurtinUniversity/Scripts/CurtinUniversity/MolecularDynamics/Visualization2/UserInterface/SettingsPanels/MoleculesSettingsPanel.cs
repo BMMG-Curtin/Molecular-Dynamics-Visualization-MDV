@@ -39,6 +39,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private HashSet<int> hiddenMolecules;
 
         public void Awake() {
+
             moleculeListItems = new Dictionary<int, MoleculeSettingsPanelListItem>();
             hiddenMolecules = new HashSet<int>();
 
@@ -82,6 +83,15 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                 moleculeListItems.Add(id, item);
                 numberMoleculeListItems();
+
+                if(molecules.GetSelected() == null) {
+                    setMoleculeSelected(id);
+                }
+
+                removeMoleculeButton.gameObject.SetActive(true);
+                removeMoleculeButton.interactable = true;
+                showHideMoleculeButton.gameObject.SetActive(true);
+                showHideMoleculeButton.interactable = true;
             }
         }
 
@@ -131,6 +141,27 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
 
             numberMoleculeListItems();
+
+            // set a new molecule as selected if one available
+            int? selected = molecules.SetFirstMoleculeSelected();
+            if(selected != null) {
+
+                foreach (KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
+
+                    if (item.Key == molecules.SelectedMoleculeID) {
+                        item.Value.SetHighlighted(true);
+                    }
+                    else {
+                        item.Value.SetHighlighted(false);
+                    }
+                }
+            }
+            else {
+                removeMoleculeButton.gameObject.SetActive(false);
+                removeMoleculeButton.interactable = false;
+                showHideMoleculeButton.gameObject.SetActive(false);
+                showHideMoleculeButton.interactable = false;
+            }
         }
 
         private void onLoadMoleculeFileSubmitted(string fileName, string filePath) {
@@ -156,21 +187,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private void onMoleculeListItemClick(int moleculeID) {
 
-            // if list item for moleculeID is already selected then deselect it
-            if(molecules.SelectedMoleculeID != null && moleculeID == molecules.SelectedMoleculeID) {
-                moleculeListItems[(int)molecules.SelectedMoleculeID].SetHighlighted(false);
-                molecules.SelectedMoleculeID = null;
-            }
-            else {
-                setMoleculeSelected(moleculeID);
-            }
+            setMoleculeSelected(moleculeID);
 
             if(molecules.SelectedMoleculeID != null) {
-
-                removeMoleculeButton.gameObject.SetActive(true);
-                removeMoleculeButton.interactable = true;
-                showHideMoleculeButton.gameObject.SetActive(true);
-                showHideMoleculeButton.interactable = true;
 
                 if (hiddenMolecules.Contains((int)molecules.SelectedMoleculeID)) {
                     showHideMoleculeButtonText.text = "Show Molecule";
@@ -179,17 +198,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                     showHideMoleculeButtonText.text = "Hide Molecule";
                 }
             }
-            else {
-                removeMoleculeButton.gameObject.SetActive(false);
-                removeMoleculeButton.interactable = false;
-                showHideMoleculeButton.gameObject.SetActive(false);
-                showHideMoleculeButton.interactable = false;
-            }
         }
 
         private void onMoleculeListItemDoubleClick(int moleculeID) {
-            // do nothing 
-            // Debug.Log("Todo: handle double click molecule list item");
+            // do nothing at present
         }
 
         private void setMoleculeSelected(int moleculeID) {

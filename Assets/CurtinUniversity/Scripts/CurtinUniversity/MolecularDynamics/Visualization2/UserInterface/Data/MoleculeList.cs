@@ -89,5 +89,17 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             return null;
         }
+
+        public int? SetFirstMoleculeSelected() {
+
+            if(molecules == null || molecules.Count == 0) {
+                selectedMoleculeID = null;
+                return null;
+            }
+
+            int id = molecules.Keys.ToArray()[0];
+            selectedMoleculeID = id;
+            return id;
+        }
     }
 }
