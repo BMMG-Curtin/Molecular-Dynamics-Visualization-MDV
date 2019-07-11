@@ -206,7 +206,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //MaxFrameAnimationSpeed = 10;
             //FrameAnimationSpeed = 5;
             //MaxSecondsBetweenFrames = 0.5f;
-            GUIMouseCursorSpeed = 5;
+            //GUIMouseCursorSpeed = 5;
             MinGUIMouseCursorSpeed = 1;
             MaxGUIMouseCursorSpeed = 10;
             GUIMouseCursorSpeedMultiplier = 4;
@@ -219,8 +219,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             ModelHoverHeight = 2.5f;
             ModelCentre = new Vector3(0, 0, 0);
             ModelBoxEdgeWidthDefault = 0.05f;
-            UseFileSimulationBox = false;
-            CalculateBoxEveryFrame = false;
+            //UseFileSimulationBox = false;
+            //CalculateBoxEveryFrame = false;
             //MinColourHue = 360f / 360f; // red
             //MaxColourHue = 205f / 360f; // blue
             //MinColourValue = 0.3f;

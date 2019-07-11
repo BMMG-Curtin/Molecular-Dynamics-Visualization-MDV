@@ -5,6 +5,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class ApplicationSettingsPanel : MonoBehaviour {
 
+        public GameObject MouseCursor;
+
         public Toggle GroundToggle;
         public Toggle ShadowsToggle;
         public Toggle LightsToggle;
@@ -13,9 +15,25 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public Text BondMeshQualityText;
 
         public Text MouseSpeedText;
-        public Text GUICursorSpeedText;
+        public float mouseSpeedMultiplier = 3f;
+        private string playerPrefsMouseSpeedKey = @"MouseSpeed";
+        private int mouseSpeed = 1;
 
         private SceneSettings sceneSettings;
+
+        public void Awake() {
+            
+            if (PlayerPrefs.HasKey(playerPrefsMouseSpeedKey)) {
+
+                mouseSpeed = PlayerPrefs.GetInt(playerPrefsMouseSpeedKey);
+
+                if(mouseSpeed < 1) {
+                    mouseSpeed = 1;
+                }
+
+                setMouseSpeed(mouseSpeed);
+            }
+        }
 
         public void SetSceneSettings(SceneSettings settings) {
 
@@ -99,24 +117,27 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         //    PlayerPrefs.SetInt(playerPrefsBondMeshQualityKey, Settings.BondMeshQuality);
         //}
 
-        //public void InreaseMouseSpeed() {
-        //    SceneManager.instance.InputManager.SetSceneMouseSpeed(Settings.SceneMouseCursorSpeed + 1);
-        //    MouseSpeedText.text = Settings.SceneMouseCursorSpeed.ToString();
-        //}
+        public void InreaseMouseSpeed() {
+            setMouseSpeed(mouseSpeed + 1);
+        }
 
-        //public void DecreaseMouseSpeed() {
-        //    SceneManager.instance.InputManager.SetSceneMouseSpeed(Settings.SceneMouseCursorSpeed - 1);
-        //    MouseSpeedText.text = Settings.SceneMouseCursorSpeed.ToString();
-        //}
+        public void DecreaseMouseSpeed() {
+            setMouseSpeed(mouseSpeed - 1);
+        }
 
-        //public void InreaseGUICursorSpeed() {
-        //    SceneManager.instance.InputManager.SetGUICursorSpeed(Settings.GUIMouseCursorSpeed + 1);
-        //    GUICursorSpeedText.text = Settings.GUIMouseCursorSpeed.ToString();
-        //}
+        private void setMouseSpeed(int speed) {
 
-        //public void DecreaseGUICursorSpeed() {
-        //    SceneManager.instance.InputManager.SetGUICursorSpeed(Settings.GUIMouseCursorSpeed - 1);
-        //    GUICursorSpeedText.text = Settings.GUIMouseCursorSpeed.ToString();
-        //}
+            if (speed > Settings.MaxGUIMouseCursorSpeed || speed < Settings.MinGUIMouseCursorSpeed) {
+                return;
+            }
+
+            mouseSpeed = speed;
+            Debug.Log("Mouse speed set to: " + speed);
+
+            MouseCursor.GetComponent<Visualization.MousePointer>().MouseSpeed = mouseSpeed * mouseSpeedMultiplier;
+            MouseSpeedText.text = mouseSpeed.ToString();
+
+            PlayerPrefs.SetInt(playerPrefsMouseSpeedKey, speed);
+        }
     }
 }
