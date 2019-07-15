@@ -19,11 +19,16 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public PrimaryStructureRenderer PrimaryStructureRenderer;
         public SecondaryStructureRenderer SecondaryStructureRenderer;
 
-        private PrimaryStructure primaryStructure;
+        public PrimaryStructure PrimaryStructure { get; private set; }
+
         private SecondaryStructure secondaryStructure;
-        private PrimaryStructureTrajectory trajectory;
+        private PrimaryStructureTrajectory primaryStructureTrajectory;
+        private SecondaryStructureTrajectory secondaryStructureTrajectory;
         private BoundingBox boundingBox;
         private Vector3 boundingBoxCentre; // cannot use original bounding box centre as z coords need to be flipped
+
+        private bool buildSecondaryStructureTrajectory = true;
+        private int? frameNumber = null;
 
         private bool centredAtOrigin = false;
 
@@ -45,15 +50,23 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private bool initialised = false;
         private bool rendering = false;
         private bool awaitingRender = false;
-        private MoleculeRenderSettings awaitingRenderSettings;
 
-        private bool hasSecondaryStructure = false;
+        private MoleculeRenderSettings awaitingRenderSettings;
+        private int? awaitingFrameNumber;
 
         public int ID { get { return this.GetInstanceID(); } }
 
         public void Initialise(PrimaryStructure primaryStructure, MoleculeRenderSettings renderSettings) {
 
-            this.primaryStructure = primaryStructure;
+            this.PrimaryStructure = primaryStructure;
+
+            try {
+                secondaryStructure = SecondaryStructure.CreateFromPrimaryStructure(primaryStructure, Settings.StrideExecutablePath, Settings.TmpFilePath);
+            }
+            catch (Exception ex) {
+                Debug.Log("Error Parsing Secondary Structure from Structure File: " + ex.Message);
+                buildSecondaryStructureTrajectory = false;
+            }
 
             MoleculeBox.gameObject.SetActive(renderSettings.ShowSimulationBox);
             boundingBox = new BoundingBox(primaryStructure); //.OriginalBoundingBox;
@@ -70,19 +83,26 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             initialised = true;
         }
 
+        public void SetTrajectory(PrimaryStructureTrajectory trajectory) {
+
+            this.primaryStructureTrajectory = trajectory;
+            this.secondaryStructureTrajectory = new SecondaryStructureTrajectory(PrimaryStructure, trajectory, Settings.StrideExecutablePath, Settings.TmpFilePath);
+        }
+
         private void Update() {
 
             if (!rendering && awaitingRender) {
 
                 awaitingRender = false;
-                StartCoroutine(Render(awaitingRenderSettings));
+                StartCoroutine(Render(awaitingRenderSettings, awaitingFrameNumber));
             }
         }
 
-        public IEnumerator Render(MoleculeRenderSettings renderSettings) {
+        public IEnumerator Render(MoleculeRenderSettings renderSettings, int? frameNumber = null) {
 
             if(rendering) {
                 awaitingRenderSettings = renderSettings;
+                awaitingFrameNumber = frameNumber;
                 awaitingRender = true;
                 yield break;
             }
@@ -95,33 +115,30 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             // primary structure render
 
             PrimaryStructureFrame frame = null;
-            //if (frameNumber != null) {
-            //    frame = primaryStructureTrajectory.GetFrame((int)frameNumber);
-            //}
+            if (primaryStructureTrajectory != null && frameNumber != null) {
+                frame = primaryStructureTrajectory.GetFrame((int)frameNumber);
+            }
 
             yield return StartCoroutine(PrimaryStructureRenderer.Render(renderSettings, frame));
 
             // secondary structure render
 
             SecondaryStructure secondaryStructureToBuild = null;
-            // if (renderSettings.EnableSecondaryStructure) {
 
-            //    if (frameNumber != null && secondaryStructureTrajectory != null && !BypassSecondaryStructureTrajectoryBuild) {
-            //        try {
-            //            secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
-            //        }
-            //        catch (Exception ex) {
-            //            MoleculeEvents.RaiseRenderMessage(ex.Message + " - Aborting trajectory secondary structure builds.", true);
-            //            BypassSecondaryStructureTrajectoryBuild = true;
-            //        }
-            //    }
-            //    else {
-                    secondaryStructureToBuild = secondaryStructure;
-            //    }
-            //}
+            if (secondaryStructureTrajectory != null && frameNumber != null && buildSecondaryStructureTrajectory) {
+                try {
+                    secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
+                }
+                catch (Exception ex) {
+                    MoleculeEvents.RaiseRenderMessage(ex.Message + " - Aborting trajectory secondary structure builds.", true);
+                    buildSecondaryStructureTrajectory = false;
+                }
+            }
+            else {
+                secondaryStructureToBuild = secondaryStructure;
+            }
 
-            yield return SecondaryStructureRenderer.Render(renderSettings, frame);
-
+            yield return SecondaryStructureRenderer.Render(renderSettings, frame, secondaryStructureToBuild);
 
             // simulation box render
 

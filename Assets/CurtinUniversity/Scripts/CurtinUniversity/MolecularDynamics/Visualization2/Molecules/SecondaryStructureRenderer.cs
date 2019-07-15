@@ -24,7 +24,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public bool BuildingModel { get { return buildingModel; } }
 
         private PrimaryStructure primaryStructure;
-        private SecondaryStructure secondaryStructure;
+        //private SecondaryStructure defaultSecondaryStructure;
         private Dictionary<string, Mesh> structureCache;
 
         private bool initialised = false;
@@ -33,25 +33,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public IEnumerator Initialise(PrimaryStructure primaryStructure) {
 
             this.primaryStructure = primaryStructure;
-
-            // attempt to generate secondary structure here
-            try {
-                secondaryStructure = SecondaryStructure.CreateFromPrimaryStructure(primaryStructure, Settings.StrideExecutablePath, Settings.TmpFilePath);
-            }
-            catch (Exception ex) {
-                Debug.Log("Error Parsing Secondary Structure from Structure File: " + ex.Message);
-            }
-
-            if (secondaryStructure != null) {
-
-                structureCache = new Dictionary<string, Mesh>();
-                initialised = true;
-            }
+            structureCache = new Dictionary<string, Mesh>();
+            initialised = true;
 
             yield break;
         }
 
-        public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame) {
+        public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame, SecondaryStructure secondaryStructure) {
 
             if (!initialised) {
                 yield break;
@@ -71,7 +59,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             // create mesh
             if (secondaryStructure != null && settings.ShowSecondaryStructure) {
-                yield return StartCoroutine(createSecondaryStructure(settings, frame));
+                yield return StartCoroutine(createSecondaryStructure(settings, frame, secondaryStructure));
             }
 
             // show new mesh, remove old mesh
@@ -93,7 +81,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             watch.Stop();
         }
 
-        private IEnumerator createSecondaryStructure(MoleculeRenderSettings settings, PrimaryStructureFrame frame) {
+        private IEnumerator createSecondaryStructure(MoleculeRenderSettings settings, PrimaryStructureFrame frame, SecondaryStructure secondaryStructure) {
 
             for (int i = 0; i < primaryStructure.Chains().Count; i++) {
 
