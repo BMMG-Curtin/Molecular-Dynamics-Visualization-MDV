@@ -12,9 +12,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private MoleculeList molecules;
 
         [SerializeField]
-        private TextMeshProUGUI helpText;
+        private TextMeshProUGUI selectedMoleculeText;
 
-        private string initialHelpText;
         private MoleculeSettings selectedMolecule;
 
         public Toggle EnablePrimaryStructureToggle;
@@ -42,8 +41,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public bool SettingsChanged { get; set; }
 
         private void Awake() {
-
-            initialHelpText = helpText.text;
             SettingsChanged = false;
         }
 
@@ -53,13 +50,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             if (selectedMolecule != null) {
 
-                helpText.text = initialHelpText + " - " + selectedMolecule.Name;
+                selectedMoleculeText.text = "Modifying settings for molecule  - " + selectedMolecule.Name;
                 EnableSettings(true);
                 LoadSettings();
             }
             else {
 
-                helpText.text = "< no molecule selected >";
+                selectedMoleculeText.text = "< no molecule selected >";
                 EnableSettings(false);
                 ClearSettings();
             }

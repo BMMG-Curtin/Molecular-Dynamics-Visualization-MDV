@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+
+using UnityEngine;
 using UnityEngine.UI;
 
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 
 using CurtinUniversity.MolecularDynamics.Model.Model;
 using CurtinUniversity.MolecularDynamics.Visualization.Utility;
@@ -13,6 +15,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         [SerializeField]
         private MoleculeList molecules;
+
+        [SerializeField]
+        private TextMeshProUGUI selectedMoleculeText;
 
         public GameObject ElementPanel;
         public GameObject ButtonEnabledPrefab; // for elements in model. Interactive
@@ -32,6 +37,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             selectedMolecule = molecules.GetSelected();
             initialise();
+
+            if (selectedMolecule != null) {
+                selectedMoleculeText.text = "Modifying settings for molecule  - " + selectedMolecule.Name;
+            }
+            else {
+                selectedMoleculeText.text = "< no molecule selected >";
+            }
         }
 
         public void SetModelElements(int moleculeID, HashSet<string> elements) {

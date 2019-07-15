@@ -6,32 +6,25 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class SettingsPanelsMenu : MonoBehaviour {
 
-        public GameObject ApplicationPanel;
         public GameObject MoleculesPanel;
         public GameObject VisualisationPanel;
         public GameObject ElementsPanel;
         public GameObject ResiduesPanel;
         public GameObject PhysicsPanel;
+        public GameObject OtherPanel;
 
-        public GameObject ApplicationPanelButton;
         public GameObject MoleculesPanelButton;
         public GameObject VisualisationPanelButton;
         public GameObject ElementsPanelButton;
         public GameObject ResiduesPanelButton;
         public GameObject PhysicsPanelButton;
+        public GameObject OtherPanelButton;
 
         private Color enabledColor = new Color(96f / 255f, 39f / 255f, 13f / 255f, 100f);
         private Color disabledColor = new Color(30f / 255f, 15f / 255f, 15f / 255f, 100f);
 
         void Start() {
-            ShowApplicationPanel();
-        }
-
-        public void ShowApplicationPanel() {
-
-            disablePanels();
-            ApplicationPanelButton.GetComponent<Image>().color = enabledColor;
-            ApplicationPanel.SetActive(true);
+            ShowMoleculesPanel();
         }
 
         public void ShowMoleculesPanel() {
@@ -69,23 +62,30 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             PhysicsPanel.SetActive(true);
         }
 
+        public void ShowOtherPanel() {
+
+            disablePanels();
+            OtherPanelButton.GetComponent<Image>().color = enabledColor;
+            OtherPanel.SetActive(true);
+        }
+
         public void ResetAndHideMenu() {
 
             disablePanels();
-            ShowApplicationPanel();
+            ShowOtherPanel();
             gameObject.SetActive(false);
         }
 
         private void disablePanels() {
 
-            ApplicationPanelButton.GetComponent<Image>().color = disabledColor;
+            OtherPanelButton.GetComponent<Image>().color = disabledColor;
             MoleculesPanelButton.GetComponent<Image>().color = disabledColor;
             VisualisationPanelButton.GetComponent<Image>().color = disabledColor;
             ElementsPanelButton.GetComponent<Image>().color = disabledColor;
             ResiduesPanelButton.GetComponent<Image>().color = disabledColor;
             PhysicsPanelButton.GetComponent<Image>().color = disabledColor;
 
-            ApplicationPanel.SetActive(false);
+            OtherPanel.SetActive(false);
             MoleculesPanel.SetActive(false);
             VisualisationPanel.SetActive(false);
             ElementsPanel.SetActive(false);

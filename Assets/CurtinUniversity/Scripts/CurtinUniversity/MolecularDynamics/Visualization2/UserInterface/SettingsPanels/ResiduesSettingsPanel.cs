@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+
+using UnityEngine;
 using UnityEngine.UI;
 
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 
 using CurtinUniversity.MolecularDynamics.VisualizationP3;
 
@@ -13,6 +15,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private MoleculeList molecules;
 
+        [SerializeField]
+        private TextMeshProUGUI selectedMoleculeText;
+
         public GameObject ResidueButtonContent;
         public GameObject ResidueButtonPrefab;
 
@@ -21,28 +26,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public GameObject ResidueFilterPanel;
         public Text ResiduesEnableAllButtonText;
 
-        //[HideInInspector]
-        //public HashSet<string> EnabledResidueNames { get { return enabledResidueNames; } }
-
-        //[HideInInspector]
-        //public HashSet<string> CustomDisplayResidues { get { return customDisplayResidues; } }
-
-        //[HideInInspector]
-        //public Dictionary<string, ResidueDisplayOptions> ResidueOptions { get { return residueOptions; } }
-
-        //[HideInInspector]
-        //public HashSet<int> EnabledResideNumbers { get { return ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnabledResiduesNumbers; } }
-
-        //[HideInInspector]
-        //public bool FilterByNumber { get { return ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn; } }
-
         public string UpdateAllResiduesKey { get { return "__UPDATEALLRESIDUES__"; } }
 
         private Dictionary<int, List<string>> modelResidues;
-
-        //private HashSet<string> enabledResidueNames;
-        //private HashSet<string> customDisplayResidues;
-        //private Dictionary<string, ResidueDisplayOptions> residueOptions;
         private Dictionary<string, ResidueButton> residueButtons;
 
         private int scrollStepCount = 5;
@@ -65,7 +51,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void OnEnable() {
 
             selectedMolecule = molecules.GetSelected();
-            Initialise();
+            initialise();
+
+            if (selectedMolecule != null) {
+                selectedMoleculeText.text = "Modifying settings for molecule  - " + selectedMolecule.Name;
+            }
+            else {
+                selectedMoleculeText.text = "< no molecule selected >";
+            }
         }
 
         public void SetModelResidues(int moleculeID, HashSet<string> residues) {
@@ -82,25 +75,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             modelResidues[moleculeID].Sort();
         }
 
-        //public bool HasHiddenResidues {
-        //    get {
-        //        if (modelResidues.Count > enabledResidueNames.Count) {
-        //            return true;
-        //        }
-        //        return false;
-        //    }
-        //}
-
-        //public bool HasCustomDisplayResidues {
-        //    get {
-        //        if (customDisplayResidues.Count > 0) {
-        //            return true;
-        //        }
-        //        return false;
-        //    }
-        //}
-
-        public void Initialise() {
+        private void initialise() {
 
             Utility.Cleanup.DestroyGameObjects(ResidueButtonContent);
             ScrollPanelToTop();

@@ -70,8 +70,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public static int DefaultBondMeshQuality { get; set; }
         public static int LowMeshQualityThreshold { get; set; }
         public static int LowMeshQualityValue { get; set; }
-        public static int SceneMouseCursorSpeed { get; set; }
-        public static int GUIMouseCursorSpeed { get; set; }
+        //public static int SceneMouseCursorSpeed { get; set; }
+        //public static int GUIMouseCursorSpeed { get; set; }
         //public static float UIDistance { get; set; }
         //public static float MinUIDistance { get; set; }
         //public static float MaxUIDistance { get; set; }
@@ -116,14 +116,15 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public static float ModelBoxEdgeWidthDefault { get; set; }
         public static bool UseFileSimulationBox { get; set; } // will use simulation box in structure file (is exists) instead of calculating bounding box from primary structure
         public static bool CalculateBoxEveryFrame { get; set; } // recalculate bounding box for each frame based on coordinate shifts
-        public static int MinSceneMouseCursorSpeed { get; set; }
-        public static int MaxSceneMouseCursorSpeed { get; set; }
-        public static int DefaultSceneMouseCursorSpeed { get; set; }
-        public static int SceneMouseCursorSpeedMultiplier { get; set; }
-        public static int MinGUIMouseCursorSpeed { get; set; }
-        public static int MaxGUIMouseCursorSpeed { get; set; }
-        public static int DefaultGUIMouseCursorSpeed { get; set; }
-        public static int GUIMouseCursorSpeedMultiplier { get; set; }
+        //public static int MinSceneMouseCursorSpeed { get; set; }
+        //public static int MaxSceneMouseCursorSpeed { get; set; }
+        //public static int DefaultSceneMouseCursorSpeed { get; set; }
+        //public static int SceneMouseCursorSpeedMultiplier { get; set; }
+        public static int MinMouseSpeed { get; set; }
+        public static int MaxMouseSpeed { get; set; }
+        public static int MouseSpeedMultiplier { get; set; }
+        //public static int DefaultGUIMouseCursorSpeed { get; set; }
+        //public static int GUIMouseCursorSpeedMultiplier { get; set; }
         public static string StartMessage { get; set; }
         public static string[] ValidExtensions { get; set; }
         public static string GromacsFileExtension { get; set; }
@@ -207,13 +208,16 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //FrameAnimationSpeed = 5;
             //MaxSecondsBetweenFrames = 0.5f;
             //GUIMouseCursorSpeed = 5;
-            MinGUIMouseCursorSpeed = 1;
-            MaxGUIMouseCursorSpeed = 10;
-            GUIMouseCursorSpeedMultiplier = 4;
-            SceneMouseCursorSpeed = 5;
-            MinSceneMouseCursorSpeed = 1;
-            MaxSceneMouseCursorSpeed = 10;
-            SceneMouseCursorSpeedMultiplier = 30;
+            //MinGUIMouseCursorSpeed = 1;
+            //MaxGUIMouseCursorSpeed = 10;
+            MinMouseSpeed = 1;
+            MaxMouseSpeed = 10;
+            MouseSpeedMultiplier = 3;
+            //GUIMouseCursorSpeedMultiplier = 4;
+            //SceneMouseCursorSpeed = 5;
+            //MinSceneMouseCursorSpeed = 1;
+            //MaxSceneMouseCursorSpeed = 10;
+            //SceneMouseCursorSpeedMultiplier = 30;
             CPKScaleFactor = 0.5f;
             FlipZCoordinates = true;
             ModelHoverHeight = 2.5f;

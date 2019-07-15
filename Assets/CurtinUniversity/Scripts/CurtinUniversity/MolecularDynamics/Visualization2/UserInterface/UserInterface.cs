@@ -26,7 +26,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private MessageConsole console;
 
         [SerializeField]
-        private ApplicationSettingsPanel applicationSettings;
+        private OtherSettingsPanel applicationSettings;
 
         [SerializeField]
         private MoleculesSettingsPanel moleculeSettings;
