@@ -11,6 +11,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public string Name;
         public string Description;
         public bool HasTrajectory;
+        public int TrajectoryFrameCount;
+        public int? CurrentTrajectoryFrameNumber;
         public MoleculeRenderSettings RenderSettings;
 
         public MoleculeSettings(int moleculeID, string filePath) {
@@ -23,6 +25,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             Name = "";
             Description = "";
             HasTrajectory = false;
+            TrajectoryFrameCount = 0;
+            CurrentTrajectoryFrameNumber = null;
             RenderSettings = MoleculeRenderSettings.Default();
         }
     }

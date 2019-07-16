@@ -24,7 +24,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private GameObject moleculeListContent;
 
         [SerializeField]
-        private Button removeMoleculeButton;
+        private Button loadTrajectoryButton;
+
+        [SerializeField]
+        private TextMeshProUGUI loadTrajectoryButtonText;
 
         [SerializeField]
         private Button showHideMoleculeButton;
@@ -33,8 +36,14 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private TextMeshProUGUI showHideMoleculeButtonText;
 
         [SerializeField]
+        private Button removeMoleculeButton;
+
+        [SerializeField]
         private MoleculeList molecules;
         private Dictionary<int, MoleculeSettingsPanelListItem> moleculeListItems;
+
+        [SerializeField]
+        private TrajectoryControls trajectoryControls;
 
         private HashSet<int> hiddenMolecules;
 
@@ -44,19 +53,16 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             hiddenMolecules = new HashSet<int>();
 
             molecules.SelectedMoleculeID = null;
-            removeMoleculeButton.interactable = false;
-            removeMoleculeButton.gameObject.SetActive(false);
+            updateSelectedMoleculeInterfaceSettings();
 
-            showHideMoleculeButton.interactable = false;
-            showHideMoleculeButton.gameObject.SetActive(false);
-            showHideMoleculeButtonText.text = "Hide Molecule";
+            trajectoryControls.transform.gameObject.SetActive(false);
         }
 
         public void OnLoadMoleculeButton() {
 
             loadFileDialog.SetActive(true);
             LoadFileDialog dialog = loadFileDialog.GetComponent<LoadFileDialog>();
-            List<string> validFileExtensions = new List<string>() { ".gro", ".pdb" };
+            List<string> validFileExtensions = new List<string>(Settings.StructureFileExtensions);
             dialog.Initialise(validFileExtensions, onLoadMoleculeFileSubmitted);
         }
 
@@ -88,10 +94,32 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                     setMoleculeSelected(id);
                 }
 
-                removeMoleculeButton.gameObject.SetActive(true);
-                removeMoleculeButton.interactable = true;
-                showHideMoleculeButton.gameObject.SetActive(true);
-                showHideMoleculeButton.interactable = true;
+                updateSelectedMoleculeInterfaceSettings();
+            }
+        }
+
+        public void OnLoadTrajectoryButton() {
+
+            loadFileDialog.SetActive(true);
+            LoadFileDialog dialog = loadFileDialog.GetComponent<LoadFileDialog>();
+            List<string> validFileExtensions = new List<string>(Settings.TrajectoryFileExtensions);
+            dialog.Initialise(validFileExtensions, onLoadTrajectoryFileSubmitted);
+        }
+
+        public void TrajectoryLoaded(int id, int frameCount) {
+
+            if (molecules.Contains(id)) {
+
+                console.ShowMessage("Loaded trajectory. Frame count: " + frameCount);
+
+                MoleculeSettings settings = molecules.Get(id);
+                settings.HasTrajectory = true;
+                settings.TrajectoryFrameCount = frameCount;
+                settings.CurrentTrajectoryFrameNumber = 0;
+
+                loadTrajectoryButtonText.text = "Update Trajectory";
+
+                updateSelectedMoleculeInterfaceSettings();
             }
         }
 
@@ -112,15 +140,15 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 }
 
                 hiddenMolecules.Remove(moleculeID);
-                showHideMoleculeButtonText.text = "Hide Molecule";
             }
             else {
 
                 molecules.GetSelected().Hidden = true;
                 UserInterfaceEvents.RaiseHideMolecule(moleculeID);
                 hiddenMolecules.Add(moleculeID);
-                showHideMoleculeButtonText.text = "Show Molecule";
             }
+
+            updateSelectedMoleculeInterfaceSettings();
         }
 
         public void OnRemoveMoleculeButton() {
@@ -156,12 +184,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                     }
                 }
             }
-            else {
-                removeMoleculeButton.gameObject.SetActive(false);
-                removeMoleculeButton.interactable = false;
-                showHideMoleculeButton.gameObject.SetActive(false);
-                showHideMoleculeButton.interactable = false;
-            }
+
+            updateSelectedMoleculeInterfaceSettings();
         }
 
         private void onLoadMoleculeFileSubmitted(string fileName, string filePath) {
@@ -171,6 +195,16 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             MoleculeSettings molecule = molecules.Add(filePath);
 
             UserInterfaceEvents.RaiseLoadMolecule(molecule.ID, filePath, molecule.RenderSettings);
+        }
+
+        private void onLoadTrajectoryFileSubmitted(string fileName, string filePath) {
+
+            console.ShowMessage("Selected file: " + fileName + ", [" + filePath + "]");
+
+            if (molecules.SelectedMoleculeID != null) {
+                //TrajectoryLoaded((int)molecules.SelectedMoleculeID, 123);
+                UserInterfaceEvents.RaiseLoadTrajectory((int)molecules.SelectedMoleculeID, filePath);
+            }
         }
 
         // This is purely cosmetic. These numbers have no reference value. 
@@ -186,18 +220,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         }
 
         private void onMoleculeListItemClick(int moleculeID) {
-
             setMoleculeSelected(moleculeID);
-
-            if(molecules.SelectedMoleculeID != null) {
-
-                if (hiddenMolecules.Contains((int)molecules.SelectedMoleculeID)) {
-                    showHideMoleculeButtonText.text = "Show Molecule";
-                }
-                else {
-                    showHideMoleculeButtonText.text = "Hide Molecule";
-                }
-            }
         }
 
         private void onMoleculeListItemDoubleClick(int moleculeID) {
@@ -215,6 +238,49 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 }
                 else {
                     item.Value.SetHighlighted(false);
+                }
+            }
+
+            updateSelectedMoleculeInterfaceSettings();
+        }
+
+        private void updateSelectedMoleculeInterfaceSettings() {
+
+            if (molecules.SelectedMoleculeID == null) {
+
+                loadTrajectoryButton.interactable = false;
+                loadTrajectoryButton.gameObject.SetActive(false);
+                showHideMoleculeButton.interactable = false;
+                showHideMoleculeButton.gameObject.SetActive(false);
+                removeMoleculeButton.interactable = false;
+                removeMoleculeButton.gameObject.SetActive(false);
+            }
+            else {
+
+                loadTrajectoryButton.interactable = true;
+                loadTrajectoryButton.gameObject.SetActive(true);
+                showHideMoleculeButton.interactable = true;
+                showHideMoleculeButton.gameObject.SetActive(true);
+                removeMoleculeButton.interactable = true;
+                removeMoleculeButton.gameObject.SetActive(true);
+
+                if (molecules.GetSelected().HasTrajectory) {
+
+                    loadTrajectoryButtonText.text = "Update Trajectory";
+                    trajectoryControls.transform.gameObject.SetActive(true);
+                    trajectoryControls.UpdateControls();
+                }
+                else {
+
+                    loadTrajectoryButtonText.text = "Load Trajectory";
+                    trajectoryControls.transform.gameObject.SetActive(false);
+                }
+
+                if (hiddenMolecules.Contains((int)molecules.SelectedMoleculeID)) {
+                    showHideMoleculeButtonText.text = "Show Molecule";
+                }
+                else {
+                    showHideMoleculeButtonText.text = "Hide Molecule";
                 }
             }
         }

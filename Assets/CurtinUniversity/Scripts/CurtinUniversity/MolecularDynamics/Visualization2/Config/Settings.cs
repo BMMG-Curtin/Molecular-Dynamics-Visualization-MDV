@@ -50,15 +50,16 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public static bool GenerateBonds = true;
         public static bool GenerateBondsOnModelLoad = true;
         public static bool RecalculateBondsOnNewFrame = false;
-        //public static int MaxFrameAnimationSpeed { get; set; }
+        public static int MaxFrameAnimationSpeed { get; set; }
         //public static int FrameAnimationSpeed { get; set; }
-        //public static float MaxSecondsBetweenFrames { get; set; }
+        public static float MaxSecondsBetweenFrames { get; set; }
         //public static int DefaultTrajectoryStartFrame { get; set; }
         //public static int MinTrajectoryStartFrame { get; set; }
         //public static int MaxTrajectoryStartFrame { get; set; }
         //public static int DefaultTrajectoryFrameCount { get; set; }
         //public static int MinTrajectoryFrameCount { get; set; }
         //public static int MaxTrajectoryFrameCount { get; set; }
+        public static int MaxTrajectoryFrames { get; set; }
         //public static int DefaultTrajectoryFrameFrequency { get; set; }
         //public static int MinTrajectoryFrameFrequency { get; set; }
         //public static int MaxTrajectoryFrameFrequency { get; set; }
@@ -200,13 +201,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //MaxTrajectoryStartFrame = 1000;
             //DefaultTrajectoryFrameCount = 100;
             //MinTrajectoryFrameCount = 1;
-            //MaxTrajectoryFrameCount = 1000;
+            MaxTrajectoryFrames = 9999;
             //DefaultTrajectoryFrameFrequency = 1;
             //MinTrajectoryFrameFrequency = 1;
             //MaxTrajectoryFrameFrequency = 1000;
-            //MaxFrameAnimationSpeed = 10;
+            MaxFrameAnimationSpeed = 10;
             //FrameAnimationSpeed = 5;
-            //MaxSecondsBetweenFrames = 0.5f;
+            MaxSecondsBetweenFrames = 0.5f;
             //GUIMouseCursorSpeed = 5;
             //MinGUIMouseCursorSpeed = 1;
             //MaxGUIMouseCursorSpeed = 10;

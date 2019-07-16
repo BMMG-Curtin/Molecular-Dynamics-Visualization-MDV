@@ -46,35 +46,48 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 MoleculeEvents.RaiseRenderMessage("Can't load molecule trajectory. No molecule found.", true);
                 return;
             }
-        }
-
-        private IEnumerator loadMoleculeTrajectory(int moleculeID, string filePath) {
 
             PrimaryStructure primaryStructure = molecules[moleculeID].PrimaryStructure;
-
-            MoleculeEvents.RaiseRenderMessage("Loading Trajectory", false);
-            PrimaryStructureTrajectory trajectory = null;
-
             int atomCount = loadTrajectoryAtomCount(filePath);
+
             if (atomCount != primaryStructure.AtomCount()) {
+
                 MoleculeEvents.RaiseRenderMessage("Trajectory atom count [" + atomCount + " doesn't match loaded structure atom count [" + primaryStructure.AtomCount() + "]", true);
-                yield break;
+                return;
             }
 
-            int trajectoryFrameCount = 0;
-            trajectoryFrameCount = loadAvailableTrajectoryFrames(filePath);
-            yield return StartCoroutine(loadModelTrajectory(filePath, primaryStructure, startFrame, frameCount, frameFrequency));
+            PrimaryStructureTrajectory trajectory = null;
+
+            try {
+
+                int startFrame = 0;
+                int frameFrequency = 1;
+                int frameCount = Settings.MaxTrajectoryFrames;
+
+                if (filePath.EndsWith(".xtc")) {
+                    trajectory = XTCTrajectoryParser.GetTrajectory(filePath, startFrame, frameCount, frameFrequency);
+                }
+                else if (filePath.EndsWith(".dcd")) {
+                    trajectory = DCDTrajectoryParser.GetTrajectory(filePath, startFrame, frameCount, frameFrequency);
+                }
+                else if (filePath.EndsWith(".gro")) {
+                    trajectory = GROTrajectoryParser.GetTrajectory(filePath, startFrame, frameCount, frameFrequency);
+                }
+            }
+            catch (FileParseException ex) {
+
+                MoleculeEvents.RaiseRenderMessage("Error Loading Trajectory File: " + ex.Message, true);
+                return;
+            }
 
             if (trajectory != null) {
 
                 molecules[moleculeID].SetTrajectory(trajectory);
-                MoleculeEvents.RaiseRenderMessage("Trajectory Initialised", false);
+                MoleculeEvents.RaiseTrajectoryLoaded(moleculeID, trajectory.FrameCount());
             }
-
-            MoleculeEvents.RaiseRenderMessage("Trajectory Load Complete", false);
         }
 
-        public void UpdateMoleculeRenderSettings(int moleculeID, MoleculeRenderSettings settings, int frameNumber) {
+        public void UpdateMoleculeRenderSettings(int moleculeID, MoleculeRenderSettings settings, int? frameNumber = null) {
 
             if(molecules.ContainsKey(moleculeID)) {
                 StartCoroutine(molecules[moleculeID].Render(settings, frameNumber));
@@ -154,10 +167,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             loadingFile = false;
         }
 
-
         private int loadTrajectoryAtomCount(string trajectoryFile) {
 
             int count = 0;
+
             try {
                 if (trajectoryFile.EndsWith(".xtc")) {
                     count = XTCTrajectoryParser.GetAtomCount(trajectoryFile);
@@ -179,6 +192,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private int loadAvailableTrajectoryFrames(string trajectoryFile) {
 
             int count = 0;
+
             try {
                 if (trajectoryFile.EndsWith(".xtc")) {
                     count = XTCTrajectoryParser.GetFrameCount(trajectoryFile);
@@ -196,29 +210,5 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             return count;
         }
-
-        private IEnumerator loadModelTrajectory(string trajectoryFile, PrimaryStructure model, int startFrame, int frameCount, int frameFrequency) {
-
-            PrimaryStructureTrajectory trajectory = null;
-
-            try {
-                if (trajectoryFile.EndsWith(".xtc")) {
-                    trajectory = XTCTrajectoryParser.GetTrajectory(trajectoryFile, startFrame, frameCount, frameFrequency);
-                }
-                else if (trajectoryFile.EndsWith(".dcd")) {
-                    trajectory = DCDTrajectoryParser.GetTrajectory(trajectoryFile, startFrame, frameCount, frameFrequency);
-                }
-                else if (trajectoryFile.EndsWith(".gro")) {
-                    trajectory = GROTrajectoryParser.GetTrajectory(trajectoryFile, startFrame, frameCount, frameFrequency);
-                }
-            }
-            catch (FileParseException ex) {
-                MoleculeEvents.RaiseRenderMessage("Error Loading Trajectory File: " + ex.Message, true);
-            }
-
-            yield break;
-        }
-
-
     }
 }

@@ -101,6 +101,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             ResiduesPanel.SetModelResidues(id, residues);
         }
 
+        public void MoleculeTrajectoryLoaded(int moleculeID, int frameCount) {
+            moleculeSettings.TrajectoryLoaded(moleculeID, frameCount);
+        }
+
         public void ToogleUserInterface() {
 
             if (ToggleWholeInterface) {
