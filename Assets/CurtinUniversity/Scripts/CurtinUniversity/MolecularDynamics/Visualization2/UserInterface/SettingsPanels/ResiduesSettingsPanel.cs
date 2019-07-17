@@ -171,7 +171,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 selectedMolecule.PendingRerender = true;
             }
             else {
-                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
             }
         }
 
@@ -251,7 +251,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     selectedMolecule.PendingRerender = true;
                 }
                 else {
-                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
                 }
             }
         }
@@ -285,7 +285,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 selectedMolecule.PendingRerender = true;
             }
             else {
-                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
             }
         }
 

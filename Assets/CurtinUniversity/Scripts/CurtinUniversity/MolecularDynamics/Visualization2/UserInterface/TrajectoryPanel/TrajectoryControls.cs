@@ -16,7 +16,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         [SerializeField]
         private Text TotalFrames;
 
-        private int frameAnimationSpeed;
+        private int animationSpeed;
 
         private bool animating = false;
         private float lastAnimationUpdate = 0;
@@ -46,11 +46,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                 int? frameNumber = selectedMolecule.CurrentTrajectoryFrameNumber;
 
-                if (frameNumber == null || frameNumber == 0) {
+                if (frameNumber == null) {
                     FrameNumber.text = "-";
                 }
                 else {
-                    FrameNumber.text = "0";
+                    FrameNumber.text = (frameNumber + 1).ToString(); // trajectory indexes start at zero but display starts at 1
                 }
 
                 TotalFrames.text = selectedMolecule.TrajectoryFrameCount.ToString();
@@ -77,7 +77,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public void OnStopButton() {
 
             animating = false;
-            molecules.GetSelected().CurrentTrajectoryFrameNumber = 0;
+            MoleculeSettings molecule = molecules.GetSelected();
+            molecule.CurrentTrajectoryFrameNumber = null;
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
             UpdateControls();
         }
 
@@ -117,39 +119,17 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public int AnimationSpeed {
 
             get {
-                return frameAnimationSpeed;
+                return animationSpeed;
             }
 
             set {
 
-                int animationSpeed = value;
-
-                if (animationSpeed < 1)
-                    animationSpeed = 1;
-
-                if (animationSpeed > Settings.MaxFrameAnimationSpeed)
-                    animationSpeed = Settings.MaxFrameAnimationSpeed;
-
-                frameAnimationSpeed = animationSpeed;
-                setFrameDelay(animationSpeed);
+                animationSpeed = Mathf.Clamp(value, Settings.MinFrameAnimationSpeed, Settings.MaxFrameAnimationSpeed);
+                float normalisedAnimationSpeed = (float)(animationSpeed - Settings.MinFrameAnimationSpeed) / (float)(Settings.MaxFrameAnimationSpeed - Settings.MinFrameAnimationSpeed);
+                Debug.Log("Animation speed: " + animationSpeed.ToString() + "[" + normalisedAnimationSpeed.ToString("N2") + "]");
+                secondsBetweenFrames = Settings.MinSecondsBetweenFrames + ((1f - normalisedAnimationSpeed) * (Settings.MaxSecondsBetweenFrames - Settings.MinSecondsBetweenFrames));
+                Debug.Log("Seconds between frames: " + secondsBetweenFrames.ToString("N2"));
             }
-        }
-
-
-        // this needs to be reworked to be more clear
-        private void setFrameDelay(int animationSpeed) {
-
-            // Decrement animation speed to allow for scaling from 0. 
-            animationSpeed = animationSpeed <= 0 ? 0 : animationSpeed - 1;
-
-            // Decrement max speed to match animation speed decrement and still allow scaling up to 1. Don't allow maxSpeed of 0 
-            int maxSpeed = Settings.MaxFrameAnimationSpeed;
-            maxSpeed = maxSpeed > 1 ? maxSpeed - 1 : 1;
-
-            float speedScale = ((float)animationSpeed / (float)maxSpeed); // should range from 0 to 1 unless Settings.MaxFrameAnimationSpeed was set to less than 2
-            secondsBetweenFrames = (1 - speedScale) * Settings.MaxSecondsBetweenFrames;
-
-            Debug.Log("Setting frame speed: " + secondsBetweenFrames);
         }
 
         private void stepForwardAnimation() {
@@ -158,14 +138,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             molecule.CurrentTrajectoryFrameNumber++;
 
-            if (molecule.CurrentTrajectoryFrameNumber > molecule.TrajectoryFrameCount) {
-                molecule.CurrentTrajectoryFrameNumber = 1;
+            if (molecule.CurrentTrajectoryFrameNumber == null || molecule.CurrentTrajectoryFrameNumber > molecule.TrajectoryFrameCount - 1) {
+                molecule.CurrentTrajectoryFrameNumber = 0;
             }
 
             UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
             UpdateControls();
-
-            Debug.Log("Stepping forward trajectory to frame: " + molecule.CurrentTrajectoryFrameNumber);
         }
 
         private void stepBackwardAnimation() {
@@ -174,8 +152,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             molecule.CurrentTrajectoryFrameNumber--;
 
-            if (molecule.CurrentTrajectoryFrameNumber <= 0) {
-                molecule.CurrentTrajectoryFrameNumber = molecule.TrajectoryFrameCount;
+            if (molecule.CurrentTrajectoryFrameNumber == null || molecule.CurrentTrajectoryFrameNumber < 0) {
+                molecule.CurrentTrajectoryFrameNumber = molecule.TrajectoryFrameCount - 1;
             }
 
             UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);

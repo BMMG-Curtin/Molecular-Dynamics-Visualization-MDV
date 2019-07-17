@@ -30,13 +30,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private bool initialised = false;
         private bool buildingModel = false;
 
-        public IEnumerator Initialise(PrimaryStructure primaryStructure) {
+        public void Initialise(PrimaryStructure primaryStructure) {
 
             this.primaryStructure = primaryStructure;
             structureCache = new Dictionary<string, Mesh>();
             initialised = true;
-
-            yield break;
         }
 
         public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame, SecondaryStructure secondaryStructure) {

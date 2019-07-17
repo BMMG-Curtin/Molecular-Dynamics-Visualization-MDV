@@ -27,53 +27,40 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public GameObject ChainPrefab;
 
         private MeshBuilder meshBuilder;
-
         private GameObject modelAtomsObject;
         private GameObject modelBondsObject;
-
-        public Dictionary<int, Bond> Bonds { get; private set; }
-
-        [NonSerialized]
-        public bool Initialised = false;
-
-        public bool Initialising { get { return initialising; } }
-        public bool BuildingModel { get { return buildingModel; } }
 
         // model data store
         private PrimaryStructure primaryStructure;
         private PrimaryStructureTrajectory modelTrajectory;
-
-        private bool initialising = false;
-        private bool buildingModel = false;
+        private Dictionary<int, Bond> bonds;
 
         private void Awake() {
             meshBuilder = GetComponent<MeshBuilder>();
         }
 
-        public IEnumerator Initialise(PrimaryStructure structure) {
-
-            initialising = true;
-
+        public void Initialise(PrimaryStructure structure) {
             primaryStructure = structure;
+        }
 
-            if (Bonds != null) {
-                Bonds.Clear();
-                Bonds = null;
-            }
+        private IEnumerator calculateBonds() {
 
-            if (Settings.GenerateBonds && Settings.GenerateBondsOnModelLoad)
-                yield return StartCoroutine(calculateBonds());
+            MoleculeEvents.RaiseRenderMessage("Calculating bonds, please wait", false);
+            yield return null;
 
-            Initialised = true;
-            initialising = false;
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            bonds = primaryStructure.GenerateBonds();
+
+            watch.Stop();
+            MoleculeEvents.RaiseRenderMessage("Bonds calculated [" + watch.ElapsedMilliseconds + "ms]", false);
         }
 
         public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame) {
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
-
-            buildingModel = true;
 
             // store all the old model objects
             List<GameObject> oldObjects = new List<GameObject>();
@@ -101,10 +88,10 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                 if (settings.Representation != MolecularRepresentation.VDW && settings.ShowBonds) {
 
-                    if (Settings.GenerateBonds && Bonds == null)
+                    if (bonds == null)
                         yield return StartCoroutine(calculateBonds());
 
-                    if (Bonds != null && Bonds.Count > 0)
+                    if (bonds != null && bonds.Count > 0)
                         yield return StartCoroutine(createModelBonds(settings, frame));
                 }
 
@@ -139,28 +126,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 }
             }
 
-            buildingModel = false;
             watch.Stop();
             //if (Settings.DebugMessages)
             //    console.BannerBuildTime = watch.ElapsedMilliseconds.ToString();
 
             yield break;
-        }
-
-        private IEnumerator calculateBonds() {
-
-            MoleculeEvents.RaiseRenderMessage("Calculating Bonds", false);
-            yield return null;
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-
-            if (primaryStructure == null) {
-                UnityEngine.Debug.Log("Model is null");
-            }
-
-            Bonds = primaryStructure.GenerateBonds();
-            watch.Stop();
-            MoleculeEvents.RaiseRenderMessage("Bonds Calculated [" + watch.ElapsedMilliseconds + "ms]", false);
         }
 
         private IEnumerator createModelAtomsByElement(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame) {
@@ -315,7 +285,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             bool filterByNumber = renderSettings.FilterResiduesByNumber;
             HashSet<int> enabledResidueNumbers = renderSettings.EnabledResidueNumbers;
             
-            foreach (KeyValuePair<int, Bond> bond in Bonds) {
+            foreach (KeyValuePair<int, Bond> bond in bonds) {
 
                 Vector3 atom1pos, atom2pos;
                 Atom atom1 = null;

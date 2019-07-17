@@ -29,27 +29,17 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private OtherSettingsPanel applicationSettings;
 
         [SerializeField]
-        private MoleculesSettingsPanel moleculeSettings;
+        private MoleculesSettingsPanel moleculeSettingsPanel;
 
-        //public MainMenu Menu;
-        //public TrajectoryControls TrajectoryControls;
-        //public ApplicationPanel ApplicationPanel;
-        //public VisualisationPanel VisualisationPanel;
-        public ElementsSettingsPanel ElementsPanel;
-        public Visualization.ResiduesSettingsPanel ResiduesPanel;
-        //public FileBrowser FileBrowser;
-        //public InfoPanel InfoPanel;
+        [SerializeField]
+        private ElementsSettingsPanel elementsSettingsPanel;
+
+        [SerializeField]
+        private Visualization.ResiduesSettingsPanel residuesSettingsPanel;
 
         public bool ToggleWholeInterface = false;
 
         public bool IsActive { get { return UserInterfaceCanvas.activeSelf; } }
-
-        // private variables
-        //private float userInterfacePosY = 0f;
-        //private float userInterfacePosZ = 1f;
-        //private string playerPrefsUIDistance = @"UIDistance";
-
-        //private GameObject cameraPosition;
 
         int frameCount;
         int reportFrequency = 1; // in seconds
@@ -94,15 +84,19 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             applicationSettings.SetSceneSettings(settings);
         }
 
-        public void MoleculeLoaded(int id, string name, string description, HashSet<string> elements, HashSet<string> residues) {
+        public void LoadMolecule(string filePath, MoleculeRenderSettings? settings = null) {
+            moleculeSettingsPanel.LoadMolecule(filePath, settings);
+        }
 
-            moleculeSettings.MoleculeLoaded(id, name, description);
-            ElementsPanel.SetModelElements(id, elements);
-            ResiduesPanel.SetModelResidues(id, residues);
+        public void MoleculeLoaded(int id, string name, string description, HashSet<string> elements, HashSet<string> residues, int atomCount, int residueCount) {
+
+            moleculeSettingsPanel.MoleculeLoaded(id, name, description, atomCount, residueCount);
+            elementsSettingsPanel.SetModelElements(id, elements);
+            residuesSettingsPanel.SetModelResidues(id, residues);
         }
 
         public void MoleculeTrajectoryLoaded(int moleculeID, int frameCount) {
-            moleculeSettings.TrajectoryLoaded(moleculeID, frameCount);
+            moleculeSettingsPanel.TrajectoryLoaded(moleculeID, frameCount);
         }
 
         public void ToogleUserInterface() {

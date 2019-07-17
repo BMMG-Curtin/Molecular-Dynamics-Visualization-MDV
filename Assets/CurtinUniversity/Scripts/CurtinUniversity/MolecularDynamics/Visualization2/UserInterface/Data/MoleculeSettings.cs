@@ -10,6 +10,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public bool PendingRerender;
         public string Name;
         public string Description;
+        public int AtomCount;
+        public int BondCount;
+        public int ResidueCount;
         public bool HasTrajectory;
         public int TrajectoryFrameCount;
         public int? CurrentTrajectoryFrameNumber;
@@ -24,6 +27,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             PendingRerender = false;
             Name = "";
             Description = "";
+            AtomCount = 0;
+            ResidueCount = 0;
             HasTrajectory = false;
             TrajectoryFrameCount = 0;
             CurrentTrajectoryFrameNumber = null;

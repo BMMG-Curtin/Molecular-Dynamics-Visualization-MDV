@@ -233,7 +233,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                     selectedMolecule.PendingRerender = true;
                 }
                 else {
-                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
                 }
             }
         }
@@ -242,28 +242,28 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
             selectedMolecule.RenderSettings.AtomScale += scaleIncrementAmount;
             AtomScale.text = selectedMolecule.RenderSettings.AtomScale.ToString("F1");
-            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
         }
 
         public void DecreaseAtomScale() {
 
             selectedMolecule.RenderSettings.AtomScale -= scaleIncrementAmount;
             AtomScale.text = selectedMolecule.RenderSettings.AtomScale.ToString("F1");
-            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
         }
 
         public void InreaseBondScale() {
 
             selectedMolecule.RenderSettings.BondScale += scaleIncrementAmount;
             BondScale.text = selectedMolecule.RenderSettings.BondScale.ToString("F1");
-            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
         }
 
         public void DecreaseBondScale() {
 
             selectedMolecule.RenderSettings.BondScale -= scaleIncrementAmount;
             BondScale.text = selectedMolecule.RenderSettings.BondScale.ToString("F1");
-            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
         }
     }
 }

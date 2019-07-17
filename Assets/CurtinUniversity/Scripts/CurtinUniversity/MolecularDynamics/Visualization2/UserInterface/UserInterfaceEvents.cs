@@ -36,9 +36,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        public delegate void MoleculeRenderSettingsUpdated(int moleculeID, MoleculeRenderSettings settings, int? frameNumber = null);
+        public delegate void MoleculeRenderSettingsUpdated(int moleculeID, MoleculeRenderSettings settings, int? frameNumber);
         public static event MoleculeRenderSettingsUpdated OnMoleculeRenderSettingsUpdated;
-        public static void RaiseMoleculeRenderSettingsUpdated(int moleculeID, MoleculeRenderSettings settings, int? frameNumber = null) {
+        public static void RaiseMoleculeRenderSettingsUpdated(int moleculeID, MoleculeRenderSettings settings, int? frameNumber) {
             if (OnMoleculeRenderSettingsUpdated != null) {
                 OnMoleculeRenderSettingsUpdated(moleculeID, settings, frameNumber);
             }

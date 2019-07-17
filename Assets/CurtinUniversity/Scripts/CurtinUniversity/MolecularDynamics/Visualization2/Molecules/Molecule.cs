@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 
 using UnityEngine;
 
@@ -54,9 +53,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private MoleculeRenderSettings awaitingRenderSettings;
         private int? awaitingFrameNumber;
 
-        public int ID { get { return this.GetInstanceID(); } }
-
         public void Initialise(PrimaryStructure primaryStructure, MoleculeRenderSettings renderSettings) {
+
+            if(primaryStructure == null) {
+                return;
+            }
 
             this.PrimaryStructure = primaryStructure;
 
@@ -77,8 +78,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 MoleculeBox.Build(boundingBox);
             }
 
-            StartCoroutine(PrimaryStructureRenderer.Initialise(primaryStructure));
-            StartCoroutine(SecondaryStructureRenderer.Initialise(primaryStructure));
+            PrimaryStructureRenderer.Initialise(primaryStructure);
+            SecondaryStructureRenderer.Initialise(primaryStructure);
 
             initialised = true;
         }

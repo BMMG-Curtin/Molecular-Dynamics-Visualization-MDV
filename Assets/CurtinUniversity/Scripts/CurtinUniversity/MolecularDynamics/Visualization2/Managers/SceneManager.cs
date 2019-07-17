@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
@@ -24,7 +25,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private void Start() {
 
             // setup UI and Molecule events
-            UserInterfaceEvents.OnLoadMolecule += molecules.LoadMolecule;
+            UserInterfaceEvents.OnLoadMolecule += onLoadMolecule;
             UserInterfaceEvents.OnLoadTrajectory += molecules.LoadMoleculeTrajectory;
             UserInterfaceEvents.OnRemoveMolecule += molecules.RemoveMolecule;
             UserInterfaceEvents.OnShowMolecule += molecules.ShowMolecule;
@@ -38,13 +39,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             MoleculeEvents.OnRenderMessage += onMoleculeRenderMessage;
 
             SceneSettings sceneSettings = SceneSettings.Default();
-            scene.Settings = sceneSettings;
             userInterface.SetSceneSettings(sceneSettings);
+            scene.Settings = sceneSettings;
 
             loadDefaultModel();
         }
 
-        // still todo
         private void loadDefaultModel() {
 
             if (Config.GetString("LoadMoleculeOnStart") == "True") {
@@ -57,16 +57,27 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 userInterface.ConsoleSetSilent(false);
                 string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + filename;
 
-                // need to load settings via UI
+                MoleculeRenderSettings settings = MoleculeRenderSettings.Default();
+                settings.ShowAtoms = false;
+                settings.ShowSimulationBox = false;
+                userInterface.LoadMolecule(filePath, settings);
 
-                //MoleculeSettings settings = new MoleculeSettings(-99, filePath);
-                //molecules.LoadMolecule(-99, filePath, settings.RenderSettings);
                 userInterface.ConsoleSetSilent(false);
             }
         }
 
-        private void onMoleculeLoaded(int id, string name, string desc, HashSet<string> elements, HashSet<string> residues) {
-            StartCoroutine(scene.Lighting.LightToDefaults(1f));
+        private void onLoadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
+            StartCoroutine(loadMolecule(moleculeID, filePath, settings));
+        }
+
+        private IEnumerator loadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
+
+            yield return StartCoroutine(scene.Lighting.DimToBlack(0.5f));
+            molecules.LoadMolecule(moleculeID, filePath, settings);
+        }
+
+        private void onMoleculeLoaded(int id, string name, string desc, HashSet<string> elements, HashSet<string> residues, int atomCount, int residueCount) {
+            StartCoroutine(scene.Lighting.LightToDefaults(0.5f));
         }
 
         private void onMoleculeRenderMessage(string message, bool error) {

@@ -47,11 +47,13 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public static float MinBondScale { get; set; }
         public static float DefaultBondScale { get; set; }
         public static float MaxBondLength { get; set; }
-        public static bool GenerateBonds = true;
-        public static bool GenerateBondsOnModelLoad = true;
+        //public static bool GenerateBonds = true;
+        //public static bool GenerateBondsOnModelLoad = true;
         public static bool RecalculateBondsOnNewFrame = false;
-        public static int MaxFrameAnimationSpeed { get; set; }
         //public static int FrameAnimationSpeed { get; set; }
+        public static int MinFrameAnimationSpeed { get; set; }
+        public static int MaxFrameAnimationSpeed { get; set; }
+        public static float MinSecondsBetweenFrames { get; set; }
         public static float MaxSecondsBetweenFrames { get; set; }
         //public static int DefaultTrajectoryStartFrame { get; set; }
         //public static int MinTrajectoryStartFrame { get; set; }
@@ -205,8 +207,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //DefaultTrajectoryFrameFrequency = 1;
             //MinTrajectoryFrameFrequency = 1;
             //MaxTrajectoryFrameFrequency = 1000;
+            MinFrameAnimationSpeed = 1;
             MaxFrameAnimationSpeed = 10;
-            //FrameAnimationSpeed = 5;
+            MinSecondsBetweenFrames = 0.1f;
             MaxSecondsBetweenFrames = 0.5f;
             //GUIMouseCursorSpeed = 5;
             //MinGUIMouseCursorSpeed = 1;
@@ -312,14 +315,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //    HighlightedBondColourHue = Config.GetFloat("HighlightedBondColourHue");
 
             // bond options
-            if (Config.KeyExists("GenerateBonds"))
-                GenerateBonds = Config.GetBool("GenerateBonds");
             if (Config.KeyExists("MaxBondLength"))
                 MaxBondLength = Config.GetFloat("MaxBondLength");
-            if (Config.KeyExists("GenerateBondsOnModelLoad"))
-                GenerateBondsOnModelLoad = Config.GetBool("GenerateBondsOnModelLoad");
-            if (Config.KeyExists("RecalculateBondsOnNewFrame"))
-                RecalculateBondsOnNewFrame = Config.GetBool("RecalculateBondsOnNewFrame");
 
             // trajectory options
             //if (Config.KeyExists("DefaultTrajectoryStartFrame"))

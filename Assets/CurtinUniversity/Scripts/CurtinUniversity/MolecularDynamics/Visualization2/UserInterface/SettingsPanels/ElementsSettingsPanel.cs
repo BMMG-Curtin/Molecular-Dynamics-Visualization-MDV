@@ -139,7 +139,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 selectedMolecule.PendingRerender = true;
             }
             else {
-                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings);
+                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
             }
         }
     }

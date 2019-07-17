@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
@@ -67,7 +68,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
 
             if (newMessages) {
-                updateConsole();
+                StartCoroutine(updateConsole());
                 newMessages = false;
             }
         }
@@ -129,14 +130,23 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 BannerMessage.text = "";
         }
 
-        private void updateConsole() {
+        private IEnumerator updateConsole() {
 
             string consoleText = "";
 
-            foreach (ConsoleMessage message in messages)
-                consoleText += " <color=" + HTMLColor(messageTypeColors[message.type]) + ">" + message.message + "</color>\n";
+            for(int i=0; i < messages.Count; i++) {
+                ConsoleMessage message = messages[i];
+                consoleText += "<color=" + HTMLColor(messageTypeColors[message.type]) + ">" + message.message + "</color>";
+                if(i < messages.Count - 1) {
+                    consoleText += "\n";
+                }
+            }
 
             ConsoleContent.text = consoleText;
+
+            // wait a frame or veritalNormalizedPosition wont work correctly
+            yield return null;
+
             ScrollRect.verticalNormalizedPosition = 0f;
         }
 

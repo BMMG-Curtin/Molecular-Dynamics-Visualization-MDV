@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,6 +40,21 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private Button removeMoleculeButton;
 
         [SerializeField]
+        private GameObject moleculeInfoPanel;
+
+        [SerializeField]
+        private TextMeshProUGUI moleculePathText;
+
+        [SerializeField]
+        private TextMeshProUGUI moleculeHeaderText;
+
+        [SerializeField]
+        private TextMeshProUGUI moleculeAtomCountText;
+
+        [SerializeField]
+        private TextMeshProUGUI moleculeResidueCountText;
+
+        [SerializeField]
         private MoleculeList molecules;
         private Dictionary<int, MoleculeSettingsPanelListItem> moleculeListItems;
 
@@ -66,15 +82,32 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             dialog.Initialise(validFileExtensions, onLoadMoleculeFileSubmitted);
         }
 
-        public void MoleculeLoaded(int id, string name, string description) {
+        public void LoadMolecule(string filePath, MoleculeRenderSettings? settings) {
+
+            if(filePath == null || filePath.Length == 0) {
+                return;
+            }
+
+            MoleculeSettings molecule = molecules.Add(filePath);
+
+            if (settings != null) {
+                molecule.RenderSettings = (MoleculeRenderSettings)settings;
+            }
+
+            UserInterfaceEvents.RaiseLoadMolecule(molecule.ID, filePath, molecule.RenderSettings);
+        }
+
+        public void MoleculeLoaded(int id, string name, string description, int atomCount, int residueCount) {
 
             if (molecules.Contains(id)) {
 
-                console.ShowMessage("Loaded file: " + name + ", [" + description + "]");
+                //console.ShowMessage("Loaded file: " + name);
 
                 MoleculeSettings settings = molecules.Get(id);
                 settings.Name = name;
                 settings.Description = description;
+                settings.AtomCount = atomCount;
+                settings.ResidueCount = residueCount;
                 settings.Loaded = true;
 
                 GameObject listItem = GameObject.Instantiate(moleculeListItemPrefab);
@@ -125,27 +158,28 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         public void OnShowHideMoleculeButton() {
 
-            if (molecules.SelectedMoleculeID == null) {
+            MoleculeSettings molecule = molecules.GetSelected();
+
+            if (molecule == null) {
                 return;
             }
 
-            int moleculeID = (int)molecules.SelectedMoleculeID;
+            if (hiddenMolecules.Contains(molecule.ID)) {
 
-            if (hiddenMolecules.Contains(moleculeID)) {
-
-                molecules.GetSelected().Hidden = false;
-                UserInterfaceEvents.RaiseShowMolecule(moleculeID);
-                if(molecules.GetSelected().PendingRerender) {
-                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(moleculeID, molecules.GetSelected().RenderSettings);
+                molecule.Hidden = false;
+                UserInterfaceEvents.RaiseShowMolecule(molecule.ID);
+                if(molecule.PendingRerender) {
+                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
                 }
 
-                hiddenMolecules.Remove(moleculeID);
+                hiddenMolecules.Remove(molecule.ID);
             }
             else {
 
-                molecules.GetSelected().Hidden = true;
-                UserInterfaceEvents.RaiseHideMolecule(moleculeID);
-                hiddenMolecules.Add(moleculeID);
+                trajectoryControls.OnPauseButton();
+                molecule.Hidden = true;
+                UserInterfaceEvents.RaiseHideMolecule(molecule.ID);
+                hiddenMolecules.Add(molecule.ID);
             }
 
             updateSelectedMoleculeInterfaceSettings();
@@ -199,10 +233,9 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
         private void onLoadTrajectoryFileSubmitted(string fileName, string filePath) {
 
-            console.ShowMessage("Selected file: " + fileName + ", [" + filePath + "]");
+            //console.ShowMessage("Selected file: " + fileName + ", [" + filePath + "]");
 
             if (molecules.SelectedMoleculeID != null) {
-                //TrajectoryLoaded((int)molecules.SelectedMoleculeID, 123);
                 UserInterfaceEvents.RaiseLoadTrajectory((int)molecules.SelectedMoleculeID, filePath);
             }
         }
@@ -254,8 +287,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 showHideMoleculeButton.gameObject.SetActive(false);
                 removeMoleculeButton.interactable = false;
                 removeMoleculeButton.gameObject.SetActive(false);
+                moleculeInfoPanel.SetActive(false);
             }
             else {
+
+                MoleculeSettings molecule = molecules.GetSelected();
 
                 loadTrajectoryButton.interactable = true;
                 loadTrajectoryButton.gameObject.SetActive(true);
@@ -264,7 +300,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                 removeMoleculeButton.interactable = true;
                 removeMoleculeButton.gameObject.SetActive(true);
 
-                if (molecules.GetSelected().HasTrajectory) {
+                if (molecule.HasTrajectory) {
 
                     loadTrajectoryButtonText.text = "Update Trajectory";
                     trajectoryControls.transform.gameObject.SetActive(true);
@@ -276,12 +312,19 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
                     trajectoryControls.transform.gameObject.SetActive(false);
                 }
 
-                if (hiddenMolecules.Contains((int)molecules.SelectedMoleculeID)) {
+                if (hiddenMolecules.Contains((int)molecule.ID)) {
                     showHideMoleculeButtonText.text = "Show Molecule";
                 }
                 else {
                     showHideMoleculeButtonText.text = "Hide Molecule";
                 }
+
+                moleculeInfoPanel.SetActive(true);
+
+                moleculePathText.text = molecule.FilePath;
+                moleculeHeaderText.text = molecule.Description;
+                moleculeAtomCountText.text = molecule.AtomCount.ToString();
+                moleculeResidueCountText.text = molecule.ResidueCount.ToString();
             }
         }
     }

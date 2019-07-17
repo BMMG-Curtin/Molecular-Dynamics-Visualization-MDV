@@ -7,11 +7,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class MoleculeEvents {
 
-        public delegate void MoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, HashSet<string> residues);
+        public delegate void MoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, HashSet<string> residues, int atomCount, int residueCount);
         public static event MoleculeLoaded OnMoleculeLoaded;
-        public static void RaiseMoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, HashSet<string> residues) {
+        public static void RaiseMoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, HashSet<string> residues, int atomCount, int residueCount) {
             if (OnMoleculeLoaded != null) {
-                OnMoleculeLoaded(moleculeID, name, description, elements, residues);
+                OnMoleculeLoaded(moleculeID, name, description, elements, residues, atomCount, residueCount);
             }
         }
 
