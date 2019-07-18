@@ -10,13 +10,6 @@ MaxBondLength: 0.155 // Bonds are calculated on atom distance. Atoms seperated b
 GenerateBonds: True
 GenerateBondsOnModelLoad: False // if this is False and GenerateBonds is True then bonds will be generated when needed for display.
 
-// Scene Lighting
-GeneralLightBrightness: 1.5
-DefaultFillLightBrightness: 0.2
-DefaultSpotLightBrightness: 0.3
-DefaultMainLightBrightness: 0.3
-DefaultAreaLightBrightness: 0.3
-
 // Colour settings
 
 // Colors for residue highlighting. 

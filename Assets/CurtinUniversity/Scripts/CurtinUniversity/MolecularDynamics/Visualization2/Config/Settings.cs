@@ -138,8 +138,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public static float DefaultSpotLightBrightness { get; set; }
         public static float DefaultMainLightBrightness { get; set; }
         public static float DefaultAreaLightBrightness { get; set; }
-        public static float DefaultLightHaloSize { get; set; }
-        public static float GeneralLightBrightness { get; set; }
         public static string StrideExecutablePath { get; set; }
         public static string TmpFilePath { get; set; }
 
@@ -269,8 +267,6 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             DefaultSpotLightBrightness = 0.3f;
             DefaultMainLightBrightness = 0.3f;
             DefaultAreaLightBrightness = 0.3f;
-            DefaultLightHaloSize = 0.3f;
-            GeneralLightBrightness = 1f;
 
             StrideExecutablePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + @"stride_WIN32.exe";
             TmpFilePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar;
@@ -339,16 +335,16 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //    MaxTrajectoryFrameFrequency = Config.GetInt("MaxTrajectoryFrameFrequency");
 
             // lighting options
-            if (Config.KeyExists("GeneralLightBrightness"))
-                GeneralLightBrightness = Config.GetFloat("GeneralLightBrightness");
-            if (Config.KeyExists("DefaultFillLightBrightness"))
-                DefaultFillLightBrightness = Config.GetFloat("DefaultFillLightBrightness");
-            if (Config.KeyExists("DefaultSpotLightBrightness"))
-                DefaultSpotLightBrightness = Config.GetFloat("DefaultSpotLightBrightness");
-            if (Config.KeyExists("DefaultMainLightBrightness"))
-                DefaultMainLightBrightness = Config.GetFloat("DefaultMainLightBrightness");
-            if (Config.KeyExists("DefaultAreaLightBrightness"))
-                DefaultAreaLightBrightness = Config.GetFloat("DefaultAreaLightBrightness");
+            //if (Config.KeyExists("GeneralLightBrightness"))
+            //    GeneralLightBrightness = Config.GetFloat("GeneralLightBrightness");
+            //if (Config.KeyExists("DefaultFillLightBrightness"))
+            //    DefaultFillLightBrightness = Config.GetFloat("DefaultFillLightBrightness");
+            //if (Config.KeyExists("DefaultSpotLightBrightness"))
+            //    DefaultSpotLightBrightness = Config.GetFloat("DefaultSpotLightBrightness");
+            //if (Config.KeyExists("DefaultMainLightBrightness"))
+            //    DefaultMainLightBrightness = Config.GetFloat("DefaultMainLightBrightness");
+            //if (Config.KeyExists("DefaultAreaLightBrightness"))
+            //    DefaultAreaLightBrightness = Config.GetFloat("DefaultAreaLightBrightness");
 
             // residue custom colours
             if (Config.KeyExists("ResidueColour1"))

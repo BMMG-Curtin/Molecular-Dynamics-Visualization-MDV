@@ -41,6 +41,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             SceneSettings sceneSettings = SceneSettings.Default();
             userInterface.SetSceneSettings(sceneSettings);
             scene.Settings = sceneSettings;
+            scene.Lighting.SetLighting(Vector3.zero, 20f, 20f);
+            scene.Lighting.Brightness = 1f;
 
             loadDefaultModel();
         }
