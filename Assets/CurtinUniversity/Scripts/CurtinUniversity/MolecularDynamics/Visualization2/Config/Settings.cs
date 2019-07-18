@@ -208,7 +208,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             //MinTrajectoryFrameFrequency = 1;
             //MaxTrajectoryFrameFrequency = 1000;
             MinFrameAnimationSpeed = 1;
-            MaxFrameAnimationSpeed = 10;
+            MaxFrameAnimationSpeed = 5;
             MinSecondsBetweenFrames = 0.1f;
             MaxSecondsBetweenFrames = 0.5f;
             //GUIMouseCursorSpeed = 5;

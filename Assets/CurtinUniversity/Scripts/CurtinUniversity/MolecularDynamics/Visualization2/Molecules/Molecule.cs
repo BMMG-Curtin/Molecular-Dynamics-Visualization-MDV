@@ -90,6 +90,14 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             this.secondaryStructureTrajectory = new SecondaryStructureTrajectory(PrimaryStructure, trajectory, Settings.StrideExecutablePath, Settings.TmpFilePath);
         }
 
+        public void Show() {
+            MoleculeRender.SetActive(true);
+        }
+
+        public void Hide() {
+            MoleculeRender.SetActive(false);
+        }
+
         private void Update() {
 
             if (!rendering && awaitingRender) {

@@ -22,13 +22,16 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         private float lastAnimationUpdate = 0;
         private float secondsBetweenFrames;
 
+        private int lastFrameNumber;
+
         private void Start() {
-            AnimationSpeed = Settings.MaxFrameAnimationSpeed;
+            animationSpeed = Settings.MaxFrameAnimationSpeed;
+            setAnimationSpeed(animationSpeed);
         }
 
         private void Update() {
 
-            if (animating) {
+            if (animating && validMoleculeSelected()) {
 
                 if (Time.time - lastAnimationUpdate > secondsBetweenFrames) {
 
@@ -38,7 +41,11 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        public void UpdateControls() {
+        public void StopAnimation() {
+            animating = false;
+        }
+
+        public void UpdateFrameNumberInfo() {
 
             MoleculeSettings selectedMolecule = molecules.GetSelected();
 
@@ -62,80 +69,115 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
         }
 
-        public void StopAnimation() {
-            animating = false;
-        }
-
         public void OnPlayButton() {
-            animating = true;
+
+            if (validMoleculeSelected()) {
+                animating = true;
+            }
         }
 
         public void OnPauseButton() {
-            animating = false;
+
+            if (validMoleculeSelected()) {
+                animating = false;
+            }
         }
 
         public void OnStopButton() {
 
-            animating = false;
-            MoleculeSettings molecule = molecules.GetSelected();
-            molecule.CurrentTrajectoryFrameNumber = null;
-            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
-            UpdateControls();
+            if (validMoleculeSelected()) {
+
+                animating = false;
+                MoleculeSettings molecule = molecules.GetSelected();
+                molecule.CurrentTrajectoryFrameNumber = null;
+                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
+                UpdateFrameNumberInfo();
+            }
         }
 
         public void OnForwardButton() {
 
-            stepForwardAnimation();
-            animating = false;
+            if (validMoleculeSelected()) {
+
+                animating = false;
+                stepForwardAnimation();
+            }
         }
 
         public void OnBackButton() {
 
-            stepBackwardAnimation();
-            animating = false;
+            if (validMoleculeSelected()) {
+
+                animating = false;
+                stepBackwardAnimation();
+            }
         }
 
         public void OnEnterFrameInput() {
 
-            //sceneManager.InputManager.KeyboardUIControlEnabled = false;
-            //sceneManager.InputManager.KeyboardSceneControlEnabled = false;
+            Debug.Log("On frame input");
+
+            if (validMoleculeSelected()) {
+
+                Debug.Log("Storing last frame number");
+                try {
+                    lastFrameNumber = int.Parse(FrameNumber.text);
+                }
+                catch (Exception) {
+                    lastFrameNumber = 1;
+                }
+                animating = false;
+            }
         }
 
         public void OnEndEditFrameInput() {
 
-            //sceneManager.InputManager.KeyboardUIControlEnabled = true;
-            //sceneManager.InputManager.KeyboardSceneControlEnabled = true;
-            //sceneManager.StructureView.DisplayFrame(GetFrameNumber());
+            Debug.Log("End frame input");
+
+            try {
+
+                int frameNumber = int.Parse(FrameNumber.text);
+
+                MoleculeSettings molecule = molecules.GetSelected();
+                frameNumber = Mathf.Clamp(frameNumber, 1, molecule.TrajectoryFrameCount);
+                FrameNumber.text = frameNumber.ToString();
+
+                if (frameNumber != lastFrameNumber) {
+
+                    Debug.Log("New frameNumber: " + frameNumber);
+                    molecule.CurrentTrajectoryFrameNumber = frameNumber - 1;
+                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
+                }
+            }
+            catch (Exception) {
+                FrameNumber.text = lastFrameNumber.ToString();
+            }
         }
 
         public void OnIncreaseFrameSpeedButton() {
-            AnimationSpeed++;
+
+            if (validMoleculeSelected()) {
+                setAnimationSpeed(++animationSpeed);
+            }
         }
 
         public void OnDecreaseFrameSpeedButton() {
-            AnimationSpeed--;
+
+            if (validMoleculeSelected()) {
+                setAnimationSpeed(--animationSpeed);
+            }
         }
 
-        public int AnimationSpeed {
+        private void setAnimationSpeed(int animationSpeed) {
 
-            get {
-                return animationSpeed;
-            }
-
-            set {
-
-                animationSpeed = Mathf.Clamp(value, Settings.MinFrameAnimationSpeed, Settings.MaxFrameAnimationSpeed);
-                float normalisedAnimationSpeed = (float)(animationSpeed - Settings.MinFrameAnimationSpeed) / (float)(Settings.MaxFrameAnimationSpeed - Settings.MinFrameAnimationSpeed);
-                Debug.Log("Animation speed: " + animationSpeed.ToString() + "[" + normalisedAnimationSpeed.ToString("N2") + "]");
-                secondsBetweenFrames = Settings.MinSecondsBetweenFrames + ((1f - normalisedAnimationSpeed) * (Settings.MaxSecondsBetweenFrames - Settings.MinSecondsBetweenFrames));
-                Debug.Log("Seconds between frames: " + secondsBetweenFrames.ToString("N2"));
-            }
+            animationSpeed = Mathf.Clamp(animationSpeed, Settings.MinFrameAnimationSpeed, Settings.MaxFrameAnimationSpeed);
+            float normalisedAnimationSpeed = (float)(animationSpeed - Settings.MinFrameAnimationSpeed) / (float)(Settings.MaxFrameAnimationSpeed - Settings.MinFrameAnimationSpeed);
+            secondsBetweenFrames = Settings.MinSecondsBetweenFrames + ((1f - normalisedAnimationSpeed) * (Settings.MaxSecondsBetweenFrames - Settings.MinSecondsBetweenFrames));
         }
 
         private void stepForwardAnimation() {
 
             MoleculeSettings molecule = molecules.GetSelected();
-
             molecule.CurrentTrajectoryFrameNumber++;
 
             if (molecule.CurrentTrajectoryFrameNumber == null || molecule.CurrentTrajectoryFrameNumber > molecule.TrajectoryFrameCount - 1) {
@@ -143,13 +185,12 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
 
             UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
-            UpdateControls();
+            UpdateFrameNumberInfo();
         }
 
         private void stepBackwardAnimation() {
 
             MoleculeSettings molecule = molecules.GetSelected();
-
             molecule.CurrentTrajectoryFrameNumber--;
 
             if (molecule.CurrentTrajectoryFrameNumber == null || molecule.CurrentTrajectoryFrameNumber < 0) {
@@ -157,7 +198,17 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
 
             UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
-            UpdateControls();
+            UpdateFrameNumberInfo();
+        }
+
+        private bool validMoleculeSelected() {
+
+            MoleculeSettings molecule = molecules.GetSelected();
+            if (molecule == null || molecule.Hidden || !molecule.HasTrajectory) {
+                return false;
+            }
+
+            return true;
         }
     }
 }

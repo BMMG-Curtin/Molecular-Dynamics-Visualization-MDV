@@ -97,14 +97,14 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
         public void ShowMolecule(int moleculeID) {
 
             if (molecules.ContainsKey(moleculeID)) {
-                molecules[moleculeID].gameObject.SetActive(true);
+                molecules[moleculeID].Show();
             }
         }
 
         public void HideMolecule(int moleculeID) {
 
             if (molecules.ContainsKey(moleculeID)) {
-                molecules[moleculeID].gameObject.SetActive(false);
+                molecules[moleculeID].Hide();
             }
         }
 

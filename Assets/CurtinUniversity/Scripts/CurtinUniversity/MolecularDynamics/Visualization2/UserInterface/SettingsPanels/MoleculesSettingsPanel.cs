@@ -176,8 +176,8 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
             }
             else {
 
-                trajectoryControls.OnPauseButton();
                 molecule.Hidden = true;
+                trajectoryControls.StopAnimation();
                 UserInterfaceEvents.RaiseHideMolecule(molecule.ID);
                 hiddenMolecules.Add(molecule.ID);
             }
@@ -304,7 +304,7 @@ namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
                     loadTrajectoryButtonText.text = "Update Trajectory";
                     trajectoryControls.transform.gameObject.SetActive(true);
-                    trajectoryControls.UpdateControls();
+                    trajectoryControls.UpdateFrameNumberInfo();
                 }
                 else {
 

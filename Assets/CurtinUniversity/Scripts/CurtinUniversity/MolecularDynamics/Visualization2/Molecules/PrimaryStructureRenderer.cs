@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
-    [RequireComponent(typeof(MeshRenderer))]
+    [RequireComponent(typeof(MeshBuilder))]
     public class PrimaryStructureRenderer : MonoBehaviour {
 
         public GameObject AtomParent;
