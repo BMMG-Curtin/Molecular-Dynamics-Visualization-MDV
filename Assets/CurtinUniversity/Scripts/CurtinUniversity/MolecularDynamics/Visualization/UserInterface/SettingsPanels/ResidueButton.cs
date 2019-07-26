@@ -14,7 +14,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [HideInInspector]
         public string ResidueName;
 
-        private SceneManager sceneManager;
         private ColorBlock buttonColours;
         private ResidueDisplayOptions residueOptions;
 
@@ -22,8 +21,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         OpenResidueDisplayOptionsDelegate OpenDisplayOptionsCallback;
 
         void Start() {
-
-            sceneManager = SceneManager.instance;
             buttonColours = GetComponent<Button>().colors;
         }
 

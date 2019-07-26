@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization {
+namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class DynamicMesh {
 

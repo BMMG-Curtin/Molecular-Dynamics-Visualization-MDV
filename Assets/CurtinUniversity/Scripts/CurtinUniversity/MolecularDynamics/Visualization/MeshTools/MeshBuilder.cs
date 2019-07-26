@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization {
+namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public class MeshBuilder : MonoBehaviour {
 

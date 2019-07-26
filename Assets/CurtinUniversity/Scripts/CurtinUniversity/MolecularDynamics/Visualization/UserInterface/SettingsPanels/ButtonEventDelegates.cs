@@ -7,9 +7,9 @@
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void OpenResidueDisplayOptionsDelegate(string residueName);
-    public delegate void SaveResidueButtonOptionsDelegate(ResidueDisplayOptions options, bool updateButton, bool updateModel = true);
-    public delegate void SetButtonTextDelegate(string buttonName);
+    public delegate void SaveResidueButtonOptionsDelegate(Visualization.ResidueDisplayOptions options, bool updateButton, bool updateModel = true);
     public delegate void SetCustomColourButtonColour(Color color);
-    public delegate void SetElementDelegate(string elementName, bool enabled);
+
+    public delegate void SetButtonTextDelegate(string buttonName);
     public delegate void SetParentDirectoryDelegate();
 }

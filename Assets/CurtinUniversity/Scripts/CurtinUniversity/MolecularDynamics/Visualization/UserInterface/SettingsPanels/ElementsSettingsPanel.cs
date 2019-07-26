@@ -11,6 +11,8 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
 
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
+    public delegate void SetElementDelegate(string elementName, bool enabled);
+
     public class ElementsSettingsPanel : MonoBehaviour {
 
         [SerializeField]

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization {
+namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public static class Config {
 

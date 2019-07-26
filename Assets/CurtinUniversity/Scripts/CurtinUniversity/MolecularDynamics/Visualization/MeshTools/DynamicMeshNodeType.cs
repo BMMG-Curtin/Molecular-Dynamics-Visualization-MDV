@@ -1,5 +1,5 @@
 ﻿
-namespace CurtinUniversity.MolecularDynamics.Visualization {
+namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
     public enum DynamicMeshNodeType {
 

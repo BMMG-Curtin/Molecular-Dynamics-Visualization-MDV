@@ -13,6 +13,8 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
 
+    public delegate void SetButtonTextDelegate(string buttonName);
+    public delegate void SetParentDirectoryDelegate();
     public delegate void OnFileBrowserOpenFileSubmit(string fileName, string filePath);
 
     public class LoadFileDialog : MonoBehaviour {

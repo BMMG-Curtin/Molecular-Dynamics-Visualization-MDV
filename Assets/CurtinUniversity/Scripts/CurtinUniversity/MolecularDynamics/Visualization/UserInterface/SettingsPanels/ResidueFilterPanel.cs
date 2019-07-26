@@ -21,7 +21,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [HideInInspector]
         public HashSet<int> EnabledResiduesNumbers;
 
-        private SceneManager sceneManager;
+        //private SceneManager sceneManager;
         private const int MAX_RESIDUE_NUMBER = 10000;
 
         void Awake() {
@@ -30,7 +30,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         void Start() {
 
-            sceneManager = SceneManager.instance;
+            //sceneManager = SceneManager.instance;
 
             SetDefaultOptions();
             EnabledResiduesNumbers = new HashSet<int>();
@@ -79,18 +79,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void FilterEnabledClick() {
-            StartCoroutine(sceneManager.ReloadModelView(true, false));
+            //StartCoroutine(sceneManager.ReloadModelView(true, false));
         }
 
         public void OnEnterFilterString() {
-            sceneManager.InputManager.KeyboardUIControlEnabled = false;
-            sceneManager.InputManager.KeyboardSceneControlEnabled = false;
+            //sceneManager.InputManager.KeyboardUIControlEnabled = false;
+            //sceneManager.InputManager.KeyboardSceneControlEnabled = false;
         }
 
         public void SaveFilterString() {
 
-            sceneManager.InputManager.KeyboardUIControlEnabled = true;
-            sceneManager.InputManager.KeyboardSceneControlEnabled = true;
+            //sceneManager.InputManager.KeyboardUIControlEnabled = true;
+            //sceneManager.InputManager.KeyboardSceneControlEnabled = true;
 
             string inputText = CleanFilterString(FilterString.text);
             string[] items = inputText.Split(',');
@@ -170,7 +170,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             //}
             //Debug.Log("Filter string parsed, resulting residues: \n" + string.Join(",", debugInts.ToArray()));
 
-            StartCoroutine(sceneManager.ReloadModelView(true, false));
+
+
+            //StartCoroutine(sceneManager.ReloadModelView(true, false));
         }
 
         public string CleanFilterString(string inputText) {

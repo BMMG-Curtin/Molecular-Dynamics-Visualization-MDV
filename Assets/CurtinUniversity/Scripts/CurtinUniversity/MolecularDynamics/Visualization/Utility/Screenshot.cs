@@ -1,11 +1,14 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
+using CurtinUniversity.MolecularDynamics.VisualizationP3;
+
+    namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
 
     public class Screenshot : MonoBehaviour {
 
         public KeyCode ScreenshotKey = KeyCode.Print;
+        public UserInterface userInterface;
 
         public void Update() {
 
@@ -15,7 +18,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
                 string path = Application.streamingAssetsPath + "/Screenshots/" + "Screenshot_" + timeStamp + ".png";
                 ScreenCapture.CaptureScreenshot(path);
 
-                SceneManager.instance.GUIManager.Console.ShowMessage("Screenshot captured: " + path);
+                userInterface.ShowConsoleMessage("Screenshot captured: " + path);
             }
         }
     }
