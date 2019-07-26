@@ -6,9 +6,12 @@ using UnityEngine.UI;
 
 using TMPro;
 
-using CurtinUniversity.MolecularDynamics.VisualizationP3;
-
 namespace CurtinUniversity.MolecularDynamics.Visualization {
+
+    public delegate void SetCustomColourButtonColour(Color color);
+    public delegate void OpenResidueDisplayOptionsDelegate(string residueName);
+    //public delegate void SaveResidueButtonOptionsDelegate(ResidueDisplayOptions options, bool updateButton, bool updateModel = true);
+    public delegate void SaveResidueButtonOptionsDelegate(ResidueDisplayOptions options, bool updateButton, bool updateModel);
 
     public class ResiduesSettingsPanel : MonoBehaviour {
 
@@ -44,8 +47,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 modelResidues = new Dictionary<int, List<string>>();
             }
 
-            CloseResidueDisplayOptions();
             CloseResidueFilter();
+            CloseResidueDisplayOptions();
         }
 
         public void OnEnable() {
@@ -187,7 +190,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void OpenResidueDisplayOptionsForAllResidues() {
 
-            ResidueDisplayOptions displayOptions = new ResidueDisplayOptions(UpdateAllResiduesKey, VisualizationP3.Settings.ResidueColourDefault);
+            ResidueDisplayOptions displayOptions = new ResidueDisplayOptions(UpdateAllResiduesKey, Visualization.Settings.ResidueColourDefault);
             ResidueDisplayOptions.SetActive(true);
 
             ResidueDisplayOptionsPanel displayOptionsPanel = ResidueDisplayOptions.GetComponent<ResidueDisplayOptionsPanel>();

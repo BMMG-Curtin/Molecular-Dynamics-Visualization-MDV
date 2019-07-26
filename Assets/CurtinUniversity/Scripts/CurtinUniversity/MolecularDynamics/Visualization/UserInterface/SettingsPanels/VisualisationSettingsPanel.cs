@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 using TMPro;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class VisualisationSettingsPanel : MonoBehaviour {
 

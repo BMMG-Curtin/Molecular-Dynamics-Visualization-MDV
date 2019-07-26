@@ -4,11 +4,9 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Model.Analysis;
 using CurtinUniversity.MolecularDynamics.Model.Model;
-using CurtinUniversity.MolecularDynamics.Model.FileParser;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class Molecule : MonoBehaviour {
 

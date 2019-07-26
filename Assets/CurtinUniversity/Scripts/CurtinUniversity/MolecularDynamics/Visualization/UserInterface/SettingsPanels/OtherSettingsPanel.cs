@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class OtherSettingsPanel : MonoBehaviour {
 

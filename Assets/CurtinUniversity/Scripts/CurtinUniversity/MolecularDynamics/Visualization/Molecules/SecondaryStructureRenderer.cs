@@ -8,7 +8,7 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
 using CurtinUniversity.MolecularDynamics.Model.Definitions;
 using CurtinUniversity.MolecularDynamics.Model.Model;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class SecondaryStructureRenderer : MonoBehaviour {
 

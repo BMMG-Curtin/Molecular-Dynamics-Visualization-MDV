@@ -9,7 +9,7 @@ using TMPro;
 using CurtinUniversity.MolecularDynamics.Model.Model;
 using CurtinUniversity.MolecularDynamics.Visualization.Utility;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void SetElementDelegate(string elementName, bool enabled);
 

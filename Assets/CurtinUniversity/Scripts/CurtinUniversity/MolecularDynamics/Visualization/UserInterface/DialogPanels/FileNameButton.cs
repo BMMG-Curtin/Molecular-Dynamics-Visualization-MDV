@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 using TMPro;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void OnFileBrowserButtonClick(string text);
     public delegate void OnFileBrowserButtonDoubleClick(string text);

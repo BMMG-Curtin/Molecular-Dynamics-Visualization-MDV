@@ -2,7 +2,7 @@
 
 using CurtinUniversity.MolecularDynamics.Model.Model;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MoleculeBox : MonoBehaviour {
 

@@ -11,7 +11,7 @@ using System.Linq;
 
 using TMPro;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void SetButtonTextDelegate(string buttonName);
     public delegate void SetParentDirectoryDelegate();

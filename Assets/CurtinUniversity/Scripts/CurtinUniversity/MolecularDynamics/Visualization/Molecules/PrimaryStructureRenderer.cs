@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
+using UnityEngine;
 
 using CurtinUniversity.MolecularDynamics.Model.Definitions;
 using CurtinUniversity.MolecularDynamics.Model.Model;
@@ -10,7 +10,7 @@ using CurtinUniversity.MolecularDynamics.Visualization.Utility;
 
 using System.Diagnostics;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     [RequireComponent(typeof(MeshBuilder))]
     public class PrimaryStructureRenderer : MonoBehaviour {

@@ -25,16 +25,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void Start() {
 
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour1);
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour2);
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour3);
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour4);
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour5);
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour6);
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour7);
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour8);
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour9);
-            addColourSelectButton(VisualizationP3.Settings.ResidueColour10);
+            addColourSelectButton(Visualization.Settings.ResidueColour1);
+            addColourSelectButton(Visualization.Settings.ResidueColour2);
+            addColourSelectButton(Visualization.Settings.ResidueColour3);
+            addColourSelectButton(Visualization.Settings.ResidueColour4);
+            addColourSelectButton(Visualization.Settings.ResidueColour5);
+            addColourSelectButton(Visualization.Settings.ResidueColour6);
+            addColourSelectButton(Visualization.Settings.ResidueColour7);
+            addColourSelectButton(Visualization.Settings.ResidueColour8);
+            addColourSelectButton(Visualization.Settings.ResidueColour9);
+            addColourSelectButton(Visualization.Settings.ResidueColour10);
         }
 
         public void Initialise(ResidueDisplayOptions displayOptions) {

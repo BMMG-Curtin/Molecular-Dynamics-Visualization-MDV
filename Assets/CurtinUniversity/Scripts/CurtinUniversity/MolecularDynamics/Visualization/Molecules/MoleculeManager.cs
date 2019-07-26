@@ -5,11 +5,10 @@ using System.IO;
 
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Model.Analysis;
 using CurtinUniversity.MolecularDynamics.Model.FileParser;
 using CurtinUniversity.MolecularDynamics.Model.Model;
 
-namespace CurtinUniversity.MolecularDynamics.VisualizationP3 {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MoleculeManager : MonoBehaviour {
 

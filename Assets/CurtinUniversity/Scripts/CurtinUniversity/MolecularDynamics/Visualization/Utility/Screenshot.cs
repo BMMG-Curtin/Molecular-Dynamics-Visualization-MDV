@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.VisualizationP3;
+using CurtinUniversity.MolecularDynamics.Visualization;
 
-    namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
+namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
 
     public class Screenshot : MonoBehaviour {
 
