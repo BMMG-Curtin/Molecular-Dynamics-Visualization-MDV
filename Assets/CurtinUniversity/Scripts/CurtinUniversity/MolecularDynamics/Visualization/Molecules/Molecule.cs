@@ -25,26 +25,24 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Vector3 boundingBoxCentre; // cannot use original bounding box centre as z coords need to be flipped
 
         private bool buildSecondaryStructureTrajectory = true;
-        private int? frameNumber = null;
-
-        private bool centredAtOrigin = false;
+        //private int? frameNumber = null;
+        //private bool centredAtOrigin = false;
 
         private Quaternion saveRotation;
         private Vector3 savePosition;
         private Vector3 saveScale;
 
-        private float scale = 1;
-        private float scaleIncrementAmount = 0.1f;
+        //private float scale = 1;
+        //private float scaleIncrementAmount = 0.1f;
+        //private bool displayTrajectory = false;
 
-        private bool displayTrajectory = false;
+        //private int currentFrameIndex = 0;
+        //private bool animating = false;
+        //private float lastAnimationUpdate = 0;
 
-        private int currentFrameIndex = 0;
-        private bool animating = false;
-        private float lastAnimationUpdate = 0;
+        //private float secondsBetweenFrames;
 
-        private float secondsBetweenFrames;
-
-        private bool initialised = false;
+        //private bool initialised = false;
         private bool rendering = false;
         private bool awaitingRender = false;
 
@@ -79,7 +77,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             PrimaryStructureRenderer.Initialise(primaryStructure);
             SecondaryStructureRenderer.Initialise(primaryStructure);
 
-            initialised = true;
+            //initialised = true;
         }
 
         public void SetTrajectory(PrimaryStructureTrajectory trajectory) {
@@ -158,7 +156,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     box = new BoundingBox(frame);
                 }
 
-                MoleculeBox.Build(boundingBox);
+                MoleculeBox.Build(box);
             }
             else {
                 MoleculeBox.gameObject.SetActive(false);

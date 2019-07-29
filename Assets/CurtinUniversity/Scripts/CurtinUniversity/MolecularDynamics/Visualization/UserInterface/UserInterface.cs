@@ -47,11 +47,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void Start() {
 
-            //if (Settings.HideHardwareMouseCursor) {
-            //    Cursor.lockState = CursorLockMode.Locked;
-            //    Cursor.visible = false;
-            //}
-
             HideUserInterface();
         }
 
@@ -59,8 +54,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             // if the window loses focus (e.g. alt-tab) then the cursor gets unlocked.
             // need to lock again when user uses the application.
-            if (Settings.HideHardwareMouseCursor && Cursor.lockState != CursorLockMode.Locked) {
-
+            if (Cursor.lockState != CursorLockMode.Locked) {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }

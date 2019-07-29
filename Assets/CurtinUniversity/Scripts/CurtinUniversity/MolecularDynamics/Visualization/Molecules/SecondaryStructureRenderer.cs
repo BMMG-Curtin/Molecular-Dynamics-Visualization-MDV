@@ -25,7 +25,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private PrimaryStructure primaryStructure;
         //private SecondaryStructure defaultSecondaryStructure;
-        private Dictionary<string, Mesh> structureCache;
+        //private Dictionary<string, Mesh> structureCache;
 
         private bool initialised = false;
         private bool buildingModel = false;
@@ -33,7 +33,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void Initialise(PrimaryStructure primaryStructure) {
 
             this.primaryStructure = primaryStructure;
-            structureCache = new Dictionary<string, Mesh>();
+            //structureCache = new Dictionary<string, Mesh>();
             initialised = true;
         }
 
@@ -314,7 +314,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
 
-            if (Settings.SmoothRibbons) {
+            if (renderSettings.SmoothNodes) {
                 nodes = smoothMeshNodes(nodes);
             }
 
@@ -440,13 +440,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
 
-            //if (smoothedNodes.Count == nodes.Count) {
             return smoothedNodes;
-            //}
-            //else {
-            //    UnityEngine.Debug.Log("*** error in smoothing. New node count != old node count");
-            //    return nodes;
-            //}
         }
 
         // used for showing normals to debug mesh rendering

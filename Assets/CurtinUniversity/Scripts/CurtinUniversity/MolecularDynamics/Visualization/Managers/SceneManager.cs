@@ -49,23 +49,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void loadDefaultModel() {
 
-            if (Config.GetString("LoadMoleculeOnStart") == "True") {
-
-                string filename = Config.GetString("LoadMoleculeFileName");
-                if (filename == null || filename.Trim() == "") {
+            if(!Settings.LoadMoleculeOnStart || Settings.LoadMoleculeFileName == null || Settings.LoadMoleculeFileName.Trim() == "") {
                     return;
-                }
-
-                userInterface.ConsoleSetSilent(false);
-                string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + filename;
-
-                MoleculeRenderSettings settings = MoleculeRenderSettings.Default();
-                settings.ShowAtoms = false;
-                settings.ShowSimulationBox = false;
-                userInterface.LoadMolecule(filePath, settings);
-
-                userInterface.ConsoleSetSilent(false);
             }
+
+            userInterface.ConsoleSetSilent(false);
+            string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + Settings.LoadMoleculeFileName;
+
+            MoleculeRenderSettings settings = MoleculeRenderSettings.Default();
+            settings.ShowAtoms = false;
+            settings.ShowSimulationBox = false;
+            userInterface.LoadMolecule(filePath, settings);
+
+            userInterface.ConsoleSetSilent(false);
         }
 
         private void onLoadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {

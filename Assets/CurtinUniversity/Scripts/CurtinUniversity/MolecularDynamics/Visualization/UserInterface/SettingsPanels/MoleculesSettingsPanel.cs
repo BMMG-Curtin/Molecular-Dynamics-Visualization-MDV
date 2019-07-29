@@ -148,7 +148,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 MoleculeSettings settings = molecules.Get(id);
                 settings.HasTrajectory = true;
                 settings.TrajectoryFrameCount = frameCount;
-                settings.CurrentTrajectoryFrameNumber = 0;
+                settings.CurrentTrajectoryFrameNumber = null;
 
                 loadTrajectoryButtonText.text = "Update Trajectory";
 

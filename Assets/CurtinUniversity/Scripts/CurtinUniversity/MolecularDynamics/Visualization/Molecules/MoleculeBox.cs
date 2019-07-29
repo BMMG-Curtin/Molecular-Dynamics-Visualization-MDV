@@ -8,9 +8,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public GameObject BoxEdgePrefab;
 
-        /// <summary>
-        /// Only rectangular boxes are currently supported.
-        /// </summary>
         public void Build(BoundingBox box) {
 
             // remove any existing box

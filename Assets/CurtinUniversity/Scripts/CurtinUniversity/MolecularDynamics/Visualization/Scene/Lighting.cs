@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
-
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class Lighting : MonoBehaviour {
@@ -39,8 +37,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void EnableShadows(bool enable) {
-
-            Debug.Log("Enable shadows: " + enable);
 
             if (enable) {
                 Light1.shadows = light1Shadows;

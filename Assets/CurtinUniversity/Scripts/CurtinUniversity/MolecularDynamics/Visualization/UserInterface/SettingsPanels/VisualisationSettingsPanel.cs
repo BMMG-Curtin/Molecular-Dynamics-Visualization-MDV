@@ -27,6 +27,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public Toggle ShowHelicesToggle;
         public Toggle ShowSheetsToggle;
         public Toggle ShowTurnsToggle;
+        public Toggle SmoothNodesToggle;
 
         public Toggle ShowCPKToggle;
         public Toggle ShowVDWToggle;
@@ -81,6 +82,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             ShowHelicesToggle.isOn = false;
             ShowSheetsToggle.isOn = false;
             ShowTurnsToggle.isOn = false;
+            SmoothNodesToggle.isOn = false;
 
             // scale options
             AtomScale.text = "";
@@ -108,6 +110,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             ShowHelicesToggle.interactable = enable;
             ShowSheetsToggle.interactable = enable;
             ShowTurnsToggle.interactable = enable;
+            SmoothNodesToggle.interactable = enable;
 
             EnableSimlationBoxToggle.interactable = enable;
             CalculateBoxEveryFrameToggle.interactable = enable;
@@ -140,6 +143,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             ShowHelicesToggle.isOn = selectedMolecule.RenderSettings.ShowHelices;
             ShowSheetsToggle.isOn = selectedMolecule.RenderSettings.ShowSheets;
             ShowTurnsToggle.isOn = selectedMolecule.RenderSettings.ShowTurns;
+            SmoothNodesToggle.isOn = selectedMolecule.RenderSettings.SmoothNodes;
 
             // scale options
             AtomScale.text = selectedMolecule.RenderSettings.AtomScale.ToString("F1");
@@ -212,6 +216,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (selectedMolecule.RenderSettings.ShowSheets != ShowSheetsToggle.isOn) {
                 selectedMolecule.RenderSettings.ShowSheets = ShowSheetsToggle.isOn;
+                visualisationUpdateRequired = true;
+            }
+
+            if (selectedMolecule.RenderSettings.ShowTurns != ShowTurnsToggle.isOn) {
+                selectedMolecule.RenderSettings.ShowTurns = ShowTurnsToggle.isOn;
+                visualisationUpdateRequired = true;
+            }
+
+            if (selectedMolecule.RenderSettings.SmoothNodes != SmoothNodesToggle.isOn) {
+                selectedMolecule.RenderSettings.SmoothNodes = SmoothNodesToggle.isOn;
                 visualisationUpdateRequired = true;
             }
 

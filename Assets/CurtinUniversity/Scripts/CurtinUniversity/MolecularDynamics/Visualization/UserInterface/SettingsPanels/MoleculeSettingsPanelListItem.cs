@@ -36,8 +36,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private float lastClickTime = 0;
         private float doubleClickTimeout = 0.5f;
 
-        private bool itemHighlighted = false;
-
         public void Initialise(int moleculeID, string name, OnMoleculeSettingsPanelListItemClick onClick, OnMoleculeSettingsPanelListItemDoubleClick onDoubleClick) {
 
             this.moleculeID = moleculeID;

@@ -64,6 +64,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public bool ShowHelices { get; set; }
         public bool ShowSheets { get; set; }
         public bool ShowTurns { get; set; }
+        public bool SmoothNodes { get; set; }
 
         // box settings
         public bool ShowSimulationBox { get; set; }
@@ -97,6 +98,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 ShowHelices = true,
                 ShowSheets = true,
                 ShowTurns = true,
+                SmoothNodes = true,
 
                 ShowSimulationBox = true,
                 CalculateBoxEveryFrame = false,

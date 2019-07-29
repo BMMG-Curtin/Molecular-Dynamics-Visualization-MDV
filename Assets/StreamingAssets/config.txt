@@ -4,28 +4,6 @@
 LoadMoleculeOnStart: True
 LoadMoleculeFileName: C240.xyz
 
-// Model Settings
-MaxBondLength: 0.155 // Bonds are calculated on atom distance. Atoms seperated by a distance in nm lower than this value have a bond. 0.155 is fairly standard
-GenerateBonds: True
-GenerateBondsOnModelLoad: False // if this is False and GenerateBonds is True then bonds will be generated when needed for display.
-
-// Colour settings
-
-// Colors for residue highlighting. 
-// Uses RGB values ranging from 0-255
-// ResidueColour1: 255, 0, 0 		// red
-// ResidueColour2: 255, 128, 0		// orange
-// ResidueColour3: 255, 255, 0 	// yellow
-// ResidueColour4: 128, 255, 0 	// lime
-// ResidueColour5: 0, 255, 0 		// green
-// ResidueColour6: 0, 255, 191 	// cyan
-// ResidueColour7: 0, 191, 255 	// blue
-// ResidueColour8: 0, 0, 255	 	// dark blue
-// ResidueColour9: 191, 0, 255 	// purple
-// ResidueColour10: 220, 220, 220 	// dull white
-// ResidueColourDefault: 255, 0, 0 // red
-
-
 // Colors for residue highlighting. 
 // Uses RGB values ranging from 0-255
 ResidueColour1: 255, 0, 0 		// red1
@@ -38,5 +16,19 @@ ResidueColour7: 195, 195, 255 	// blue1
 ResidueColour8: 125, 125, 255 	// blue2
 ResidueColour9: 65, 65, 255 	// blue3
 ResidueColour10: 0, 0, 255 	    // blue4
-
 ResidueColourDefault: 255, 0, 0 // red
+
+// Colors for residue highlighting. 
+// Uses RGB values ranging from 0-255
+// ResidueColour1: 255, 0, 0 		// red
+// ResidueColour2: 255, 128, 0		// orange
+// ResidueColour3: 255, 255, 0 		// yellow
+// ResidueColour4: 128, 255, 0 		// lime
+// ResidueColour5: 0, 255, 0 		// green
+// ResidueColour6: 0, 255, 191 		// cyan
+// ResidueColour7: 0, 191, 255 		// blue
+// ResidueColour8: 0, 0, 255	 	// dark blue
+// ResidueColour9: 191, 0, 255 		// purple
+// ResidueColour10: 220, 220, 220 	// dull white
+// ResidueColourDefault: 255, 0, 0	// red
+
