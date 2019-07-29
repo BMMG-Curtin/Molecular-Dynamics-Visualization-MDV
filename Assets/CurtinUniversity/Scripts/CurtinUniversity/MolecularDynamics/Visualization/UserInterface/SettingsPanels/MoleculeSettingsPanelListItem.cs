@@ -1,6 +1,6 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using TMPro;
 
@@ -9,7 +9,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public delegate void OnMoleculeSettingsPanelListItemClick(int moleculeID);
     public delegate void OnMoleculeSettingsPanelListItemDoubleClick(int moleculeID);
 
-    public class MoleculeSettingsPanelListItem : MonoBehaviour {
+    // we need to use a pointerdownhandler instead of an event trigger on the gameobject as the event trigger consumes the mouse wheel scroll behaviour
+    public class MoleculeSettingsPanelListItem : MonoBehaviour, IPointerDownHandler {
 
         [SerializeField]
         private TextMeshProUGUI moleculeIDText;
@@ -61,7 +62,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void OnClick() {
+        public void OnPointerDown(PointerEventData eventData) {
 
             if (onDoubleClick != null) {
 
