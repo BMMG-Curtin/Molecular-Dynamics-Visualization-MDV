@@ -31,6 +31,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TextMeshProUGUI loadTrajectoryButtonText;
 
         [SerializeField]
+        private Button lockUnlockMoleculeButton;
+
+        [SerializeField]
+        private TextMeshProUGUI lockUnlockMoleculeButtonText;
+
+        [SerializeField]
         private Button showHideMoleculeButton;
 
         [SerializeField]
@@ -62,11 +68,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TrajectoryControls trajectoryControls;
 
         private HashSet<int> hiddenMolecules;
+        private HashSet<int> movingMolecules;
 
         public void Awake() {
 
             moleculeListItems = new Dictionary<int, MoleculeSettingsPanelListItem>();
             hiddenMolecules = new HashSet<int>();
+            movingMolecules = new HashSet<int>();
 
             molecules.SelectedMoleculeID = null;
             updateSelectedMoleculeInterfaceSettings();
@@ -154,6 +162,28 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 updateSelectedMoleculeInterfaceSettings();
             }
+        }
+
+        public void OnMoveReleaseMoleculeButton() {
+
+            MoleculeSettings molecule = molecules.GetSelected();
+
+            if (molecule == null) {
+                return;
+            }
+
+            if (movingMolecules.Contains(molecule.ID)) {
+
+                UserInterfaceEvents.RaiseEnableMoveMolecule(molecule.ID);
+                movingMolecules.Remove(molecule.ID);
+            }
+            else {
+
+                UserInterfaceEvents.RaiseDisableMoveMolecule(molecule.ID);
+                movingMolecules.Add(molecule.ID);
+            }
+
+            updateSelectedMoleculeInterfaceSettings();
         }
 
         public void OnShowHideMoleculeButton() {
@@ -283,6 +313,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 loadTrajectoryButton.interactable = false;
                 loadTrajectoryButton.gameObject.SetActive(false);
+                lockUnlockMoleculeButton.interactable = false;
+                lockUnlockMoleculeButton.gameObject.SetActive(false);
                 showHideMoleculeButton.interactable = false;
                 showHideMoleculeButton.gameObject.SetActive(false);
                 removeMoleculeButton.interactable = false;
@@ -295,6 +327,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 loadTrajectoryButton.interactable = true;
                 loadTrajectoryButton.gameObject.SetActive(true);
+                lockUnlockMoleculeButton.interactable = true;
+                lockUnlockMoleculeButton.gameObject.SetActive(true);
                 showHideMoleculeButton.interactable = true;
                 showHideMoleculeButton.gameObject.SetActive(true);
                 removeMoleculeButton.interactable = true;
@@ -317,6 +351,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
                 else {
                     showHideMoleculeButtonText.text = "Hide Molecule";
+                }
+
+                if (movingMolecules.Contains((int)molecule.ID)) {
+                    lockUnlockMoleculeButtonText.text = "Release Molecule";
+                }
+                else {
+                    lockUnlockMoleculeButtonText.text = "Move Molecule";
                 }
 
                 moleculeInfoPanel.SetActive(true);

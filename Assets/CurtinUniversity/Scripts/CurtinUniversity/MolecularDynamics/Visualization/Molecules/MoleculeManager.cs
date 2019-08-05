@@ -15,6 +15,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private GameObject MoleculePrefab;
 
+        [SerializeField]
+        private GameObject CameraMolecules;
+
         private Dictionary<int, Molecule> molecules;
 
         private bool loadingFile;
@@ -104,6 +107,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (molecules.ContainsKey(moleculeID)) {
                 molecules[moleculeID].Hide();
+            }
+        }
+
+        public void EnableMoveMolecule(int moleculeID) {
+            if (molecules.ContainsKey(moleculeID)) {
+                molecules[moleculeID].transform.SetParent(CameraMolecules.transform, true);
+            }
+        }
+
+        public void DisableMoveMolecule(int moleculeID) {
+            if (molecules.ContainsKey(moleculeID)) {
+                molecules[moleculeID].transform.SetParent(this.transform, true);
             }
         }
 
