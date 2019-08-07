@@ -210,6 +210,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 trajectoryControls.StopAnimation();
                 UserInterfaceEvents.RaiseHideMolecule(molecule.ID);
                 hiddenMolecules.Add(molecule.ID);
+
+                // stop moving if we hide the molecule
+                if (movingMolecules.Contains(molecule.ID)) {
+
+                    UserInterfaceEvents.RaiseEnableMoveMolecule(molecule.ID);
+                    movingMolecules.Remove(molecule.ID);
+                }
             }
 
             updateSelectedMoleculeInterfaceSettings();

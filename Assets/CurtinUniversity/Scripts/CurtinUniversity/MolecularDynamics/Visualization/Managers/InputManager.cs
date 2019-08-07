@@ -29,12 +29,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         private void Start() {
-
             getKeyboardModifiers();
         }
 
         void Update() {
-
             getKeyboardModifiers();
         }
 

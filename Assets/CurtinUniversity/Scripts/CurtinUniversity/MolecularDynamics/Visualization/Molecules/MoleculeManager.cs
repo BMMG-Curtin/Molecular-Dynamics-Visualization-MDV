@@ -19,13 +19,38 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject CameraMolecules;
 
         private Dictionary<int, Molecule> molecules;
+        private HashSet<int> moleculesToMove;
+        private HashSet<int> movingMolecules;
 
         private bool loadingFile;
 
         private void Awake() {
 
             molecules = new Dictionary<int, Molecule>();
+            moleculesToMove = new HashSet<int>();
+            movingMolecules = new HashSet<int>();
             loadingFile = false;
+        }
+
+        private void Update() {
+
+            if (Input.GetMouseButtonDown(0)) {
+
+                foreach (int moleculeID in moleculesToMove) {
+
+                    molecules[moleculeID].transform.SetParent(CameraMolecules.transform, true);
+                    movingMolecules.Add(moleculeID);
+                }
+            }
+
+            if (Input.GetMouseButtonUp(0)) {
+
+                foreach (int moleculeID in movingMolecules) {
+                    molecules[moleculeID].transform.SetParent(this.transform, true);
+                }
+
+                movingMolecules.Clear();
+            }
         }
 
         public void LoadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
@@ -111,22 +136,30 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void EnableMoveMolecule(int moleculeID) {
+
             if (molecules.ContainsKey(moleculeID)) {
-                molecules[moleculeID].transform.SetParent(CameraMolecules.transform, true);
+                moleculesToMove.Add(moleculeID);
             }
         }
 
         public void DisableMoveMolecule(int moleculeID) {
-            if (molecules.ContainsKey(moleculeID)) {
-                molecules[moleculeID].transform.SetParent(this.transform, true);
+
+            if (molecules.ContainsKey(moleculeID) && moleculesToMove.Contains(moleculeID)) {
+                moleculesToMove.Remove(moleculeID);
             }
         }
 
         public void RemoveMolecule(int moleculeID) {
 
             if(molecules.ContainsKey(moleculeID)) {
+
                 GameObject.Destroy(molecules[moleculeID].gameObject);
+
                 molecules.Remove(moleculeID);
+
+                if (moleculesToMove.Contains(moleculeID)) {
+                    moleculesToMove.Remove(moleculeID);
+                }
             }
         }
 
