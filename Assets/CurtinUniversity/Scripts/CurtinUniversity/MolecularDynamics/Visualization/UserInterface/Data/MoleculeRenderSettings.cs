@@ -100,7 +100,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 ShowTurns = true,
                 SmoothNodes = true,
 
-                ShowSimulationBox = true,
+                ShowSimulationBox = false,
                 CalculateBoxEveryFrame = false,
 
                 AtomScale = Settings.DefaultAtomScale,

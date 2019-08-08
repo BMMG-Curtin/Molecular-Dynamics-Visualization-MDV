@@ -6,6 +6,8 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
+using FullSerializer;
+
 using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
@@ -23,6 +25,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         [SerializeField]
         private GameObject moleculeListContent;
+
+        [SerializeField]
+        private Button loadSettingsButton;
+
+        [SerializeField]
+        private Button saveSettingsButton;
 
         [SerializeField]
         private Button loadTrajectoryButton;
@@ -137,6 +145,30 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 updateSelectedMoleculeInterfaceSettings();
             }
+        }
+
+        public void OnLoadSettingsButton() {
+
+
+        }
+
+        public void OnSaveSettingsButton() {
+
+            MoleculeSettings molecule = molecules.GetSelected();
+
+            if (molecule == null) {
+                return;
+            }
+
+            fsSerializer serializer = new fsSerializer();
+            fsData data;
+
+            serializer.TrySerialize<MoleculeRenderSettings>(molecule.RenderSettings, out data).AssertSuccessWithoutWarnings();
+            
+            // string json = fsJsonPrinter.PrettyJson(data);
+            string json = fsJsonPrinter.CompressedJson(data);
+            Debug.Log("Json:\n" + json);
+            Debug.Log("Json Length:\n" + json.Length);
         }
 
         public void OnLoadTrajectoryButton() {
@@ -318,6 +350,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (molecules.SelectedMoleculeID == null) {
 
+                loadSettingsButton.interactable = false;
+                loadSettingsButton.gameObject.SetActive(false);
+                saveSettingsButton.interactable = false;
+                saveSettingsButton.gameObject.SetActive(false);
                 loadTrajectoryButton.interactable = false;
                 loadTrajectoryButton.gameObject.SetActive(false);
                 lockUnlockMoleculeButton.interactable = false;
@@ -332,6 +368,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 MoleculeSettings molecule = molecules.GetSelected();
 
+                loadSettingsButton.interactable = true;
+                loadSettingsButton.gameObject.SetActive(true);
+                saveSettingsButton.interactable = true;
+                saveSettingsButton.gameObject.SetActive(true);
                 loadTrajectoryButton.interactable = true;
                 loadTrajectoryButton.gameObject.SetActive(true);
                 lockUnlockMoleculeButton.interactable = true;
