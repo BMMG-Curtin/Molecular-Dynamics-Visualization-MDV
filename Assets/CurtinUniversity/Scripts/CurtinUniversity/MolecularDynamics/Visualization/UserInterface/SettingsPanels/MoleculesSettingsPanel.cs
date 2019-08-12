@@ -225,17 +225,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     fullPath += Settings.MDVSettingsFileExtension;
                 }
 
-                if (!File.Exists(fullPath)) {
-
-                    File.WriteAllText(fullPath, json);
-                    console.ShowMessage("Saved molecule settings to: " + fullPath);
-                }
-                else {
-                    console.ShowError("Cannot save settings, file already exists at " + fullPath);
-                }
+                File.WriteAllText(fullPath, json);
+                console.ShowMessage("Saved molecule settings to: " + fullPath);
             }
             catch (Exception e) {
-                console.ShowError("Error saving settings - " + e.Message);
+
+                console.ShowError("Error saving molecule settings: " + e.Message);
                 return;
             }
         }

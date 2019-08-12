@@ -14,15 +14,32 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class SaveFileDialog : MonoBehaviour {
 
-        public GameObject FileNameButtonPrefab;
-        public GameObject DirNameButtonPrefab;
-        public GameObject ParentDirButtonPrefab;
-        public GameObject DriveNameButtonPrefab;
+        [SerializeField]
+        ConfirmDialog ConfirmDialog;
 
-        public GameObject DirectoryContent;
-        public ScrollRect ScrollView;
-        public TextMeshProUGUI CurrentDirectoryText;
-        public TMP_InputField FileNameInputField;
+        [SerializeField]
+        private GameObject FileNameButtonPrefab;
+
+        [SerializeField]
+        private GameObject DirNameButtonPrefab;
+
+        [SerializeField]
+        private GameObject ParentDirButtonPrefab;
+
+        [SerializeField]
+        private GameObject DriveNameButtonPrefab;
+
+        [SerializeField]
+        private GameObject DirectoryContent;
+
+        [SerializeField]
+        private ScrollRect ScrollView;
+
+        [SerializeField]
+        private TextMeshProUGUI CurrentDirectoryText;
+
+        [SerializeField]
+        private TMP_InputField FileNameInputField;
 
         private string currentFilePath;
         private OnFileBrowserSaveFileSubmit onSubmit;
@@ -33,6 +50,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private string playerPrefsCurrentFilePathKey = @"CurrentFilePath";
 
+        // used for saving between confirmation dialog
+        private string confirmFileName;
+        private string confirmFilePath;
+
         public void Initialise(List<string> validFileExtensions, OnFileBrowserSaveFileSubmit onSubmit) {
 
             Debug.Log("Initialising File Browser");
@@ -42,6 +63,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             currentFilePath = "";
             CurrentDirectoryText.text = currentFilePath;
+
+            confirmFileName = "";
+            confirmFilePath = "";
 
             bool setPath = false;
 
@@ -156,8 +180,28 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             string fullPath = (currentFilePath + Path.DirectorySeparatorChar + fileName).Trim();
 
-            onSubmit(fileName, fullPath);
-            gameObject.SetActive(false);
+            if(File.Exists(fullPath)) {
+
+                confirmFileName = fileName;
+                confirmFilePath = fullPath;
+
+                ConfirmDialog.gameObject.SetActive(true);
+                ConfirmDialog.Initialise("File already exists\nWould you like to overwrite the file?", onConfirmSave);
+            }
+            else {
+
+                onSubmit(fileName, fullPath);
+                gameObject.SetActive(false);
+            }
+        }
+
+        private void onConfirmSave(bool confirmed) {
+
+            if (confirmed) {
+
+                onSubmit(confirmFileName, confirmFilePath);
+                gameObject.SetActive(false);
+            }
         }
 
         public void OnCloseDialog() {

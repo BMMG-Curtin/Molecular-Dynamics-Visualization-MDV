@@ -8,4 +8,5 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public delegate void SetParentDirectoryDelegate();
     public delegate void OnFileBrowserOpenFileSubmit(string fileName, string filePath);
     public delegate void OnFileBrowserSaveFileSubmit(string fileName, string filePath);
+    public delegate void OnConfirmDialogSubmit(bool confirm);
 }
