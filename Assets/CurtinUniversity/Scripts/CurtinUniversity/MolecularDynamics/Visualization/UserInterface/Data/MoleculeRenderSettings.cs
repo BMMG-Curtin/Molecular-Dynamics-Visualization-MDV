@@ -17,6 +17,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public MolecularRepresentation Representation { get; set; }
 
+        // secondary structure settings
+        public bool ShowSecondaryStructure { get; set; }
+        public bool ShowHelices { get; set; }
+        public bool ShowSheets { get; set; }
+        public bool ShowTurns { get; set; }
+        public bool SmoothNodes { get; set; }
+
+        // box settings
+        public bool ShowSimulationBox { get; set; }
+        public bool CalculateBoxEveryFrame { get; set; }
+
+        [SerializeField]
         private float atomScale;
         public float AtomScale {
 
@@ -38,6 +50,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        [SerializeField]
         private float bondScale;
         public float BondScale {
 
@@ -58,17 +71,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
         }
-
-        // secondary structure settings
-        public bool ShowSecondaryStructure { get; set; }
-        public bool ShowHelices { get; set; }
-        public bool ShowSheets { get; set; }
-        public bool ShowTurns { get; set; }
-        public bool SmoothNodes { get; set; }
-
-        // box settings
-        public bool ShowSimulationBox { get; set; }
-        public bool CalculateBoxEveryFrame { get; set; }
 
         // element settings
         public HashSet<string> EnabledElements { get; set; }
@@ -106,6 +108,46 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 AtomScale = Settings.DefaultAtomScale,
                 BondScale = Settings.DefaultBondScale,
             };
+        }
+
+        public override string ToString() {
+
+            string output =
+                "ShowPrimaryStructure: " + ShowPrimaryStructure + "\n" +
+                "ShowAtoms: " + ShowAtoms + "\n" +
+                "ShowBonds: " + ShowBonds + "\n" +
+                "ShowStandardResidues: " + ShowStandardResidues + "\n" +
+                "ShowNonStandardResidues: " + ShowNonStandardResidues + "\n" +
+                "ShowMainChains: " + ShowMainChains + "\n" +
+                "Representation: " + Representation + "\n" +
+                "ShowSecondaryStructure: " + ShowSecondaryStructure + "\n" +
+                "ShowHelices: " + ShowHelices + "\n" +
+                "ShowSheets: " + ShowSheets + "\n" +
+                "ShowTurns: " + ShowTurns + "\n" +
+                "SmoothNodes: " + SmoothNodes + "\n" +
+                "ShowSimulationBox: " + ShowSimulationBox + "\n" +
+                "CalculateBoxEveryFrame: " + CalculateBoxEveryFrame + "\n" +
+                "AtomScale: " + AtomScale + "\n" +
+                "BondScale: " + BondScale + "\n";
+
+            output += EnabledElements == null ? "null\n" : string.Join("", EnabledElements) + "\n";
+            output += "FilterResiduesByNumber: " + FilterResiduesByNumber + "\n";
+            output += EnabledResidueNumbers == null ? "null\n" : string.Join("", EnabledResidueNumbers) + "\n";
+            output += EnabledResidueNames == null ? "null\n" : string.Join("", EnabledResidueNames) + "\n";
+            output += CustomDisplayResidues == null ? "null\n" : string.Join("", CustomDisplayResidues) + "\n";
+
+            if (ResidueOptions == null) {
+                output += "ResidueOptions: null\n";
+            }
+            else {
+                output += "ResidueOptions:\n";
+                foreach (KeyValuePair<string, ResidueDisplayOptions> item in ResidueOptions) {
+                    output += "Name: " + item.Key + ":\n" + item.Value.ToString();
+                }
+            }
+
+            return output;
+
         }
 
         public override bool Equals(object obj) {

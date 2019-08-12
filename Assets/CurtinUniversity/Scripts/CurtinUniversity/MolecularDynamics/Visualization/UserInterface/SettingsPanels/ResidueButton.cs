@@ -24,7 +24,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             buttonColours = GetComponent<Button>().colors;
         }
 
-        public void SetCallback(ResidueDisplayOptions options, SaveResidueButtonOptionsDelegate saveOptionsCallback, OpenResidueDisplayOptionsDelegate openDisplayCallback) {
+        public void Initialise(ResidueDisplayOptions options, SaveResidueButtonOptionsDelegate saveOptionsCallback, OpenResidueDisplayOptionsDelegate openDisplayCallback) {
 
             SaveOptionsCallback = saveOptionsCallback;
             OpenDisplayOptionsCallback = openDisplayCallback;
@@ -34,7 +34,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void UpdateResidueOptions(ResidueDisplayOptions options) {
 
             this.residueOptions = options;
-            UpdateButtonColors();
+            updateButtonColors();
         }
 
         public void ResidueClick() {
@@ -50,29 +50,29 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 if (SaveOptionsCallback != null) {
 
                     residueOptions.Enabled = !residueOptions.Enabled;
-                    UpdateButtonColors();
+                    updateButtonColors();
                 }
             }
 
             SaveOptionsCallback(residueOptions, false, true);
         }
 
-        private void UpdateButtonColors() {
+        private void updateButtonColors() {
 
             if (residueOptions.Enabled) {
                 if (residueOptions.IsDefault()) {
-                    SetButtonColours(EnabledColour);
+                    setButtonColours(EnabledColour);
                 }
                 else {
-                    SetButtonColours(HighlightedColour);
+                    setButtonColours(HighlightedColour);
                 }
             }
             else {
-                SetButtonColours(DisabledColour);
+                setButtonColours(DisabledColour);
             }
         }
 
-        private void SetButtonColours(Color32 color) {
+        private void setButtonColours(Color32 color) {
 
             buttonColours.normalColor = color;
             buttonColours.highlightedColor = color;

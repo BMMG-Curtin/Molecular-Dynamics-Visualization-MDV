@@ -135,7 +135,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     Debug.Log("Button script null in residue panel init");
                 }
 
-                buttonScript.SetCallback(displayOptions, SaveResidueDisplayOptions, OpenResidueDisplayOptions);
+                buttonScript.Initialise(displayOptions, SaveResidueDisplayOptions, OpenResidueDisplayOptions);
                 buttonScript.ResidueName = residue;
                 button.GetComponentInChildren<Text>().text = residue.Trim();
 

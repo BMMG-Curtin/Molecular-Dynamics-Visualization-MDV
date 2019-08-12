@@ -16,7 +16,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         SetElementDelegate elementCallback;
 
-        void Start() {
+        private void Awake() {
+
             colors = GetComponent<Button>().colors;
 
             // save existing colors for use
@@ -29,27 +30,40 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             colors.pressedColor = enabledColour;
         }
 
-        public void SetCallback(SetElementDelegate callback) {
+        public void Initialise(bool elementEnabled, SetElementDelegate callback) {
+
             elementCallback = callback;
+            this.elementEnabled = elementEnabled;
+            updateButtonColors();
         }
 
         public void ElementClick() {
 
             if (elementCallback != null) {
+
                 elementEnabled = !elementEnabled;
+
                 elementCallback(ElementName, elementEnabled);
-                if (elementEnabled) {
-                    colors.normalColor = enabledColour;
-                    colors.highlightedColor = enabledColour;
-                    colors.pressedColor = enabledColour;
-                }
-                else {
-                    colors.normalColor = disabledColour;
-                    colors.highlightedColor = disabledColour;
-                    colors.pressedColor = disabledColour;
-                }
-                GetComponent<Button>().colors = colors;
+                updateButtonColors();
             }
+        }
+
+        private void updateButtonColors() {
+
+            if (elementEnabled) {
+
+                colors.normalColor = enabledColour;
+                colors.highlightedColor = enabledColour;
+                colors.pressedColor = enabledColour;
+            }
+            else {
+
+                colors.normalColor = disabledColour;
+                colors.highlightedColor = disabledColour;
+                colors.pressedColor = disabledColour;
+            }
+
+            GetComponent<Button>().colors = colors;
         }
     }
 }

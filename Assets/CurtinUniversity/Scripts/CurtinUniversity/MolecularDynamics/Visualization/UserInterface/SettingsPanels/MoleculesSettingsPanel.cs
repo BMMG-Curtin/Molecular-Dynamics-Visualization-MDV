@@ -78,6 +78,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private HashSet<int> hiddenMolecules;
         private HashSet<int> movingMolecules;
 
+        private string savedSettings;
+
         public void Awake() {
 
             moleculeListItems = new Dictionary<int, MoleculeSettingsPanelListItem>();
@@ -149,7 +151,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void OnLoadSettingsButton() {
 
+            MoleculeSettings molecule = molecules.GetSelected();
 
+            if (molecule == null || savedSettings == null) {
+                return;
+            }
+
+            fsData data = fsJsonParser.Parse(savedSettings);
+
+            object settings = null;
+            (new fsSerializer()).TryDeserialize(data, typeof(MoleculeRenderSettings), ref settings).AssertSuccessWithoutWarnings();
+
+            molecule.RenderSettings = (MoleculeRenderSettings)settings;
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
+
+            Debug.Log("Loaded object settings:\n" + molecule.RenderSettings.ToString());
         }
 
         public void OnSaveSettingsButton() {
@@ -163,12 +179,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             fsSerializer serializer = new fsSerializer();
             fsData data;
 
+            Debug.Log("Saving object settings:\n" + molecule.RenderSettings.ToString());
+
             serializer.TrySerialize<MoleculeRenderSettings>(molecule.RenderSettings, out data).AssertSuccessWithoutWarnings();
             
             // string json = fsJsonPrinter.PrettyJson(data);
             string json = fsJsonPrinter.CompressedJson(data);
             Debug.Log("Json:\n" + json);
             Debug.Log("Json Length:\n" + json.Length);
+
+            savedSettings = json;
         }
 
         public void OnLoadTrajectoryButton() {

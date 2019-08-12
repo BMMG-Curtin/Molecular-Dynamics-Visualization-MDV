@@ -88,7 +88,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     button.GetComponent<Image>().color = new Color(1, 1, 1);
 
                     ElementButton buttonScript = button.GetComponent<ElementButton>();
-                    buttonScript.SetCallback(new SetElementDelegate(setElement));
+
+                    if (selectedMolecule.RenderSettings.EnabledElements.Contains(symbol.ToUpper())) {
+                        buttonScript.Initialise(true, new SetElementDelegate(setElement));
+                    }
+                    else { 
+                        buttonScript.Initialise(false, new SetElementDelegate(setElement));
+                    }
                     buttonScript.ElementName = symbol;
                 }
                 else {

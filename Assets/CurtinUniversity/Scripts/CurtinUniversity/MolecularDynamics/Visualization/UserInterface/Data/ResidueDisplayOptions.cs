@@ -59,6 +59,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             ColourSecondaryStructure = newOptions.ColourSecondaryStructure;
         }
 
+        public override string ToString() {
+
+            return
+                "ResidueName: " + ResidueName + "\n" +
+                "Enabled: " + Enabled + "\n" +
+                "CustomColour: " + CustomColour + "\n" +
+                "LargeBonds: " + LargeBonds + "\n" +
+                "ColourAtoms: " + ColourAtoms + "\n" +
+                "ColourBonds: " + ColourBonds + "\n" +
+                "ColourSecondaryStructure: " + ColourSecondaryStructure;
+        }
+
         public override bool Equals(object obj) {
 
             if(obj.GetType() == typeof(ResidueDisplayOptions)) {
