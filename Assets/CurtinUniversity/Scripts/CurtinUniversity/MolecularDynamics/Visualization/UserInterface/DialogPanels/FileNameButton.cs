@@ -9,9 +9,6 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public delegate void OnFileBrowserButtonClick(string text);
-    public delegate void OnFileBrowserButtonDoubleClick(string text);
-
     public class FileNameButton : MonoBehaviour {
 
         public TextMeshProUGUI ButtonText;

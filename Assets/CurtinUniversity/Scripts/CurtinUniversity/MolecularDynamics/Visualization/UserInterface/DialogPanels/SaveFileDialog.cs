@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 using System;
 using System.IO;
@@ -13,7 +12,7 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public class LoadFileDialog : MonoBehaviour {
+    public class SaveFileDialog : MonoBehaviour {
 
         public GameObject FileNameButtonPrefab;
         public GameObject DirNameButtonPrefab;
@@ -23,19 +22,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public GameObject DirectoryContent;
         public ScrollRect ScrollView;
         public TextMeshProUGUI CurrentDirectoryText;
-        public TextMeshProUGUI SelectedFileNameText;
+        public TMP_InputField FileNameInputField;
 
         private string currentFilePath;
-        private OnFileBrowserOpenFileSubmit onSubmit;
+        private OnFileBrowserSaveFileSubmit onSubmit;
         private List<string> validExtensions;
 
         private int currentDirectoryObjectCount = 0;
         private int scrollStepCount = 5;
-        private string defaultFileName = "Select a file...";
 
         private string playerPrefsCurrentFilePathKey = @"CurrentFilePath";
 
-        public void Initialise(List<string> validFileExtensions, OnFileBrowserOpenFileSubmit onSubmit) {
+        public void Initialise(List<string> validFileExtensions, OnFileBrowserSaveFileSubmit onSubmit) {
 
             Debug.Log("Initialising File Browser");
 
@@ -44,8 +42,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             currentFilePath = "";
             CurrentDirectoryText.text = currentFilePath;
-
-            SetFileName(defaultFileName);
 
             bool setPath = false;
 
@@ -74,12 +70,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void SetFileName(string fileName) {
-            SelectedFileNameText.text = fileName;
+            FileNameInputField.text= fileName;
         }
 
         public void SubmitFileName(string fileName) {
 
-            SelectedFileNameText.text = fileName;
+            FileNameInputField.text = fileName;
             OnSubmitButton();
         }
 
@@ -93,7 +89,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             CurrentDirectoryText.text = currentFilePath + Path.DirectorySeparatorChar;
             clearDirectoryView();
             displayCurrentDirectory();
-            SetFileName(defaultFileName);
 
             ScrollDirectoryToTop();
 
@@ -106,7 +101,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             CurrentDirectoryText.text = currentFilePath;
             clearDirectoryView();
             displayCurrentDirectory();
-            SetFileName(defaultFileName);
 
             ScrollDirectoryToTop();
 
@@ -132,13 +126,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 currentFilePath = "";
                 CurrentDirectoryText.text = currentFilePath;
-                SetFileName(defaultFileName);
                 clearDirectoryView();
                 displayDrives();
             }
             else {
 
-                SetFileName(defaultFileName);
                 currentFilePath = parentInfo.FullName;
                 CurrentDirectoryText.text = currentFilePath;
                 if (!currentFilePath.EndsWith(Path.DirectorySeparatorChar.ToString())) {
@@ -155,14 +147,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void OnSubmitButton() {
 
-            string fileName = SelectedFileNameText.text;
+            string fileName = FileNameInputField.text;
             string filePath = currentFilePath;
 
-            if (fileName == null || fileName.Trim() == "" || fileName == defaultFileName || filePath == null || filePath.Trim() == "") {
+            if (fileName == null || fileName.Trim() == "" || filePath == null || filePath.Trim() == "") {
                 return;
             }
 
-            string fullPath = currentFilePath + Path.DirectorySeparatorChar + fileName;
+            string fullPath = (currentFilePath + Path.DirectorySeparatorChar + fileName).Trim();
 
             onSubmit(fileName, fullPath);
             gameObject.SetActive(false);

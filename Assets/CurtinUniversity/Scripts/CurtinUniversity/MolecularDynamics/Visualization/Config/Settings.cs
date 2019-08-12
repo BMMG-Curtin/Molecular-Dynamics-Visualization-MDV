@@ -86,6 +86,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static string GromacsFileExtension { get; private set; }       = ".gro";
         public static string[] StructureFileExtensions { get; private set; }  = new[] { ".gro", ".xyz", ".pdb" };
         public static string[] TrajectoryFileExtensions { get; private set; } = new[] { ".xtc", ".dcd" };
+        public static string MDVSettingsFileExtension            = ".mdv";
         public static string StrideExecutablePath { get; private set; }       = Application.streamingAssetsPath + Path.DirectorySeparatorChar + @"stride_WIN32.exe";
         public static string TmpFilePath { get; private set; }                = Application.streamingAssetsPath + Path.DirectorySeparatorChar;
 

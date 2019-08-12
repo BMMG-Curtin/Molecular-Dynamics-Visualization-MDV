@@ -18,6 +18,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject loadFileDialog;
 
         [SerializeField]
+        private GameObject saveFileDialog;
+
+        [SerializeField]
         private MessageConsole console;
 
         [SerializeField]
@@ -151,21 +154,42 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void OnLoadSettingsButton() {
 
+            loadFileDialog.SetActive(true);
+            LoadFileDialog dialog = loadFileDialog.GetComponent<LoadFileDialog>();
+            List<string> validFileExtensions = new List<string>() { Settings.MDVSettingsFileExtension };
+            dialog.Initialise(validFileExtensions, onLoadSettingsFileSubmitted);
+        }
+
+        private void onLoadSettingsFileSubmitted(string fileName, string fullPath) { 
+
             MoleculeSettings molecule = molecules.GetSelected();
 
-            if (molecule == null || savedSettings == null) {
+            if (molecule == null) {
                 return;
             }
 
-            fsData data = fsJsonParser.Parse(savedSettings);
+            if (!File.Exists(fullPath)) {
+                console.ShowError("Cannot load settings, file not found at " + fullPath);
+                return;
+            }
 
-            object settings = null;
-            (new fsSerializer()).TryDeserialize(data, typeof(MoleculeRenderSettings), ref settings).AssertSuccessWithoutWarnings();
+            try {
 
-            molecule.RenderSettings = (MoleculeRenderSettings)settings;
-            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
+                string json = File.ReadAllText(fullPath);
 
-            Debug.Log("Loaded object settings:\n" + molecule.RenderSettings.ToString());
+                fsData data = fsJsonParser.Parse(json);
+                object settings = null;
+                (new fsSerializer()).TryDeserialize(data, typeof(MoleculeRenderSettings), ref settings).AssertSuccessWithoutWarnings();
+                molecule.RenderSettings = (MoleculeRenderSettings)settings;
+
+                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
+
+                Debug.Log("Loaded new settings for molecule " + molecule.Name);
+            }
+            catch (Exception e) {
+                console.ShowError("Error loading settings - " + e.Message);
+                return;
+            }
         }
 
         public void OnSaveSettingsButton() {
@@ -176,19 +200,44 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
-            fsSerializer serializer = new fsSerializer();
-            fsData data;
+            saveFileDialog.SetActive(true);
+            SaveFileDialog dialog = saveFileDialog.GetComponent<SaveFileDialog>();
+            List<string> validFileExtensions = new List<string>() { Settings.MDVSettingsFileExtension };
+            dialog.Initialise(validFileExtensions, onSaveSettingsFileSubmitted);
+        }
 
-            Debug.Log("Saving object settings:\n" + molecule.RenderSettings.ToString());
+        private void onSaveSettingsFileSubmitted(string fileName, string fullPath) { 
 
-            serializer.TrySerialize<MoleculeRenderSettings>(molecule.RenderSettings, out data).AssertSuccessWithoutWarnings();
-            
-            // string json = fsJsonPrinter.PrettyJson(data);
-            string json = fsJsonPrinter.CompressedJson(data);
-            Debug.Log("Json:\n" + json);
-            Debug.Log("Json Length:\n" + json.Length);
+            MoleculeSettings molecule = molecules.GetSelected();
 
-            savedSettings = json;
+            if (molecule == null) {
+                return;
+            }
+
+            try {
+
+                fsSerializer serializer = new fsSerializer();
+                fsData data;
+                serializer.TrySerialize<MoleculeRenderSettings>(molecule.RenderSettings, out data).AssertSuccessWithoutWarnings();
+                string json = fsJsonPrinter.CompressedJson(data);
+
+                if (!fullPath.EndsWith(Settings.MDVSettingsFileExtension)) {
+                    fullPath += Settings.MDVSettingsFileExtension;
+                }
+
+                if (!File.Exists(fullPath)) {
+
+                    File.WriteAllText(fullPath, json);
+                    console.ShowMessage("Saved molecule settings to: " + fullPath);
+                }
+                else {
+                    console.ShowError("Cannot save settings, file already exists at " + fullPath);
+                }
+            }
+            catch (Exception e) {
+                console.ShowError("Error saving settings - " + e.Message);
+                return;
+            }
         }
 
         public void OnLoadTrajectoryButton() {

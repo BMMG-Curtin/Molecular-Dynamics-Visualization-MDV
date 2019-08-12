@@ -9,8 +9,6 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public delegate void OnFileBrowserParentDirectoryButtonClick();
-
     public class ParentDirButton : MonoBehaviour {
 
         OnFileBrowserParentDirectoryButtonClick onClick;

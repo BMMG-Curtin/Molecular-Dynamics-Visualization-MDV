@@ -45,7 +45,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         { ConsoleMessageType.Banner, Color.green },
         { ConsoleMessageType.Standard, Color.white },
         { ConsoleMessageType.Warning, Color.yellow },
-        { ConsoleMessageType.Error, Color.red },
+        { ConsoleMessageType.Error, Color.cyan },
     };
 
         private bool newBanner = true;
