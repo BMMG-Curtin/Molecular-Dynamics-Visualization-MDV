@@ -45,11 +45,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void LoadSettings() {
 
-            if (displayOptions.ResidueName == ResiduesPanel.UpdateAllResiduesKey) {
+            if (displayOptions.ResidueID == -1) {
                 PanelTitle.text = "Updating All Residues";
             }
             else {
-                PanelTitle.text = displayOptions.ResidueName + " Residue Display Options";
+                PanelTitle.text = "Residue " + displayOptions.ResidueID + " Display Options";
             }
 
             EnabledToggle.isOn = displayOptions.Enabled;

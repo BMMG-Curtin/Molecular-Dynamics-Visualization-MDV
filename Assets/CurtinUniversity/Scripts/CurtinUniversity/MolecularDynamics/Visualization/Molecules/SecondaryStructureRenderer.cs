@@ -121,15 +121,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Vector3 averagedNormal = Vector3.zero;
             SecondaryStructureType lastType = SecondaryStructureType.Coil;
 
-            HashSet<string> customDisplayResidues = null;
-            if (renderSettings.CustomDisplayResidues != null && renderSettings.CustomDisplayResidues.Count > 0) {
-                customDisplayResidues = renderSettings.CustomDisplayResidues;
+
+            HashSet<int> customResiduesIDs = null;
+            if (renderSettings.CustomResidueIDs != null && renderSettings.CustomResidueIDs.Count > 0) {
+                customResiduesIDs = renderSettings.CustomResidueIDs;
             }
 
-            Dictionary<string, Visualization.ResidueDisplayOptions> residueOptions = null;
-            if (customDisplayResidues != null) {
+            Dictionary<int, ResidueDisplayOptions> residueOptions = null;
+            if (customResiduesIDs != null) {
                 residueOptions = renderSettings.ResidueOptions;
             }
+
 
             for (int i = 0; i < chain.MainChainResidues.Count; i++) {
 
@@ -206,9 +208,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                     bool foundColour = false;
 
-                    if (customDisplayResidues != null && customDisplayResidues.Contains(residue.Name)) {
+                    if (customResiduesIDs != null && customResiduesIDs.Contains(residue.ID)) {
 
-                        Visualization.ResidueDisplayOptions displayOptions = residueOptions[residue.Name];
+                        ResidueDisplayOptions displayOptions = residueOptions[residue.ID];
 
                         if (displayOptions != null && displayOptions.ColourSecondaryStructure) {
 
@@ -260,7 +262,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     }
                 }
                 else {
-                    UnityEngine.Debug.Log("*** Structure info null: assigning defaults");
+                    Debug.Log("*** Structure info null: assigning defaults");
                     node.Type = DynamicMeshNodeType.Tube;
                     node.VertexColor = ErrorColor;
                 }

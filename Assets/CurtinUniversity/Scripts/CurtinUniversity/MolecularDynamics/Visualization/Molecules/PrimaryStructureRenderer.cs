@@ -143,7 +143,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             HashSet<string> enabledElementNames = null;
             HashSet<string> enabledResiduesNames = null;
-            HashSet<string> customDisplayResidueNames = null;
+            HashSet<int> enabledResidueIDs = null;
+            HashSet<int> customResiduesIDs = null;
 
             if (renderSettings.EnabledElements != null && primaryStructure.ElementNames.Count > renderSettings.EnabledElements.Count) {
                 enabledElementNames = renderSettings.EnabledElements;
@@ -153,13 +154,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 enabledResiduesNames = renderSettings.EnabledResidueNames;
             }
 
-            if (renderSettings.CustomDisplayResidues != null && renderSettings.CustomDisplayResidues.Count > 0) {
-                customDisplayResidueNames = renderSettings.CustomDisplayResidues;
+            if (renderSettings.EnabledResidueIDs != null && primaryStructure.ResidueCount() > renderSettings.EnabledResidueIDs.Count) {
+                enabledResidueIDs = renderSettings.EnabledResidueIDs;
             }
 
-            bool filterByNumber = renderSettings.FilterResiduesByNumber;
-
-            HashSet<int> enabledResidueNumbers = renderSettings.EnabledResidueNumbers;
+            if (renderSettings.CustomResidueIDs != null && renderSettings.CustomResidueIDs.Count > 0) {
+                customResiduesIDs = renderSettings.CustomResidueIDs;
+            }
 
             Dictionary<int, Atom> atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, enabledElementNames, enabledResiduesNames);
 
@@ -167,7 +168,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 Atom atom = item.Value;
 
-                if (filterByNumber && enabledResidueNumbers != null && !enabledResidueNumbers.Contains(atom.ResidueID)) {
+                if(enabledResiduesNames != null && !enabledResiduesNames.Contains(atom.ResidueName)) {
+                    continue;
+                }
+
+                if (enabledResidueIDs != null && !enabledResidueIDs.Contains(atom.ResidueID)) {
                     continue;
                 }
 
@@ -195,9 +200,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 //// set colour for atoms 
                 Color32 atomColour;
 
-                if (customDisplayResidueNames != null && customDisplayResidueNames.Contains(atom.ResidueName)) {
+                if (customResiduesIDs != null && customResiduesIDs.Contains(atom.ResidueID)) {
 
-                    Visualization.ResidueDisplayOptions displayOptions = renderSettings.ResidueOptions[atom.ResidueName];
+                    ResidueDisplayOptions displayOptions = renderSettings.ResidueOptions[atom.ResidueID];
 
                     if (displayOptions != null && displayOptions.ColourAtoms) {
                         atomColour = displayOptions.CustomColour;
@@ -257,34 +262,54 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             // get atoms for bonds
             Dictionary<int, Atom> atoms;
             Dictionary<int, Atom> highLightedAtoms = new Dictionary<int, Atom>();
-            HashSet<string> enabledElementNames = null;
-            HashSet<string> enabledResidues = null;
-            HashSet<string> customDisplayResidues = null;
 
+
+            //HashSet<string> enabledElementNames = null;
+            //HashSet<string> enabledResidues = null;
+            //HashSet<string> customDisplayResidues = null;
+
+            //if (renderSettings.EnabledElements != null && primaryStructure.ElementNames.Count > renderSettings.EnabledElements.Count) {
+            //    enabledElementNames = renderSettings.EnabledElements;
+            //}
+
+            //if (renderSettings.EnabledResidueNames != null && primaryStructure.ResidueNames.Count > renderSettings.EnabledResidueNames.Count) {
+            //    enabledResidues = renderSettings.EnabledResidueNames;
+            //}
+
+            //if (renderSettings.CustomDisplayResidues != null && renderSettings.CustomDisplayResidues.Count > 0) {
+            //    customDisplayResidues = renderSettings.CustomDisplayResidues;
+            //}
+
+
+            HashSet<string> enabledElementNames = null;
+            HashSet<string> enabledResiduesNames = null;
+            HashSet<int> enabledResidueIDs = null;
+            HashSet<int> customResiduesIDs = null;
 
             if (renderSettings.EnabledElements != null && primaryStructure.ElementNames.Count > renderSettings.EnabledElements.Count) {
                 enabledElementNames = renderSettings.EnabledElements;
             }
 
             if (renderSettings.EnabledResidueNames != null && primaryStructure.ResidueNames.Count > renderSettings.EnabledResidueNames.Count) {
-                enabledResidues = renderSettings.EnabledResidueNames;
+                enabledResiduesNames = renderSettings.EnabledResidueNames;
             }
 
-            if (renderSettings.CustomDisplayResidues != null && renderSettings.CustomDisplayResidues.Count > 0) {
-                customDisplayResidues = renderSettings.CustomDisplayResidues;
+            if (renderSettings.EnabledResidueIDs != null && primaryStructure.ResidueCount() > renderSettings.EnabledResidueIDs.Count) {
+                enabledResidueIDs = renderSettings.EnabledResidueIDs;
             }
 
-            atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, enabledElementNames, enabledResidues);
+            if (renderSettings.CustomResidueIDs != null && renderSettings.CustomResidueIDs.Count > 0) {
+                customResiduesIDs = renderSettings.CustomResidueIDs;
+            }
 
-            Dictionary<string, Visualization.ResidueDisplayOptions> residueOptions = null;
-            if (customDisplayResidues != null) {
-                highLightedAtoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, renderSettings.EnabledElements, customDisplayResidues);
+            atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, enabledElementNames, enabledResidueIDs);
+
+            Dictionary<int, ResidueDisplayOptions> residueOptions = null;
+            if (customResiduesIDs != null) {
+                highLightedAtoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, renderSettings.EnabledElements, customResiduesIDs);
                 residueOptions = renderSettings.ResidueOptions;
             }
 
-            bool filterByNumber = renderSettings.FilterResiduesByNumber;
-            HashSet<int> enabledResidueNumbers = renderSettings.EnabledResidueNumbers;
-            
             foreach (KeyValuePair<int, Bond> bond in bonds) {
 
                 Vector3 atom1pos, atom2pos;
@@ -295,8 +320,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     continue;
                 }
 
-                if (filterByNumber && enabledResidueNumbers != null &&
-                    (!enabledResidueNumbers.Contains(atom1.ResidueID) || !enabledResidueNumbers.Contains(atom2.ResidueID))) {
+                if (enabledResiduesNames != null && 
+                    (!enabledResiduesNames.Contains(atom1.ResidueName) || !enabledResiduesNames.Contains(atom2.ResidueName))) {
+                    continue;
+                }
+
+                if (enabledResidueIDs != null &&
+                    (!enabledResidueIDs.Contains(atom1.ResidueID) || !enabledResidueIDs.Contains(atom2.ResidueID))) {
                     continue;
                 }
 
@@ -335,13 +365,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 if (highLightedAtoms != null && highLightedAtoms.Count > 0 && highLightedAtoms.ContainsKey(atom1.ID) && highLightedAtoms.ContainsKey(atom2.ID)) {
 
-                    string atom1residue = primaryStructure.Atoms()[atom1.ID].ResidueName;
-                    string atom2residue = primaryStructure.Atoms()[atom2.ID].ResidueName;
+                    int atom1residue = primaryStructure.Atoms()[atom1.ID].ResidueID;
+                    int atom2residue = primaryStructure.Atoms()[atom2.ID].ResidueID;
 
                     // only colour or highlight bonds between atoms of the same residue
                     if (atom1residue == atom2residue && residueOptions.ContainsKey(atom1residue) && residueOptions[atom1residue].ColourBonds) {
 
-                        Visualization.ResidueDisplayOptions options = residueOptions[atom1residue];
+                        ResidueDisplayOptions options = residueOptions[atom1residue];
 
                         float cylinderWidth = standardCylinderWidth;
                         if (options.LargeBonds) {

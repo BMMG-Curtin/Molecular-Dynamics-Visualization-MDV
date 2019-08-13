@@ -76,12 +76,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public HashSet<string> EnabledElements { get; set; }
 
         // residue settings
-        public bool FilterResiduesByNumber;
-        public HashSet<int> EnabledResidueNumbers;
-
         public HashSet<string> EnabledResidueNames;
-        public HashSet<string> CustomDisplayResidues;
-        public Dictionary<string, Visualization.ResidueDisplayOptions> ResidueOptions;
+        public HashSet<string> CustomResidueNames;
+        public HashSet<int> EnabledResidueIDs;
+        public HashSet<int> CustomResidueIDs;
+        public Dictionary<int, ResidueDisplayOptions> ResidueOptions;
 
         public static MoleculeRenderSettings Default() {
 
@@ -131,18 +130,20 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 "BondScale: " + BondScale + "\n";
 
             output += EnabledElements == null ? "null\n" : string.Join("", EnabledElements) + "\n";
-            output += "FilterResiduesByNumber: " + FilterResiduesByNumber + "\n";
-            output += EnabledResidueNumbers == null ? "null\n" : string.Join("", EnabledResidueNumbers) + "\n";
+
+
             output += EnabledResidueNames == null ? "null\n" : string.Join("", EnabledResidueNames) + "\n";
-            output += CustomDisplayResidues == null ? "null\n" : string.Join("", CustomDisplayResidues) + "\n";
+            output += EnabledResidueIDs == null ? "null\n" : string.Join("", EnabledResidueIDs) + "\n";
+            output += CustomResidueNames == null ? "null\n" : string.Join("", CustomResidueNames) + "\n";
+            output += CustomResidueIDs == null ? "null\n" : string.Join("", CustomResidueIDs) + "\n";
 
             if (ResidueOptions == null) {
                 output += "ResidueOptions: null\n";
             }
             else {
                 output += "ResidueOptions:\n";
-                foreach (KeyValuePair<string, ResidueDisplayOptions> item in ResidueOptions) {
-                    output += "Name: " + item.Key + ":\n" + item.Value.ToString();
+                foreach (KeyValuePair<int, ResidueDisplayOptions> item in ResidueOptions) {
+                    output += "Residue ID: " + item.Key + ":\n" + item.Value.ToString();
                 }
             }
 
@@ -207,10 +208,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public bool EqualResidueSettings(MoleculeRenderSettings otherSettings) {
 
             return
-                otherSettings.FilterResiduesByNumber == FilterResiduesByNumber &&
-                otherSettings.EnabledResidueNumbers == EnabledResidueNumbers &&
                 otherSettings.EnabledResidueNames == EnabledResidueNames &&
-                otherSettings.CustomDisplayResidues == CustomDisplayResidues &&
+                otherSettings.EnabledResidueIDs == EnabledResidueIDs &&
+                otherSettings.CustomResidueNames == CustomResidueNames &&
+                otherSettings.CustomResidueIDs == CustomResidueIDs &&
                 otherSettings.ResidueOptions == ResidueOptions;
         }
     }

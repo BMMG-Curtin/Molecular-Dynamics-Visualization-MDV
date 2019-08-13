@@ -10,8 +10,9 @@ using TMPro;
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void SetCustomColourButtonColour(Color color);
-    public delegate void OpenResidueDisplayOptionsDelegate(string residueName);
-    //public delegate void SaveResidueButtonOptionsDelegate(ResidueDisplayOptions options, bool updateButton, bool updateModel = true);
+    public delegate void OpenResidueIDsDelegate(string residueName);
+    public delegate void OpenResidueDisplayOptionsDelegate(int residueID);
+    public delegate void SaveResidueNameEnabledDelegate(string residueName, bool enabled);
     public delegate void SaveResidueButtonOptionsDelegate(ResidueDisplayOptions options, bool updateButton, bool updateModel);
 
     public class ResiduesSettingsPanel : MonoBehaviour {
@@ -25,15 +26,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public GameObject ResidueButtonContent;
         public GameObject ResidueButtonPrefab;
 
-        public ScrollRect ScrollView;
+        public ScrollRect ResidueNamesScrollView;
         public GameObject ResidueDisplayOptions;
+
         public Text ResiduesEnableAllButtonText;
 
-        public string UpdateAllResiduesKey { get { return "__UPDATEALLRESIDUES__"; } }
-
-        private Dictionary<int, Dictionary<string, List<int>>> moleculeResidues;
         private Dictionary<int, List<string>> moleculeResidueNames;
-        private Dictionary<string, ResidueButton> residueButtons;
+        private Dictionary<int, List<int>> moleculeResidueIDs;
+        private Dictionary<int, Dictionary<string, List<int>>> moleculeResidues;
+
+        private Dictionary<string, ResidueNameButton> residueNameButtons;
 
         private int scrollStepCount = 5;
         private int buttonsPerLine = 7; // used to calculate scroll speed
@@ -45,14 +47,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private void Awake() {
 
             if (moleculeResidues == null || moleculeResidueNames == null) {
-                moleculeResidues = new Dictionary<int, Dictionary<string, List<int>>>();
+
                 moleculeResidueNames = new Dictionary<int, List<string>>();
+                moleculeResidueIDs = new Dictionary<int, List<int>>();
+                moleculeResidues = new Dictionary<int, Dictionary<string, List<int>>>();
             }
 
             CloseResidueDisplayOptions();
         }
 
-        public void OnEnable() {
+        private void OnEnable() {
 
             selectedMolecule = molecules.GetSelected();
             initialise();
@@ -70,6 +74,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (moleculeResidues == null || moleculeResidueNames == null) {
 
                 moleculeResidues = new Dictionary<int, Dictionary<string, List<int>>>();
+                moleculeResidueIDs = new Dictionary<int, List<int>>();
                 moleculeResidueNames = new Dictionary<int, List<string>>();
             }
 
@@ -82,10 +87,24 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             moleculeResidueNames[moleculeID].Sort();
 
-            // set the molecule residue IDs by name
+            // set the molecule residue IDs
+            // while IDs should be unique they might not be, so using a HashSet to aggregate before adding to list
+            HashSet<int> residueIDsSet = new HashSet<int>();
+
+            foreach (HashSet<int> ids in residues.Values) {
+                foreach (int id in ids) {
+                    residueIDsSet.Add(id);
+                }
+            }
+
+            List<int> residueIDsList = residueIDsSet.ToList();
+            residueIDsList.Sort();
+            moleculeResidueIDs.Add(moleculeID, residueIDsList);
+
+            // set the molecule residue IDs by name, and also the molecule residue IDs list at the same time
             moleculeResidues.Add(moleculeID, new Dictionary<string, List<int>>());
 
-            foreach(KeyValuePair<string, HashSet<int>> residue in residues) {
+            foreach (KeyValuePair<string, HashSet<int>> residue in residues) {
 
                 List<int> residueIDs = residue.Value.ToList();
                 residueIDs.Sort();
@@ -102,8 +121,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
+            // initialise the residue render settings for the molecule
+
             if (selectedMolecule.RenderSettings.EnabledResidueNames == null) {
-                if (moleculeResidues.ContainsKey(selectedMolecule.ID)) {
+                if (moleculeResidueNames.ContainsKey(selectedMolecule.ID)) {
                     selectedMolecule.RenderSettings.EnabledResidueNames = new HashSet<string>(moleculeResidueNames[selectedMolecule.ID]);
                 }
                 else {
@@ -111,73 +132,91 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
 
-            if (selectedMolecule.RenderSettings.CustomDisplayResidues == null) {
-                selectedMolecule.RenderSettings.CustomDisplayResidues = new HashSet<string>();
-            }
-
-            if (selectedMolecule.RenderSettings.ResidueOptions == null) {
-                selectedMolecule.RenderSettings.ResidueOptions = new Dictionary<string, ResidueDisplayOptions>();
-            }
-            else {
-                foreach (KeyValuePair<string, ResidueDisplayOptions> options in selectedMolecule.RenderSettings.ResidueOptions) {
-                    selectedMolecule.RenderSettings.CustomDisplayResidues.Add(options.Key);
-                }
-            }
-
-            residueButtons = new Dictionary<string, ResidueButton>();
-
-            foreach (string residue in moleculeResidueNames[selectedMolecule.ID]) {
-
-                ResidueDisplayOptions displayOptions;
-
-                if (selectedMolecule.RenderSettings.ResidueOptions.ContainsKey(residue)) {
-                    displayOptions = selectedMolecule.RenderSettings.ResidueOptions[residue];
+            if (selectedMolecule.RenderSettings.EnabledResidueIDs == null) {
+                if (moleculeResidueIDs.ContainsKey(selectedMolecule.ID)) {
+                    selectedMolecule.RenderSettings.EnabledResidueIDs = new HashSet<int>(moleculeResidueIDs[selectedMolecule.ID]);
                 }
                 else {
-                    displayOptions = new ResidueDisplayOptions(residue, Settings.ResidueColourDefault);
-                    selectedMolecule.RenderSettings.ResidueOptions.Add(residue, displayOptions);
+                    selectedMolecule.RenderSettings.EnabledResidueIDs = new HashSet<int>();
                 }
+            }
 
-                GameObject button;
+            if (selectedMolecule.RenderSettings.CustomResidueNames == null) {
+                selectedMolecule.RenderSettings.CustomResidueNames = new HashSet<string>();
+            }
 
-                button = (GameObject)Instantiate(ResidueButtonPrefab, Vector3.zero, Quaternion.identity);
+            if (selectedMolecule.RenderSettings.CustomResidueIDs == null) {
+                selectedMolecule.RenderSettings.CustomResidueIDs = new HashSet<int>();
+            }
+
+
+            // render all the residue name buttons
+            residueNameButtons = new Dictionary<string, ResidueNameButton>();
+
+            foreach (string residueName in moleculeResidueNames[selectedMolecule.ID]) {
+
+                bool residueEnabled = selectedMolecule.RenderSettings.EnabledResidueNames.Contains(residueName);
+                bool residueModified = selectedMolecule.RenderSettings.CustomResidueNames.Contains(residueName);
+
+                GameObject button = (GameObject)Instantiate(ResidueButtonPrefab, Vector3.zero, Quaternion.identity);
                 button.GetComponent<Image>().color = new Color(1, 1, 1);
 
-                ResidueButton buttonScript = button.GetComponent<ResidueButton>();
-                if(buttonScript == null) {
+                ResidueNameButton buttonScript = button.GetComponent<ResidueNameButton>();
+                if (buttonScript == null) {
                     Debug.Log("Button script null in residue panel init");
                 }
 
-                buttonScript.Initialise(displayOptions, SaveResidueDisplayOptions, OpenResidueDisplayOptions);
-                buttonScript.ResidueName = residue;
-                button.GetComponentInChildren<Text>().text = residue.Trim();
+                buttonScript.Initialise(residueName, residueEnabled, residueModified, saveResidueNameEnabled, OpenResidueIDsPanel);
+                button.GetComponentInChildren<Text>().text = residueName.Trim();
 
-                residueButtons.Add(residue, buttonScript);
+                residueNameButtons.Add(residueName, buttonScript);
 
                 RectTransform rect = button.GetComponent<RectTransform>();
-                rect.SetParent(ResidueButtonContent.GetComponent<RectTransform>());
-                rect.localPosition = new Vector3(0, 0, 0);
-                rect.localRotation = Quaternion.Euler(0, 0, 0);
-                rect.localScale = Vector3.one;
+                rect.SetParent(ResidueButtonContent.GetComponent<RectTransform>(), false);
             }
         }
 
-        public void ToggleAllResidues() {
+        //public void ToggleAllResidues() {
 
-            residuesEnableAllButtonStatus = !residuesEnableAllButtonStatus;
-            selectedMolecule.RenderSettings.EnabledResidueNames = new HashSet<string>();
+        //    residuesEnableAllButtonStatus = !residuesEnableAllButtonStatus;
+        //    selectedMolecule.RenderSettings.EnabledResidueNames = new HashSet<string>();
 
-            foreach (KeyValuePair<string, ResidueDisplayOptions> options in selectedMolecule.RenderSettings.ResidueOptions) {
+        //    foreach (KeyValuePair<string, ResidueDisplayOptions> options in selectedMolecule.RenderSettings.ResidueOptions) {
 
-                options.Value.Enabled = residuesEnableAllButtonStatus;
-                SaveResidueDisplayOptions(options.Value, true, false);
-            }
+        //        options.Value.Enabled = residuesEnableAllButtonStatus;
+        //        SaveResidueDisplayOptions(options.Value, true, false);
+        //    }
 
-            if (residuesEnableAllButtonStatus == false) {
-                ResiduesEnableAllButtonText.text = "Show All";
-            }
-            else {
-                ResiduesEnableAllButtonText.text = "Hide All";
+        //    if (residuesEnableAllButtonStatus == false) {
+        //        ResiduesEnableAllButtonText.text = "Show All";
+        //    }
+        //    else {
+        //        ResiduesEnableAllButtonText.text = "Hide All";
+        //    }
+
+        //    if (selectedMolecule.Hidden) {
+        //        selectedMolecule.PendingRerender = true;
+        //    }
+        //    else {
+        //        UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
+        //    }
+        //}
+
+        // residue name button callbacks
+
+        private void saveResidueNameEnabled(string residueName, bool enabled) {
+
+            HashSet<string> enabledResidues = selectedMolecule.RenderSettings.EnabledResidueNames;
+
+            if (enabledResidues != null) {
+                if(enabled) {
+                    enabledResidues.Add(residueName);
+                }
+                else {
+                    if (enabledResidues.Contains(residueName)) {
+                        enabledResidues.Remove(residueName);
+                    }
+                }
             }
 
             if (selectedMolecule.Hidden) {
@@ -188,129 +227,143 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void OpenResidueDisplayOptions(string residueName) {
+        private void OpenResidueIDsPanel(string residueName) {
 
-            if (selectedMolecule.RenderSettings.ResidueOptions.ContainsKey(residueName)) {
-
-                ResidueDisplayOptions.SetActive(true);
-                ResidueDisplayOptionsPanel displayOptionsPanel = ResidueDisplayOptions.GetComponent<ResidueDisplayOptionsPanel>();
-                displayOptionsPanel.Initialise(selectedMolecule.RenderSettings.ResidueOptions[residueName]);
-            }
+            Debug.Log("Opening residue IDs panel for residue: " + residueName);
+            // do nothing for now
         }
 
-        public void OpenResidueDisplayOptionsForAllResidues() {
+        // residue id button callbacks
 
-            ResidueDisplayOptions displayOptions = new ResidueDisplayOptions(UpdateAllResiduesKey, Visualization.Settings.ResidueColourDefault);
-            ResidueDisplayOptions.SetActive(true);
+        //public void OpenResidueDisplayOptions(string residueName) {
 
-            ResidueDisplayOptionsPanel displayOptionsPanel = ResidueDisplayOptions.GetComponent<ResidueDisplayOptionsPanel>();
-            displayOptionsPanel.Initialise(displayOptions);
-        }
+        //    if (selectedMolecule.RenderSettings.ResidueOptions.ContainsKey(residueName)) {
+
+        //        ResidueDisplayOptions.SetActive(true);
+        //        ResidueDisplayOptionsPanel displayOptionsPanel = ResidueDisplayOptions.GetComponent<ResidueDisplayOptionsPanel>();
+        //        displayOptionsPanel.Initialise(selectedMolecule.RenderSettings.ResidueOptions[residueName]);
+        //    }
+        //}
+
+        //public void OpenResidueDisplayOptionsForAllResidues() {
+
+        //    ResidueDisplayOptions displayOptions = new ResidueDisplayOptions(UpdateAllResiduesKey, Visualization.Settings.ResidueColourDefault);
+        //    ResidueDisplayOptions.SetActive(true);
+
+        //    ResidueDisplayOptionsPanel displayOptionsPanel = ResidueDisplayOptions.GetComponent<ResidueDisplayOptionsPanel>();
+        //    displayOptionsPanel.Initialise(displayOptions);
+        //}
 
         public void SaveResidueDisplayOptions(ResidueDisplayOptions options, bool updateButton, bool updateModel = true) {
 
-            if (options.ResidueName == UpdateAllResiduesKey) {
-
-                foreach (KeyValuePair<string, ResidueDisplayOptions> oldOptions in selectedMolecule.RenderSettings.ResidueOptions) {
-
-                    string residueName = oldOptions.Value.ResidueName;
-                    oldOptions.Value.Clone(options);
-                    oldOptions.Value.ResidueName = residueName;
-                    SaveResidueDisplayOptions(oldOptions.Value, true, false);
-
-                    if (options.Enabled) {
-                        ResiduesEnableAllButtonText.text = "Hide All";
-                        residuesEnableAllButtonStatus = true;
-                    }
-                    else {
-                        ResiduesEnableAllButtonText.text = "Show All";
-                        residuesEnableAllButtonStatus = false;
-                    }
-                }
-            }
-            else {
-
-                // update residue button state
-                if (updateButton) {
-                    residueButtons[options.ResidueName].UpdateResidueOptions(options);
-                }
-
-                // update state lists
-                if (options.Enabled) {
-                    if (!selectedMolecule.RenderSettings.EnabledResidueNames.Contains(options.ResidueName)) {
-                        selectedMolecule.RenderSettings.EnabledResidueNames.Add(options.ResidueName);
-                    }
-                }
-                else {
-                    selectedMolecule.RenderSettings.EnabledResidueNames.Remove(options.ResidueName);
-                }
-
-                if (!options.IsDefault()) {
-                    if (!selectedMolecule.RenderSettings.CustomDisplayResidues.Contains(options.ResidueName)) {
-                        selectedMolecule.RenderSettings.CustomDisplayResidues.Add(options.ResidueName);
-                    }
-                }
-                else {
-                    selectedMolecule.RenderSettings.CustomDisplayResidues.Remove(options.ResidueName);
-                }
-            }
-
-            if (updateModel) {
-
-                if (selectedMolecule.Hidden) {
-                    selectedMolecule.PendingRerender = true;
-                }
-                else {
-                    UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
-                }
-            }
+            Debug.Log("Saving residue display options");
+            // do nothing for now
         }
+
+        //public void SaveResidueDisplayOptions(ResidueDisplayOptions options, bool updateButton, bool updateModel = true) {
+
+        //    if (options.ResidueName == UpdateAllResiduesKey) {
+
+        //        foreach (KeyValuePair<string, ResidueDisplayOptions> oldOptions in selectedMolecule.RenderSettings.ResidueOptions) {
+
+        //            string residueName = oldOptions.Value.ResidueName;
+        //            oldOptions.Value.Clone(options);
+        //            oldOptions.Value.ResidueName = residueName;
+        //            SaveResidueDisplayOptions(oldOptions.Value, true, false);
+
+        //            if (options.Enabled) {
+        //                ResiduesEnableAllButtonText.text = "Hide All";
+        //                residuesEnableAllButtonStatus = true;
+        //            }
+        //            else {
+        //                ResiduesEnableAllButtonText.text = "Show All";
+        //                residuesEnableAllButtonStatus = false;
+        //            }
+        //        }
+        //    }
+        //    else {
+
+        //        // update residue button state
+        //        if (updateButton) {
+        //            residueButtons[options.ResidueName].UpdateResidueOptions(options);
+        //        }
+
+        //        // update state lists
+        //        if (options.Enabled) {
+        //            if (!selectedMolecule.RenderSettings.EnabledResidueNames.Contains(options.ResidueName)) {
+        //                selectedMolecule.RenderSettings.EnabledResidueNames.Add(options.ResidueName);
+        //            }
+        //        }
+        //        else {
+        //            selectedMolecule.RenderSettings.EnabledResidueNames.Remove(options.ResidueName);
+        //        }
+
+        //        if (!options.IsDefault()) {
+        //            if (!selectedMolecule.RenderSettings.CustomDisplayResidues.Contains(options.ResidueName)) {
+        //                selectedMolecule.RenderSettings.CustomDisplayResidues.Add(options.ResidueName);
+        //            }
+        //        }
+        //        else {
+        //            selectedMolecule.RenderSettings.CustomDisplayResidues.Remove(options.ResidueName);
+        //        }
+        //    }
+
+        //    if (updateModel) {
+
+        //        if (selectedMolecule.Hidden) {
+        //            selectedMolecule.PendingRerender = true;
+        //        }
+        //        else {
+        //            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
+        //        }
+        //    }
+        //}
 
         public void CloseResidueDisplayOptions() {
             ResidueDisplayOptions.SetActive(false);
         }
 
-        public void ResetAllResidueDisplayOptions() {
+        //public void ResetAllResidueDisplayOptions() {
 
-            foreach (KeyValuePair<string, ResidueDisplayOptions> options in selectedMolecule.RenderSettings.ResidueOptions) {
+        //    foreach (KeyValuePair<string, ResidueDisplayOptions> options in selectedMolecule.RenderSettings.ResidueOptions) {
 
-                options.Value.SetDefaultOptions();
-                SaveResidueDisplayOptions(options.Value, true, false);
-            }
+        //        options.Value.SetDefaultOptions();
+        //        SaveResidueDisplayOptions(options.Value, true, false);
+        //    }
 
-            if (selectedMolecule.Hidden) {
-                selectedMolecule.PendingRerender = true;
-            }
-            else {
-                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
-            }
-        }
+        //    if (selectedMolecule.Hidden) {
+        //        selectedMolecule.PendingRerender = true;
+        //    }
+        //    else {
+        //        UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
+        //    }
+        //}
 
         public void ScrollPanelToTop() {
-            ScrollView.verticalNormalizedPosition = 1;
+            ResidueNamesScrollView.verticalNormalizedPosition = 1;
         }
 
-        public void ScrollPanelUp() {
+        //public void ScrollPanelUp() {
 
-            int currentLineCount = moleculeResidues.Count / buttonsPerLine;
+        //    int currentLineCount = moleculeResidues.Count / buttonsPerLine;
 
-            float scrollAmount = (1.0f / currentLineCount) * scrollStepCount;
-            ScrollView.verticalNormalizedPosition += scrollAmount;
-            if (ScrollView.verticalNormalizedPosition > 1) {
-                ScrollView.verticalNormalizedPosition = 1;
-            }
-        }
+        //    float scrollAmount = (1.0f / currentLineCount) * scrollStepCount;
+        //    ScrollView.verticalNormalizedPosition += scrollAmount;
+        //    if (ScrollView.verticalNormalizedPosition > 1) {
+        //        ScrollView.verticalNormalizedPosition = 1;
+        //    }
+        //}
 
-        public void ScrollPanelDown() {
+        //public void ScrollPanelDown() {
 
-            int currentLineCount = moleculeResidues.Count / buttonsPerLine;
+        //    int currentLineCount = moleculeResidues.Count / buttonsPerLine;
 
-            float scrollAmount = (1.0f / currentLineCount) * scrollStepCount;
-            ScrollView.verticalNormalizedPosition -= scrollAmount;
+        //    float scrollAmount = (1.0f / currentLineCount) * scrollStepCount;
+        //    ScrollView.verticalNormalizedPosition -= scrollAmount;
 
-            if (ScrollView.verticalNormalizedPosition < 0) {
-                ScrollView.verticalNormalizedPosition = 0;
-            }
-        }
+        //    if (ScrollView.verticalNormalizedPosition < 0) {
+        //        ScrollView.verticalNormalizedPosition = 0;
+        //    }
+        //}
     }
 }

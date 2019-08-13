@@ -5,14 +5,14 @@ using System.Collections;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public class ResidueButton : MonoBehaviour {
+    public class ResidueIDButton : MonoBehaviour {
 
         public Color32 EnabledColour;
         public Color32 HighlightedColour;
         public Color32 DisabledColour;
 
         [HideInInspector]
-        public string ResidueName;
+        public int ResidueID;
 
         private ColorBlock buttonColours;
         private ResidueDisplayOptions residueOptions;
@@ -39,11 +39,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ResidueClick() {
 
-            if (Visualization.InputManager.Instance.ShiftPressed) {
+            if (InputManager.Instance.ShiftPressed) {
 
-                if (OpenDisplayOptionsCallback != null) {
-                    OpenDisplayOptionsCallback(ResidueName);
-                }
+                OpenDisplayOptionsCallback?.Invoke(ResidueID);
             }
             else {
 

@@ -6,7 +6,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class ResidueDisplayOptions {
 
-        public string ResidueName { get; set; }
+        public int ResidueID { get; set; }
         public bool Enabled { get; set; }
         public bool LargeBonds { get; set; }
         public bool ColourAtoms { get; set; }
@@ -16,9 +16,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private Color defaultColour;
 
-        public ResidueDisplayOptions(string residueName, Color defaultColour) {
+        public ResidueDisplayOptions(int residueID, Color defaultColour) {
 
-            ResidueName = residueName;
+            ResidueID = residueID;
             this.defaultColour = defaultColour;
 
             SetDefaultOptions();
@@ -50,7 +50,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void Clone(ResidueDisplayOptions newOptions) {
 
-            ResidueName = newOptions.ResidueName;
+            ResidueID = newOptions.ResidueID;
             Enabled = newOptions.Enabled;
             CustomColour = newOptions.CustomColour;
             LargeBonds = newOptions.LargeBonds;
@@ -62,7 +62,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public override string ToString() {
 
             return
-                "ResidueName: " + ResidueName + "\n" +
+                "ResidueID: " + ResidueID + "\n" +
                 "Enabled: " + Enabled + "\n" +
                 "CustomColour: " + CustomColour + "\n" +
                 "LargeBonds: " + LargeBonds + "\n" +
@@ -83,7 +83,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public bool Equals(ResidueDisplayOptions otherOptions) {
 
             return 
-                otherOptions.ResidueName == ResidueName &&
+                otherOptions.ResidueID == ResidueID &&
                 otherOptions.Enabled == Enabled &&
                 otherOptions.LargeBonds == LargeBonds &&
                 otherOptions.ColourAtoms == ColourAtoms &&

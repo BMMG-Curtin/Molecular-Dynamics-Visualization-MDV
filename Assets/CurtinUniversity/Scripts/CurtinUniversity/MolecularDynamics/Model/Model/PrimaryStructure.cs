@@ -122,6 +122,28 @@ namespace CurtinUniversity.MolecularDynamics.Model.Model {
             return atoms;
         }
 
+        public Dictionary<int, Atom> GetAtoms(bool standardAtoms = true, bool nonStandardAtoms = true, HashSet<string> includedElements = null, HashSet<int> includedResidues = null) {
+
+            Dictionary<int, Atom> atoms = new Dictionary<int, Atom>();
+
+            foreach (KeyValuePair<int, Atom> atom in Atoms()) {
+
+                if ((standardAtoms && atom.Value.ResidueType != StandardResidue.None) ||
+                    (nonStandardAtoms && atom.Value.ResidueType == StandardResidue.None)) {
+
+                    if (includedElements == null || includedElements.Contains(atom.Value.Element.ToString().ToUpper())) {
+
+                        if (includedResidues == null || (includedResidues.Contains(atom.Value.ResidueID))) {
+
+                            atoms.Add(atom.Key, atom.Value);
+                        }
+                    }
+                }
+            }
+
+            return atoms;
+        }
+
         public Dictionary<ChemicalElement, Dictionary<int, Atom>> GetAtomsByElement(bool standardAtoms = true, bool nonStandardAtoms = true, HashSet<string> includedElements = null, HashSet<string> includedResidues = null) {
 
             Dictionary<ChemicalElement, Dictionary<int, Atom>> atoms = new Dictionary<ChemicalElement, Dictionary<int, Atom>>();
