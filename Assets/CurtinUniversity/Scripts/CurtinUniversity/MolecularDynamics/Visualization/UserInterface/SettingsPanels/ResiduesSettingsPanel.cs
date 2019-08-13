@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,12 +27,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public ScrollRect ScrollView;
         public GameObject ResidueDisplayOptions;
-        public GameObject ResidueFilterPanel;
         public Text ResiduesEnableAllButtonText;
 
         public string UpdateAllResiduesKey { get { return "__UPDATEALLRESIDUES__"; } }
 
-        private Dictionary<int, List<string>> modelResidues;
+        private Dictionary<int, Dictionary<string, List<int>>> moleculeResidues;
+        private Dictionary<int, List<string>> moleculeResidueNames;
         private Dictionary<string, ResidueButton> residueButtons;
 
         private int scrollStepCount = 5;
@@ -43,11 +44,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void Awake() {
 
-            if (modelResidues == null) {
-                modelResidues = new Dictionary<int, List<string>>();
+            if (moleculeResidues == null || moleculeResidueNames == null) {
+                moleculeResidues = new Dictionary<int, Dictionary<string, List<int>>>();
+                moleculeResidueNames = new Dictionary<int, List<string>>();
             }
 
-            CloseResidueFilter();
             CloseResidueDisplayOptions();
         }
 
@@ -64,18 +65,32 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void SetModelResidues(int moleculeID, HashSet<string> residues) {
+        public void SetModelResidues(int moleculeID, Dictionary<string, HashSet<int>> residues) {
 
-            if (modelResidues == null) {
-                modelResidues = new Dictionary<int, List<string>>();
+            if (moleculeResidues == null || moleculeResidueNames == null) {
+
+                moleculeResidues = new Dictionary<int, Dictionary<string, List<int>>>();
+                moleculeResidueNames = new Dictionary<int, List<string>>();
             }
 
-            modelResidues.Add(moleculeID, new List<string>());
-            foreach (string residue in residues) {
-                modelResidues[moleculeID].Add(residue);
+            // set the molecule residue names
+            moleculeResidueNames.Add(moleculeID, new List<string>());
+
+            foreach (string residueName in residues.Keys) {
+                moleculeResidueNames[moleculeID].Add(residueName);
             }
 
-            modelResidues[moleculeID].Sort();
+            moleculeResidueNames[moleculeID].Sort();
+
+            // set the molecule residue IDs by name
+            moleculeResidues.Add(moleculeID, new Dictionary<string, List<int>>());
+
+            foreach(KeyValuePair<string, HashSet<int>> residue in residues) {
+
+                List<int> residueIDs = residue.Value.ToList();
+                residueIDs.Sort();
+                moleculeResidues[moleculeID].Add(residue.Key, residueIDs);
+            }
         }
 
         private void initialise() {
@@ -83,13 +98,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Utility.Cleanup.DestroyGameObjects(ResidueButtonContent);
             ScrollPanelToTop();
 
-            if (selectedMolecule == null || modelResidues == null || !modelResidues.ContainsKey(selectedMolecule.ID)) {
+            if (selectedMolecule == null || moleculeResidues == null || !moleculeResidues.ContainsKey(selectedMolecule.ID)) {
                 return;
             }
 
             if (selectedMolecule.RenderSettings.EnabledResidueNames == null) {
-                if (modelResidues.ContainsKey(selectedMolecule.ID)) {
-                    selectedMolecule.RenderSettings.EnabledResidueNames = new HashSet<string>(modelResidues[selectedMolecule.ID]);
+                if (moleculeResidues.ContainsKey(selectedMolecule.ID)) {
+                    selectedMolecule.RenderSettings.EnabledResidueNames = new HashSet<string>(moleculeResidueNames[selectedMolecule.ID]);
                 }
                 else {
                     selectedMolecule.RenderSettings.EnabledResidueNames = new HashSet<string>();
@@ -99,8 +114,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (selectedMolecule.RenderSettings.CustomDisplayResidues == null) {
                 selectedMolecule.RenderSettings.CustomDisplayResidues = new HashSet<string>();
             }
-
-            ResidueFilterPanel.GetComponent<ResidueFilterPanel>().Initialise();
 
             if (selectedMolecule.RenderSettings.ResidueOptions == null) {
                 selectedMolecule.RenderSettings.ResidueOptions = new Dictionary<string, ResidueDisplayOptions>();
@@ -113,7 +126,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             residueButtons = new Dictionary<string, ResidueButton>();
 
-            foreach (string residue in modelResidues[selectedMolecule.ID]) {
+            foreach (string residue in moleculeResidueNames[selectedMolecule.ID]) {
 
                 ResidueDisplayOptions displayOptions;
 
@@ -166,9 +179,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             else {
                 ResiduesEnableAllButtonText.text = "Hide All";
             }
-
-            selectedMolecule.RenderSettings.FilterResiduesByNumber = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn;
-            selectedMolecule.RenderSettings.EnabledResidueNumbers = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnabledResiduesNumbers;
 
             if (selectedMolecule.Hidden) {
                 selectedMolecule.PendingRerender = true;
@@ -247,9 +257,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (updateModel) {
 
-                selectedMolecule.RenderSettings.FilterResiduesByNumber = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn;
-                selectedMolecule.RenderSettings.EnabledResidueNumbers = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnabledResiduesNumbers;
-
                 if (selectedMolecule.Hidden) {
                     selectedMolecule.PendingRerender = true;
                 }
@@ -263,26 +270,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             ResidueDisplayOptions.SetActive(false);
         }
 
-        public void OpenResidueFilter() {
-            ResidueFilterPanel.SetActive(true);
-        }
-
-        public void CloseResidueFilter() {
-            ResidueFilterPanel.SetActive(false);
-        }
-
         public void ResetAllResidueDisplayOptions() {
 
             foreach (KeyValuePair<string, ResidueDisplayOptions> options in selectedMolecule.RenderSettings.ResidueOptions) {
 
                 options.Value.SetDefaultOptions();
-
-                selectedMolecule.RenderSettings.FilterResiduesByNumber = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnableFilter.isOn;
-                selectedMolecule.RenderSettings.EnabledResidueNumbers = ResidueFilterPanel.GetComponent<ResidueFilterPanel>().EnabledResiduesNumbers;
                 SaveResidueDisplayOptions(options.Value, true, false);
             }
-
-            ResidueFilterPanel.GetComponent<ResidueFilterPanel>().SetDefaultOptions();
 
             if (selectedMolecule.Hidden) {
                 selectedMolecule.PendingRerender = true;
@@ -298,7 +292,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ScrollPanelUp() {
 
-            int currentLineCount = modelResidues.Count / buttonsPerLine;
+            int currentLineCount = moleculeResidues.Count / buttonsPerLine;
 
             float scrollAmount = (1.0f / currentLineCount) * scrollStepCount;
             ScrollView.verticalNormalizedPosition += scrollAmount;
@@ -309,7 +303,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ScrollPanelDown() {
 
-            int currentLineCount = modelResidues.Count / buttonsPerLine;
+            int currentLineCount = moleculeResidues.Count / buttonsPerLine;
 
             float scrollAmount = (1.0f / currentLineCount) * scrollStepCount;
             ScrollView.verticalNormalizedPosition -= scrollAmount;

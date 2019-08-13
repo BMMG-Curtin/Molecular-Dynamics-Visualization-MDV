@@ -76,7 +76,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             molecules.LoadMolecule(moleculeID, filePath, settings);
         }
 
-        private void onMoleculeLoaded(int id, string name, string desc, HashSet<string> elements, HashSet<string> residues, int atomCount, int residueCount) {
+        private void onMoleculeLoaded(int id, string name, string desc, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount) {
             StartCoroutine(scene.Lighting.LightToDefaults(0.5f));
         }
 

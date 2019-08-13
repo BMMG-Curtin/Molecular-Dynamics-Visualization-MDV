@@ -7,9 +7,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MoleculeEvents {
 
-        public delegate void MoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, HashSet<string> residues, int atomCount, int residueCount);
+        public delegate void MoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount);
         public static event MoleculeLoaded OnMoleculeLoaded;
-        public static void RaiseMoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, HashSet<string> residues, int atomCount, int residueCount) {
+        public static void RaiseMoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount) {
             OnMoleculeLoaded?.Invoke(moleculeID, name, description, elements, residues, atomCount, residueCount);
         }
 

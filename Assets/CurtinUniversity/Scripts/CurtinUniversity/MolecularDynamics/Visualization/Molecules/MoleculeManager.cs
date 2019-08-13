@@ -208,7 +208,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 molecules.Add(moleculeID, molecule);
 
-                MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure.Title, primaryStructure.ElementNames, primaryStructure.ResidueNames, primaryStructure.AtomCount(), primaryStructure.ResidueCount());
+                MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure.Title, primaryStructure.ElementNames, primaryStructure.GetResidueIDsByName(), primaryStructure.AtomCount(), primaryStructure.ResidueCount());
             }
 
             loadingFile = false;

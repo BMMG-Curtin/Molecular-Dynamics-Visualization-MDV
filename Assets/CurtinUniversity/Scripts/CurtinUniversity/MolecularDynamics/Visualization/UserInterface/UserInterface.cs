@@ -82,7 +82,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             moleculeSettingsPanel.LoadMolecule(filePath, settings);
         }
 
-        public void MoleculeLoaded(int id, string name, string description, HashSet<string> elements, HashSet<string> residues, int atomCount, int residueCount) {
+        public void MoleculeLoaded(int id, string name, string description, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount) {
 
             moleculeSettingsPanel.MoleculeLoaded(id, name, description, atomCount, residueCount);
             elementsSettingsPanel.SetModelElements(id, elements);

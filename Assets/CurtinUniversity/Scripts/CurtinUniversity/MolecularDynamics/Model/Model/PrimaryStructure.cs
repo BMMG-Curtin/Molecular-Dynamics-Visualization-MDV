@@ -43,7 +43,7 @@ namespace CurtinUniversity.MolecularDynamics.Model.Model {
 
         public int AtomCount() {
 
-            if(atoms != null) {
+            if (atoms != null) {
                 return atoms.Count;
             }
             else {
@@ -217,7 +217,7 @@ namespace CurtinUniversity.MolecularDynamics.Model.Model {
 
 
         // Residue Methods ////////////////////////////////////////////////////
-        
+
         public Dictionary<int, Residue> Residues() {
             return residues;
         }
@@ -251,9 +251,9 @@ namespace CurtinUniversity.MolecularDynamics.Model.Model {
             return false;
         }
 
-
         public HashSet<int> GetResidueIDs(List<string> residueNames) {
 
+            // we use a HashSet because residue IDs are not unique when iterating across residues
             HashSet<int> residueIDs = new HashSet<int>();
 
             foreach (KeyValuePair<int, Residue> residue in residues) {
@@ -275,6 +275,7 @@ namespace CurtinUniversity.MolecularDynamics.Model.Model {
                     return residueNames;
                 }
 
+                // we use a HashSet because residue names are not unique when iterating across residues
                 residueNames = new HashSet<string>();
 
                 foreach (KeyValuePair<int, Residue> residue in residues) {
@@ -283,7 +284,19 @@ namespace CurtinUniversity.MolecularDynamics.Model.Model {
 
                 return residueNames;
             }
+        }
 
+        public Dictionary<string, HashSet<int>> GetResidueIDsByName() {
+
+            Dictionary<string, HashSet<int>> residues = new Dictionary<string, HashSet<int>>();
+
+            foreach(string residueName in ResidueNames) {
+
+                HashSet<int> residueIDs = GetResidueIDs(new List<string>() { residueName });
+                residues.Add(residueName, residueIDs);
+            }
+
+            return residues;
         }
 
         public Dictionary<int, Residue> GetStandardResidues() {
