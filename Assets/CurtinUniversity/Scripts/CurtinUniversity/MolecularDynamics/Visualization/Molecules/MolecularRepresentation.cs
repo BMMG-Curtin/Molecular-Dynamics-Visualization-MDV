@@ -2,8 +2,8 @@
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public enum MolecularRepresentation {
-        Default,
+        None,
         CPK,
-        VDW
+        VDW,
     }
 }

@@ -41,7 +41,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             updateButtonColors();
         }
 
-        public void SetResidueIDsModified(bool modified) {
+        public void SetResidueEnabled(bool enabled) {
+
+            residueEnabled = enabled;
+            updateButtonColors();
+        }
+
+        public void SetResidueModified(bool modified) {
 
             residueIDsModified = modified;
             updateButtonColors();

@@ -11,6 +11,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public bool LargeBonds { get; set; }
         public bool ColourAtoms { get; set; }
         public bool ColourBonds { get; set; }
+        public MolecularRepresentation Representation { get; set; }
         public Color32 CustomColour { get; set; }
         public bool ColourSecondaryStructure { get; set; }
 
@@ -31,6 +32,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             LargeBonds = false;
             ColourAtoms = false;
             ColourBonds = false;
+            Representation = MolecularRepresentation.None;
             ColourSecondaryStructure = false;
         }
 
@@ -40,6 +42,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 LargeBonds == false &&
                 ColourAtoms == false &&
                 ColourBonds == false &&
+                Representation == MolecularRepresentation.None &&
                 ColourSecondaryStructure == false) {
 
                 return true;
@@ -56,6 +59,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             LargeBonds = newOptions.LargeBonds;
             ColourAtoms = newOptions.ColourAtoms;
             ColourBonds = newOptions.ColourBonds;
+            Representation = newOptions.Representation;
             ColourSecondaryStructure = newOptions.ColourSecondaryStructure;
         }
 
@@ -68,6 +72,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 "LargeBonds: " + LargeBonds + "\n" +
                 "ColourAtoms: " + ColourAtoms + "\n" +
                 "ColourBonds: " + ColourBonds + "\n" +
+                "Representation:" + Representation + "\n" + 
                 "ColourSecondaryStructure: " + ColourSecondaryStructure;
         }
 
@@ -88,6 +93,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 otherOptions.LargeBonds == LargeBonds &&
                 otherOptions.ColourAtoms == ColourAtoms &&
                 otherOptions.ColourBonds == ColourBonds &&
+                otherOptions.Representation == Representation &&
                 otherOptions.CustomColour.Equals(CustomColour) &&
                 otherOptions.ColourSecondaryStructure == ColourSecondaryStructure;
         }

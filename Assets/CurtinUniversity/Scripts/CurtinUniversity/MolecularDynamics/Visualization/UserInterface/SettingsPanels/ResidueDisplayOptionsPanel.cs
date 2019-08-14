@@ -18,10 +18,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public Toggle LargeBondsToggle;
         public Toggle ColourAtomsToggle;
         public Toggle ColourBondsToggle;
+        public Toggle CPKToggle;
+        public Toggle VDWToggle;
         public Toggle ColourSecondaryStructureToggle;
         public Button CustomColourButton;
 
         private ResidueDisplayOptions displayOptions;
+        private ResidueUpdateType residueUpdateType;
 
         public void Start() {
 
@@ -37,25 +40,42 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             addColourSelectButton(Settings.ResidueColour10);
         }
 
-        public void Initialise(ResidueDisplayOptions displayOptions) {
+        public void Initialise(ResidueUpdateType residueUpdateType, ResidueDisplayOptions displayOptions) {
 
             this.displayOptions = displayOptions;
+            this.residueUpdateType = residueUpdateType;
             LoadSettings();
         }
 
         public void LoadSettings() {
 
-            if (displayOptions.ResidueID == -1) {
-                PanelTitle.text = "Updating All Residues";
-            }
-            else {
+            if (residueUpdateType == ResidueUpdateType.ID) {
                 PanelTitle.text = "Residue " + displayOptions.ResidueID + " Display Options";
+            }
+            else if (residueUpdateType == ResidueUpdateType.Name) {
+                PanelTitle.text = "Residue " + displayOptions.ResidueID + " Display Options";
+            }
+            else if(residueUpdateType == ResidueUpdateType.All) {
+                PanelTitle.text = "Updating All Residues";
             }
 
             EnabledToggle.isOn = displayOptions.Enabled;
             LargeBondsToggle.isOn = displayOptions.LargeBonds;
             ColourAtomsToggle.isOn = displayOptions.ColourAtoms;
             ColourBondsToggle.isOn = displayOptions.ColourBonds;
+
+            CPKToggle.isOn = false;
+            VDWToggle.isOn = false;
+            switch (displayOptions.Representation) {
+                case MolecularRepresentation.CPK:
+                    CPKToggle.isOn = true;
+                    break;
+                case MolecularRepresentation.VDW:
+                    VDWToggle.isOn = true;
+                    break;
+            }
+
+
             ColourSecondaryStructureToggle.isOn = displayOptions.ColourSecondaryStructure;
             setCustomColourButtonColour(displayOptions.CustomColour);
         }
@@ -66,16 +86,27 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             displayOptions.LargeBonds = LargeBondsToggle.isOn;
             displayOptions.ColourAtoms = ColourAtomsToggle.isOn;
             displayOptions.ColourBonds = ColourBondsToggle.isOn;
+
+            if (CPKToggle.isOn) {
+                displayOptions.Representation = MolecularRepresentation.CPK;
+            }
+            else if (VDWToggle.isOn) {
+                displayOptions.Representation = MolecularRepresentation.VDW;
+            }
+            else {
+                displayOptions.Representation = MolecularRepresentation.None;
+            }
+
             displayOptions.ColourSecondaryStructure = ColourSecondaryStructureToggle.isOn;
 
-            ResiduesPanel.SaveResidueDisplayOptions(displayOptions, true);
+            ResiduesPanel.SaveResidueDisplayOptions(residueUpdateType, displayOptions, true);
         }
 
         public void RestoreDefaults() {
 
             displayOptions.SetDefaultOptions();
             LoadSettings();
-            ResiduesPanel.SaveResidueDisplayOptions(displayOptions, true);
+            ResiduesPanel.SaveResidueDisplayOptions(residueUpdateType, displayOptions, true);
         }
 
         public void OpenColourSelectPanel() {
@@ -87,7 +118,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             setCustomColourButtonColour(colour);
             ColorSelectPanel.SetActive(false);
             displayOptions.CustomColour = colour;
-            ResiduesPanel.SaveResidueDisplayOptions(displayOptions, true);
+            ResiduesPanel.SaveResidueDisplayOptions(residueUpdateType, displayOptions, true);
         }
 
         private void setCustomColourButtonColour(Color colour) {

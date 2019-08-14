@@ -172,9 +172,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     continue;
                 }
 
-                float atomSize = getAtomScale(atom.Name, renderSettings);
-                Vector3 scale = new Vector3(atomSize, atomSize, atomSize);
-
                 Vector3 position;
 
                 // if no frame use the base structure coordinates.
@@ -195,6 +192,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 //// set colour for atoms 
                 Color32 atomColour;
+                MolecularRepresentation customAtomRepresentation = MolecularRepresentation.None;
 
                 if (renderSettings.CustomResidues != null && renderSettings.CustomResidues.ContainsKey(atom.ResidueID)) {
 
@@ -208,12 +206,20 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                             MolecularConstants.CPKColors.TryGetValue("Other", out atomColour);
                         }
                     }
+
+                    if(displayOptions != null) {
+                        customAtomRepresentation = displayOptions.Representation;
+                    }
                 }
                 else {
                     if (!MolecularConstants.CPKColors.TryGetValue(atom.Element.ToString(), out atomColour)) {
                         MolecularConstants.CPKColors.TryGetValue("Other", out atomColour);
                     }
                 }
+
+                float atomSize = getAtomScale(atom.Name, renderSettings, customAtomRepresentation);
+                Vector3 scale = new Vector3(atomSize, atomSize, atomSize);
+
 
                 Matrix4x4 atomTransform = Matrix4x4.TRS(position, atomOrientation, scale);
 
@@ -460,18 +466,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private float getAtomScale(string elementName, MoleculeRenderSettings settings) {
+        private float getAtomScale(string elementName, MoleculeRenderSettings settings, MolecularRepresentation customAtomRepresentation) {
 
             // set atom size
             float atomSize = 1;
             float representationScale = 1;
 
-            if (settings.Representation == MolecularRepresentation.VDW) {
+            MolecularRepresentation atomRepresentation = customAtomRepresentation;
+            if(atomRepresentation == MolecularRepresentation.None) {
+                atomRepresentation = settings.Representation;
+            }
+
+            if (atomRepresentation == MolecularRepresentation.VDW) {
                 if (!MolecularConstants.VDWRadius.TryGetValue(elementName, out representationScale)) {
                     MolecularConstants.VDWRadius.TryGetValue("Other", out representationScale);
                 }
             }
-            else if (settings.Representation == MolecularRepresentation.CPK) {
+            else if (atomRepresentation == MolecularRepresentation.CPK) {
                 if (!MolecularConstants.AtomicRadius.TryGetValue(elementName, out representationScale)) {
                     MolecularConstants.AtomicRadius.TryGetValue("Other", out representationScale);
                 }

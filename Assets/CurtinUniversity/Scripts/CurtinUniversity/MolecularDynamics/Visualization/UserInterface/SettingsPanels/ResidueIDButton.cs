@@ -42,7 +42,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (InputManager.Instance.ShiftPressed) {
 
-                OpenDisplayOptionsCallback?.Invoke(residueOptions.ResidueID);
+                OpenDisplayOptionsCallback?.Invoke(ResidueUpdateType.ID, residueOptions.ResidueID);
             }
             else {
 
@@ -51,7 +51,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     residueOptions.Enabled = !residueOptions.Enabled;
                     updateButtonColors();
 
-                    SaveOptionsCallback(residueOptions, false, true);
+                    SaveOptionsCallback(ResidueUpdateType.ID, residueOptions, false, true);
                 }
             }
         }
