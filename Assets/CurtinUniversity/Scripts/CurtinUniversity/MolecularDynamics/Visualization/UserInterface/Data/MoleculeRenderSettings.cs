@@ -79,8 +79,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public HashSet<string> EnabledResidueNames;
         public HashSet<string> CustomResidueNames;
         public HashSet<int> EnabledResidueIDs;
-        public HashSet<int> CustomResidueIDs;
-        public Dictionary<int, ResidueDisplayOptions> ResidueOptions;
+        public Dictionary<int, ResidueDisplayOptions> CustomResidues;
 
         public static MoleculeRenderSettings Default() {
 
@@ -135,14 +134,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             output += EnabledResidueNames == null ? "null\n" : string.Join("", EnabledResidueNames) + "\n";
             output += EnabledResidueIDs == null ? "null\n" : string.Join("", EnabledResidueIDs) + "\n";
             output += CustomResidueNames == null ? "null\n" : string.Join("", CustomResidueNames) + "\n";
-            output += CustomResidueIDs == null ? "null\n" : string.Join("", CustomResidueIDs) + "\n";
 
-            if (ResidueOptions == null) {
+            if (CustomResidues == null) {
                 output += "ResidueOptions: null\n";
             }
             else {
                 output += "ResidueOptions:\n";
-                foreach (KeyValuePair<int, ResidueDisplayOptions> item in ResidueOptions) {
+                foreach (KeyValuePair<int, ResidueDisplayOptions> item in CustomResidues) {
                     output += "Residue ID: " + item.Key + ":\n" + item.Value.ToString();
                 }
             }
@@ -211,8 +209,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 otherSettings.EnabledResidueNames == EnabledResidueNames &&
                 otherSettings.EnabledResidueIDs == EnabledResidueIDs &&
                 otherSettings.CustomResidueNames == CustomResidueNames &&
-                otherSettings.CustomResidueIDs == CustomResidueIDs &&
-                otherSettings.ResidueOptions == ResidueOptions;
+                otherSettings.CustomResidues == CustomResidues;
         }
     }
 }

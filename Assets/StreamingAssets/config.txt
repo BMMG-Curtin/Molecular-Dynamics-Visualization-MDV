@@ -2,7 +2,8 @@
 // Default Starting Model
 // All paths assume config file directory as a base
 LoadMoleculeOnStart: True
-LoadMoleculeFileName: C240.xyz
+// LoadMoleculeFileName: C240.xyz
+LoadMoleculeFileName: AB.gro
 
 // Colors for residue highlighting. 
 // Uses RGB values ranging from 0-255

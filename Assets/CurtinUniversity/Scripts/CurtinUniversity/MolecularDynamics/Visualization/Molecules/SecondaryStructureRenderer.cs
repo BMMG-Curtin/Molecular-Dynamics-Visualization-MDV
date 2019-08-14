@@ -121,18 +121,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Vector3 averagedNormal = Vector3.zero;
             SecondaryStructureType lastType = SecondaryStructureType.Coil;
 
-
-            HashSet<int> customResiduesIDs = null;
-            if (renderSettings.CustomResidueIDs != null && renderSettings.CustomResidueIDs.Count > 0) {
-                customResiduesIDs = renderSettings.CustomResidueIDs;
-            }
-
-            Dictionary<int, ResidueDisplayOptions> residueOptions = null;
-            if (customResiduesIDs != null) {
-                residueOptions = renderSettings.ResidueOptions;
-            }
-
-
             for (int i = 0; i < chain.MainChainResidues.Count; i++) {
 
                 DynamicMeshNode node = new DynamicMeshNode();
@@ -208,9 +196,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                     bool foundColour = false;
 
-                    if (customResiduesIDs != null && customResiduesIDs.Contains(residue.ID)) {
+                    if (renderSettings.CustomResidues != null && renderSettings.CustomResidues.ContainsKey(residue.ID)) {
 
-                        ResidueDisplayOptions displayOptions = residueOptions[residue.ID];
+                        ResidueDisplayOptions displayOptions = renderSettings.CustomResidues[residue.ID];
 
                         if (displayOptions != null && displayOptions.ColourSecondaryStructure) {
 

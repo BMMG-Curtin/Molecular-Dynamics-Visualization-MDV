@@ -7,6 +7,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class ResidueNameButton : MonoBehaviour {
 
+        [SerializeField]
+        private Text buttonNameText;
+
+        [SerializeField]
         public Color32 EnabledColour;
         public Color32 HighlightedColour;
         public Color32 DisabledColour;
@@ -33,6 +37,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             this.residueEnabled = residueEnabled;
             this.residueIDsModified = residueIDsModified;
 
+            buttonNameText.text = residueName.Trim();
             updateButtonColors();
         }
 

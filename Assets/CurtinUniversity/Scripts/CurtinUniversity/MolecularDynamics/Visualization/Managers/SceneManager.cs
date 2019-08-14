@@ -59,8 +59,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + Settings.LoadMoleculeFileName;
 
             MoleculeRenderSettings settings = MoleculeRenderSettings.Default();
-            settings.ShowAtoms = false;
-            settings.ShowSimulationBox = false;
+            //settings.ShowAtoms = false;
+            //settings.ShowSimulationBox = false;
             userInterface.LoadMolecule(filePath, settings);
 
             userInterface.ConsoleSetSilent(false);

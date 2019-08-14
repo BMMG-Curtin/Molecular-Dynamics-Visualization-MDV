@@ -1,18 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-using System.Collections;
-
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class ResidueIDButton : MonoBehaviour {
 
+        [SerializeField]
+        private Text buttonIDText;
+
         public Color32 EnabledColour;
         public Color32 HighlightedColour;
         public Color32 DisabledColour;
-
-        [HideInInspector]
-        public int ResidueID;
 
         private ColorBlock buttonColours;
         private ResidueDisplayOptions residueOptions;
@@ -28,12 +26,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             SaveOptionsCallback = saveOptionsCallback;
             OpenDisplayOptionsCallback = openDisplayCallback;
+
             UpdateResidueOptions(options);
         }
 
         public void UpdateResidueOptions(ResidueDisplayOptions options) {
 
             this.residueOptions = options;
+
+            buttonIDText.text = options.ResidueID.ToString();
             updateButtonColors();
         }
 
@@ -41,7 +42,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (InputManager.Instance.ShiftPressed) {
 
-                OpenDisplayOptionsCallback?.Invoke(ResidueID);
+                OpenDisplayOptionsCallback?.Invoke(residueOptions.ResidueID);
             }
             else {
 
@@ -49,10 +50,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                     residueOptions.Enabled = !residueOptions.Enabled;
                     updateButtonColors();
+
+                    SaveOptionsCallback(residueOptions, false, true);
                 }
             }
-
-            SaveOptionsCallback(residueOptions, false, true);
         }
 
         private void updateButtonColors() {
