@@ -1,81 +1,97 @@
-﻿//using UnityEngine;
-//using UnityEngine.UI;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
-//namespace CurtinUniversity.MolecularDynamics.Visualization {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-//    public class ResidueIDButton : MonoBehaviour {
+    public class ResidueIDButton : MonoBehaviour {
 
-//        [SerializeField]
-//        private Text buttonIDText;
+        [SerializeField]
+        private Text buttonIDText;
 
-//        public Color32 EnabledColour;
-//        public Color32 HighlightedColour;
-//        public Color32 DisabledColour;
+        [SerializeField]
+        private Color32 EnabledColour;
 
-//        private ColorBlock buttonColours;
-//        private ResidueRenderSettings residueOptions;
+        [SerializeField]
+        private Color32 HighlightedColour;
 
-//        private SaveResidueButtonOptionsDelegate saveOptionsCallback;
-//        private OpenResidueDisplayOptionsDelegate openDisplayOptionsCallback;
+        [SerializeField]
+        private Color32 DisabledColour;
 
-//        void Start() {
-//            buttonColours = GetComponent<Button>().colors;
-//        }
+        private ColorBlock buttonColours;
 
-//        public void Initialise(ResidueRenderSettings options, SaveResidueButtonOptionsDelegate saveOptionsCallback, OpenResidueDisplayOptionsDelegate openDisplayCallback) {
+        private int residueID;
+        bool residueIDEnabled = false;
+        bool residueIDCustomSettings = false;
 
-//            this.saveOptionsCallback = saveOptionsCallback;
-//            openDisplayOptionsCallback = openDisplayCallback;
+        private ToggleResidueIDDelegate toggleResidueCallback;
+        private OpenCustomResidueRenderSettingsDelegate openCustomSettingsCallback;
 
-//            UpdateResidueOptions(options);
-//        }
+        private void Awake() {
+            buttonColours = GetComponent<Button>().colors;
+        }
 
-//        public void UpdateResidueOptions(ResidueRenderSettings options) {
+        public void Initialise(int residueID, bool residueIDEnabled, bool residueIDCustomSettings, ToggleResidueIDDelegate toggleResidueCallback, OpenCustomResidueRenderSettingsDelegate openCustomSettingsCallback) {
 
-//            this.residueOptions = options;
+            this.residueID = residueID;
+            this.residueIDEnabled = residueIDEnabled;
+            this.residueIDCustomSettings = residueIDCustomSettings;
+            this.toggleResidueCallback = toggleResidueCallback;
+            this.openCustomSettingsCallback = openCustomSettingsCallback;
 
-//            buttonIDText.text = options.ResidueID.ToString();
-//            updateButtonColors();
-//        }
+            buttonIDText.text = residueID.ToString();
+            updateButtonColors();
+        }
 
-//        public void ResidueClick() {
+        public void SetResidueEnabled(bool enabled) {
 
-//            if (InputManager.Instance.ShiftPressed) {
+            residueIDEnabled = enabled;
+            updateButtonColors();
+        }
 
-//                openDisplayOptionsCallback?.Invoke(ResidueUpdateType.ID, residueOptions.ResidueID);
-//            }
-//            else {
+        public void SetResidueCustomSettings(bool customSettings) {
 
-//                if (saveOptionsCallback != null) {
+            residueIDCustomSettings = customSettings;
+            updateButtonColors();
+        }
 
-//                    updateButtonColors();
-//                    saveOptionsCallback(ResidueUpdateType.ID, residueOptions, false, true);
-//                }
-//            }
-//        }
+        public void ResidueClick() {
 
-//        private void updateButtonColors() {
+            if (InputManager.Instance.ShiftPressed) {
+                openCustomSettingsCallback?.Invoke(residueID);
+            }
+            else {
 
-//            if (residueOptions.Enabled) {
-//                if (residueOptions.IsDefault()) {
-//                    setButtonColours(EnabledColour);
-//                }
-//                else {
-//                    setButtonColours(HighlightedColour);
-//                }
-//            }
-//            else {
-//                setButtonColours(DisabledColour);
-//            }
-//        }
+                if (toggleResidueCallback != null) {
 
-//        private void setButtonColours(Color32 color) {
+                    residueIDEnabled = !residueIDEnabled;
+                    updateButtonColors();
+                    toggleResidueCallback(residueID);
+                }
+            }
+        }
 
-//            buttonColours.normalColor = color;
-//            buttonColours.highlightedColor = color;
-//            buttonColours.pressedColor = color;
-//            buttonColours.colorMultiplier = 1f;
-//            GetComponent<Button>().colors = buttonColours;
-//        }
-//    }
-//}
+        private void updateButtonColors() {
+
+            if (residueIDEnabled) {
+                if (residueIDCustomSettings) {
+                    setButtonColours(HighlightedColour);
+                }
+                else {
+                    setButtonColours(EnabledColour);
+                }
+            }
+            else {
+                setButtonColours(DisabledColour);
+            }
+        }
+
+        private void setButtonColours(Color32 color) {
+
+            buttonColours.normalColor = color;
+            buttonColours.highlightedColor = color;
+            buttonColours.pressedColor = color;
+            buttonColours.colorMultiplier = 1f;
+            GetComponent<Button>().colors = buttonColours;
+        }
+    }
+}

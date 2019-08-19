@@ -36,6 +36,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         public ResidueNamesPanel residueNamesPanel;
 
+        [SerializeField]
+        public GameObject residueNamesPanelGO;
+
+        [SerializeField]
+        public GameObject residueIDsPanelGO;
+
+        [SerializeField]
+        public GameObject customRenderSettingsPanelGO;
+
+
         //[SerializeField]
         //public GameObject residueIDsPanel;
 
@@ -68,16 +78,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         //private string currentlyDisplayedResidue;
 
         private void Awake() {
-
-            if (primaryStructures == null) {
-
-                primaryStructures = new Dictionary<int, PrimaryStructure>();
-                //moleculeResidueNames = new Dictionary<int, List<string>>();
-                //moleculeResidueIDs = new Dictionary<int, List<int>>();
-                //moleculeResidues = new Dictionary<int, Dictionary<string, List<int>>>();
-            }
-
-            OnDisable();
+            enableResidueSettingsPanels(false);
         }
 
         private void OnEnable() {
@@ -101,10 +102,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         private void OnDisable() {
-            residueNamesPanel.gameObject.SetActive(true);
+            enableResidueSettingsPanels(false);
         }
 
         public void SetPrimaryStructure(int moleculeID, PrimaryStructure primaryStructure) {
+
+            if (primaryStructures == null) {
+                primaryStructures = new Dictionary<int, PrimaryStructure>();
+            }
 
             if (!primaryStructures.ContainsKey(moleculeID)) {
                 primaryStructures.Add(moleculeID, primaryStructure);
@@ -148,6 +153,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             else {
                 UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(selectedMolecule.ID, selectedMolecule.RenderSettings, selectedMolecule.CurrentTrajectoryFrameNumber);
             }
+        }
+
+        private void enableResidueSettingsPanels(bool enable) {
+
+            residueNamesPanelGO.gameObject.SetActive(enable);
+            residueIDsPanelGO.gameObject.SetActive(enable);
+            customRenderSettingsPanelGO.gameObject.SetActive(enable);
         }
 
         //public void SetModelResidues(int moleculeID, PrimaryStructure primaryStructure) {

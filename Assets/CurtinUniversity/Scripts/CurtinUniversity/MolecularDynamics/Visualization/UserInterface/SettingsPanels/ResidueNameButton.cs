@@ -11,28 +11,33 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Text buttonNameText;
 
         [SerializeField]
-        public Color32 EnabledColour;
-        public Color32 HighlightedColour;
-        public Color32 DisabledColour;
+        private Color32 EnabledColour;
+
+        [SerializeField]
+        private Color32 HighlightedColour;
+
+        [SerializeField]
+        private Color32 DisabledColour;
 
         private ColorBlock buttonColours;
 
         private string residueName;
-        bool residueEnabled = true;
+        bool residueNameEnabled = true;
         bool residueIDsModified = true;
+
         private ToggleResidueNameDelegate toggleResidueCallback;
         private OpenResidueIDsDelegate openResidueIDsCallback;
 
-        void Start() {
+        private void Awake() {
             buttonColours = GetComponent<Button>().colors;
         }
 
-        public void Initialise(string residueName, bool residueEnabled, bool residueIDsModified, ToggleResidueNameDelegate saveEnabledCallback, OpenResidueIDsDelegate openDisplayCallback) {
+        public void Initialise(string residueName, bool residueEnabled, bool residueIDsModified, ToggleResidueNameDelegate toggleResidueCallback, OpenResidueIDsDelegate openDisplayCallback) {
 
             this.residueName = residueName;
-            this.toggleResidueCallback = saveEnabledCallback;
+            this.toggleResidueCallback = toggleResidueCallback;
             this.openResidueIDsCallback = openDisplayCallback;
-            this.residueEnabled = residueEnabled;
+            this.residueNameEnabled = residueEnabled;
             this.residueIDsModified = residueIDsModified;
 
             buttonNameText.text = residueName.Trim();
@@ -41,7 +46,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void SetResidueEnabled(bool enabled) {
 
-            residueEnabled = enabled;
+            residueNameEnabled = enabled;
             updateButtonColors();
         }
 
@@ -60,7 +65,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 if (toggleResidueCallback != null) {
 
-                    residueEnabled = !residueEnabled;
+                    residueNameEnabled = !residueNameEnabled;
                     updateButtonColors();
                     toggleResidueCallback(residueName);
                 }
@@ -69,7 +74,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void updateButtonColors() {
 
-            if (residueEnabled) {
+            if (residueNameEnabled) {
                 if (residueIDsModified) {
                     setButtonColours(HighlightedColour);
                 }

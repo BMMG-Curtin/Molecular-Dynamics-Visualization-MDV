@@ -10,6 +10,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class ResidueCustomRenderSettingsPanel : MonoBehaviour {
 
+        [SerializeField]
+        private GameObject customRenderSettingsPanel;
+
         public Text PanelTitle;
         public Toggle LargeBondsToggle;
         public Toggle BondsColourToggle;

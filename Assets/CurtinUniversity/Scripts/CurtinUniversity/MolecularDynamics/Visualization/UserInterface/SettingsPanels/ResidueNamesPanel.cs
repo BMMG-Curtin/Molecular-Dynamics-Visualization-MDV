@@ -11,8 +11,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void ToggleResidueNameDelegate(string residueName);
     public delegate void OpenResidueIDsDelegate(string residueName);
+    public delegate void OnCloseResidueIDsPanel();
 
     public class ResidueNamesPanel : MonoBehaviour {
+
+        [SerializeField]
+        private GameObject residueNamesPanel;
 
         [SerializeField]
         private ResidueIDsPanel residueIDsPanel;
@@ -36,6 +40,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private PrimaryStructure primaryStructure;
         private ResidueRenderSettingsUpdated settingsUpdatedCallback;
 
+        private List<string> residueNames;
         private Dictionary<string, ResidueNameButton> residueNameButtons;
 
         private bool allResiduesEnabled = true;
@@ -46,6 +51,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             this.primaryStructure = primaryStructure;
             this.settingsUpdatedCallback = settingsUpdatedCallback;
 
+            residueNames = primaryStructure.ResidueNames.ToList();
+            residueNames.Sort();
+
             renderResidueButtons();
 
             allResiduesEnabled = false;
@@ -54,22 +62,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             updateToggleResidueButtonText();
-        }
 
-        public void OnDisable() {
-            residueIDsPanel.gameObject.SetActive(false);
+            residueNamesPanel.SetActive(true);
         }
 
         public void ToggleAllResidues() {
 
-            if(allResiduesEnabled) {
-                renderSettings.EnabledResidueNames = new HashSet<string>();
-            }
-            else {
+            allResiduesEnabled = !allResiduesEnabled;
+
+            if (allResiduesEnabled) {
                 renderSettings.EnabledResidueNames = new HashSet<string>(primaryStructure.ResidueNames);
             }
+            else {
+                renderSettings.EnabledResidueNames = new HashSet<string>();
+            }
 
-            allResiduesEnabled = !allResiduesEnabled;
             updateToggleResidueButtonText();
 
             foreach(ResidueNameButton button in residueNameButtons.Values) {
@@ -90,12 +97,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             UnityCleanup.DestroyGameObjects(residueButtons);
             residueNamesScrollView.verticalNormalizedPosition = 1;
 
-            List<string> residueNamesList = primaryStructure.ResidueNames.ToList();
-            residueNamesList.Sort();
-
             residueNameButtons = new Dictionary<string, ResidueNameButton>();
 
-            foreach (string residueName in residueNamesList) {
+            foreach (string residueName in residueNames) {
 
                 bool residueEnabled = renderSettings.EnabledResidueNames.Contains(residueName);
                 bool residueModified = renderSettings.CustomResidueNames.Contains(residueName);
@@ -135,6 +139,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 allResiduesEnabled = true;
                 updateToggleResidueButtonText();
                 renderResidueButtons();
+
+                settingsUpdatedCallback();
             }
         }
 
@@ -152,8 +158,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void openResidueIDs(string residueName) {
 
-            residueIDsPanel.gameObject.SetActive(true);
-            residueIDsPanel.Initialise(residueName, renderSettings, primaryStructure, settingsUpdatedCallback);
+            residueNamesPanel.SetActive(false);
+            residueIDsPanel.Initialise(residueName, renderSettings, primaryStructure, settingsUpdatedCallback, onCloseResidueIDsPanel);
+        }
+
+        private void onCloseResidueIDsPanel() {
+
+            renderResidueButtons();
+            residueNamesPanel.SetActive(true);
         }
     }
 }
