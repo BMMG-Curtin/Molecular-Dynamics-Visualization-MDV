@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CurtinUniversity.MolecularDynamics.Model.Model {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class PrimaryStructureTrajectory {
 

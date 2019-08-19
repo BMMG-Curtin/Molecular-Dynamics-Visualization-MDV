@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CurtinUniversity.MolecularDynamics.Model.Analysis {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class StrideException : Exception {
 

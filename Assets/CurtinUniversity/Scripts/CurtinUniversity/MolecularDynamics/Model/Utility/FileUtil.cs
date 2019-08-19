@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public static class FileUtil {
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CurtinUniversity.MolecularDynamics.Model.FileParser {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class FileParseException : Exception {
 

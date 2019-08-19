@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
+using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 

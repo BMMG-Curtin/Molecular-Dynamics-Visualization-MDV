@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using CurtinUniversity.MolecularDynamics.Model;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class UserInterface : MonoBehaviour {
@@ -78,15 +80,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             applicationSettings.SetSceneSettings(settings);
         }
 
-        public void LoadMolecule(string filePath, MoleculeRenderSettings? settings = null) {
+        public void LoadMolecule(string filePath, MoleculeRenderSettings settings = null) {
             moleculeSettingsPanel.LoadMolecule(filePath, settings);
         }
 
-        public void MoleculeLoaded(int id, string name, string description, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount) {
+        public void MoleculeLoaded(int id, string name, PrimaryStructure primaryStructure) {
 
-            moleculeSettingsPanel.MoleculeLoaded(id, name, description, atomCount, residueCount);
-            elementsSettingsPanel.SetModelElements(id, elements);
-            residuesSettingsPanel.SetModelResidues(id, residues);
+            moleculeSettingsPanel.MoleculeLoaded(id, name, primaryStructure.Title, primaryStructure.AtomCount(), primaryStructure.ResidueCount());
+            elementsSettingsPanel.SetModelElements(id, primaryStructure.ElementNames); 
+            residuesSettingsPanel.SetPrimaryStructure(id, primaryStructure); 
         }
 
         public void MoleculeTrajectoryLoaded(int moleculeID, int frameCount) {

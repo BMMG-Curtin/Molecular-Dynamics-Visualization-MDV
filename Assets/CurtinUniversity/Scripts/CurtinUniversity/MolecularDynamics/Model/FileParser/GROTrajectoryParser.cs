@@ -2,9 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
-
-namespace CurtinUniversity.MolecularDynamics.Model.FileParser {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class GROTrajectoryParser {
 

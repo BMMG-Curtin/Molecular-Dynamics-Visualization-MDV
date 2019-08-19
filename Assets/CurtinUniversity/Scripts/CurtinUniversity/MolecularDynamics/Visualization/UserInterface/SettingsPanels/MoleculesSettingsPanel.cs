@@ -103,7 +103,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             dialog.Initialise(validFileExtensions, onLoadMoleculeFileSubmitted);
         }
 
-        public void LoadMolecule(string filePath, MoleculeRenderSettings? settings) {
+        public void LoadMolecule(string filePath, MoleculeRenderSettings settings) {
 
             if(filePath == null || filePath.Length == 0) {
                 return;

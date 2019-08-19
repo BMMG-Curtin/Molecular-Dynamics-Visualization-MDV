@@ -5,6 +5,8 @@ using System.IO;
 
 using UnityEngine;
 
+using CurtinUniversity.MolecularDynamics.Model;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class SceneManager : MonoBehaviour {
@@ -76,7 +78,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             molecules.LoadMolecule(moleculeID, filePath, settings);
         }
 
-        private void onMoleculeLoaded(int id, string name, string desc, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount) {
+        private void onMoleculeLoaded(int id, string name, PrimaryStructure primaryStructure) {
             StartCoroutine(scene.Lighting.LightToDefaults(0.5f));
         }
 

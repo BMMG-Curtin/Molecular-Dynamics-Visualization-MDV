@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Utility {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public static class ResidueHelper {
 

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public static class Cleanup {
+    public static class UnityCleanup {
 
         public static void DestroyGameObjects(GameObject parent) {
 

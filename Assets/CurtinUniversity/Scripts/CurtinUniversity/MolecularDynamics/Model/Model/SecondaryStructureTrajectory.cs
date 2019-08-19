@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using CurtinUniversity.MolecularDynamics.Model.Analysis;
-using CurtinUniversity.MolecularDynamics.Model.FileCreator;
-using CurtinUniversity.MolecularDynamics.Visualization.Utility;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Model {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class SecondaryStructureTrajectory {
 

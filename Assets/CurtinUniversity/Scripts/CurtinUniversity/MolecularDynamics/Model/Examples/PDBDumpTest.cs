@@ -1,10 +1,6 @@
 ﻿using System;
 
-using CurtinUniversity.MolecularDynamics.Model.FileCreator;
-using CurtinUniversity.MolecularDynamics.Model.FileParser;
-using CurtinUniversity.MolecularDynamics.Model.Model;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Examples {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public static class PDBDumpTest {
 

@@ -5,8 +5,7 @@ using System.IO;
 
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Model.FileParser;
-using CurtinUniversity.MolecularDynamics.Model.Model;
+using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
@@ -208,7 +207,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 molecules.Add(moleculeID, molecule);
 
-                MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure.Title, primaryStructure.ElementNames, primaryStructure.GetResidueIDsByName(), primaryStructure.AtomCount(), primaryStructure.ResidueCount());
+                MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure);
             }
 
             loadingFile = false;

@@ -17,7 +17,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     /**
         Class for representing a Bezier path, and methods for getting suitable points to 

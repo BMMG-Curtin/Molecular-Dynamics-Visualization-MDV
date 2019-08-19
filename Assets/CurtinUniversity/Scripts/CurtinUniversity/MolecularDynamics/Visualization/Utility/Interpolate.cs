@@ -48,7 +48,7 @@ using UnityEngine;
  * @Traduzione Andrea85cs (andrea85cs@dynematica.it)
  */
 
-namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class Interpolate {
 

@@ -2,9 +2,7 @@
 
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Model {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class Atom {
 

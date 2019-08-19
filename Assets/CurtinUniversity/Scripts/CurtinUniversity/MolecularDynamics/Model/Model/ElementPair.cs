@@ -1,7 +1,5 @@
 ﻿
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Model {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     // equals and hash are element order independent
     public struct ElementPair {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CurtinUniversity.MolecularDynamics.Model.Definitions {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public enum ChemicalElement {
         None,

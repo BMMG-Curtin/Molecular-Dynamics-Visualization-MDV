@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-using CurtinUniversity.MolecularDynamics.Model.Utility;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Model {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class Residue {
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree.Math { 
+namespace CurtinUniversity.MolecularDynamics.Model {
 
-	public class FloatMath : TypeMath<float>
+    public class FloatMath : TypeMath<float>
 	{
 		static FloatMath()
 		{

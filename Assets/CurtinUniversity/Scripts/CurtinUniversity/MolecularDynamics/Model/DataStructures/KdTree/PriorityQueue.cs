@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree.Math;
 
-struct ItemPriority<TItem, TPriority>
-{
-	public TItem Item;
-	public TPriority Priority;
-}
+namespace CurtinUniversity.MolecularDynamics.Model {
 
-namespace CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree {
+    public struct ItemPriority<TItem, TPriority> {
+        public TItem Item;
+        public TPriority Priority;
+    }
 
-	public class PriorityQueue<TItem, TPriority> : IPriorityQueue<TItem, TPriority>
+    public class PriorityQueue<TItem, TPriority> : IPriorityQueue<TItem, TPriority>
 	{
 		public PriorityQueue(int capacity, ITypeMath<TPriority> priorityMath = null)
 		{

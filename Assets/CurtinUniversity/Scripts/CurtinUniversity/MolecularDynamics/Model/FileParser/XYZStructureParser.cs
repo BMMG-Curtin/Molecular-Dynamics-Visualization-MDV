@@ -4,11 +4,7 @@ using System.Text.RegularExpressions;
 
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-using CurtinUniversity.MolecularDynamics.Model.Model;
-using CurtinUniversity.MolecularDynamics.Model.Utility;
-
-namespace CurtinUniversity.MolecularDynamics.Model.FileParser {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class XYZStructureParser {
 

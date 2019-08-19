@@ -4,10 +4,7 @@ using System.IO;
 
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-
-namespace CurtinUniversity.MolecularDynamics.Model.FileCreator {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     /// <summary>
     /// This class writes an PDB file based on the supplied primary structure. 

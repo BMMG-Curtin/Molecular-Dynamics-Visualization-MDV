@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree.Math {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     // Algebraic!
     public abstract class TypeMath<T> : ITypeMath<T>

@@ -1,83 +1,81 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿//using UnityEngine;
+//using UnityEngine.UI;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization {
+//namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public class ResidueIDButton : MonoBehaviour {
+//    public class ResidueIDButton : MonoBehaviour {
 
-        [SerializeField]
-        private Text buttonIDText;
+//        [SerializeField]
+//        private Text buttonIDText;
 
-        public Color32 EnabledColour;
-        public Color32 HighlightedColour;
-        public Color32 DisabledColour;
+//        public Color32 EnabledColour;
+//        public Color32 HighlightedColour;
+//        public Color32 DisabledColour;
 
-        private ColorBlock buttonColours;
-        private ResidueDisplayOptions residueOptions;
+//        private ColorBlock buttonColours;
+//        private ResidueRenderSettings residueOptions;
 
-        SaveResidueButtonOptionsDelegate SaveOptionsCallback;
-        OpenResidueDisplayOptionsDelegate OpenDisplayOptionsCallback;
+//        private SaveResidueButtonOptionsDelegate saveOptionsCallback;
+//        private OpenResidueDisplayOptionsDelegate openDisplayOptionsCallback;
 
-        void Start() {
-            buttonColours = GetComponent<Button>().colors;
-        }
+//        void Start() {
+//            buttonColours = GetComponent<Button>().colors;
+//        }
 
-        public void Initialise(ResidueDisplayOptions options, SaveResidueButtonOptionsDelegate saveOptionsCallback, OpenResidueDisplayOptionsDelegate openDisplayCallback) {
+//        public void Initialise(ResidueRenderSettings options, SaveResidueButtonOptionsDelegate saveOptionsCallback, OpenResidueDisplayOptionsDelegate openDisplayCallback) {
 
-            SaveOptionsCallback = saveOptionsCallback;
-            OpenDisplayOptionsCallback = openDisplayCallback;
+//            this.saveOptionsCallback = saveOptionsCallback;
+//            openDisplayOptionsCallback = openDisplayCallback;
 
-            UpdateResidueOptions(options);
-        }
+//            UpdateResidueOptions(options);
+//        }
 
-        public void UpdateResidueOptions(ResidueDisplayOptions options) {
+//        public void UpdateResidueOptions(ResidueRenderSettings options) {
 
-            this.residueOptions = options;
+//            this.residueOptions = options;
 
-            buttonIDText.text = options.ResidueID.ToString();
-            updateButtonColors();
-        }
+//            buttonIDText.text = options.ResidueID.ToString();
+//            updateButtonColors();
+//        }
 
-        public void ResidueClick() {
+//        public void ResidueClick() {
 
-            if (InputManager.Instance.ShiftPressed) {
+//            if (InputManager.Instance.ShiftPressed) {
 
-                OpenDisplayOptionsCallback?.Invoke(ResidueUpdateType.ID, residueOptions.ResidueID);
-            }
-            else {
+//                openDisplayOptionsCallback?.Invoke(ResidueUpdateType.ID, residueOptions.ResidueID);
+//            }
+//            else {
 
-                if (SaveOptionsCallback != null) {
+//                if (saveOptionsCallback != null) {
 
-                    residueOptions.Enabled = !residueOptions.Enabled;
-                    updateButtonColors();
+//                    updateButtonColors();
+//                    saveOptionsCallback(ResidueUpdateType.ID, residueOptions, false, true);
+//                }
+//            }
+//        }
 
-                    SaveOptionsCallback(ResidueUpdateType.ID, residueOptions, false, true);
-                }
-            }
-        }
+//        private void updateButtonColors() {
 
-        private void updateButtonColors() {
+//            if (residueOptions.Enabled) {
+//                if (residueOptions.IsDefault()) {
+//                    setButtonColours(EnabledColour);
+//                }
+//                else {
+//                    setButtonColours(HighlightedColour);
+//                }
+//            }
+//            else {
+//                setButtonColours(DisabledColour);
+//            }
+//        }
 
-            if (residueOptions.Enabled) {
-                if (residueOptions.IsDefault()) {
-                    setButtonColours(EnabledColour);
-                }
-                else {
-                    setButtonColours(HighlightedColour);
-                }
-            }
-            else {
-                setButtonColours(DisabledColour);
-            }
-        }
+//        private void setButtonColours(Color32 color) {
 
-        private void setButtonColours(Color32 color) {
-
-            buttonColours.normalColor = color;
-            buttonColours.highlightedColor = color;
-            buttonColours.pressedColor = color;
-            buttonColours.colorMultiplier = 1f;
-            GetComponent<Button>().colors = buttonColours;
-        }
-    }
-}
+//            buttonColours.normalColor = color;
+//            buttonColours.highlightedColor = color;
+//            buttonColours.pressedColor = color;
+//            buttonColours.colorMultiplier = 1f;
+//            GetComponent<Button>().colors = buttonColours;
+//        }
+//    }
+//}

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-using CurtinUniversity.MolecularDynamics.Model.Utility;
-
 /// <summary>
 /// Molecular Model including structure and trajectory. 
 /// Coordinate structure is in nanometres. 1 nanometre = 10 angstoms
 /// </summary>
-namespace CurtinUniversity.MolecularDynamics.Model.Model {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class PrimaryStructure {
 
@@ -26,6 +23,7 @@ namespace CurtinUniversity.MolecularDynamics.Model.Model {
 
         private HashSet<string> elementNames; // unique element names in this model
         private HashSet<string> residueNames; // unique residue names in this model
+        private HashSet<int> residueIDs; // unique residue names in this model
 
 
         public PrimaryStructure() {
@@ -271,6 +269,48 @@ namespace CurtinUniversity.MolecularDynamics.Model.Model {
             }
 
             return false;
+        }
+
+        public Residue GetResidue(int residueIndex) {
+
+            if (residues.ContainsKey(residueIndex)) {
+                return residues[residueIndex];
+            }
+
+            return null;
+        }
+
+        public List<Residue> GetResidues(int residueID) {
+
+            // residue IDs can match multiple residues
+            List<Residue> matchingResidues = new List<Residue>();
+
+            foreach (KeyValuePair<int, Residue> residue in residues) {
+                if (residue.Value.ID == residueID) {
+                    matchingResidues.Add(residue.Value);
+                }
+            }
+
+            return matchingResidues;
+        }
+
+        public HashSet<int> ResidueIDs {
+
+            get {
+
+                if (residueIDs != null) {
+                    return residueIDs;
+                }
+
+                // we use a HashSet because residue names are not unique when iterating across residues
+                residueIDs = new HashSet<int>();
+
+                foreach (KeyValuePair<int, Residue> residue in residues) {
+                    residueIDs.Add(residue.Value.ID);
+                }
+
+                return residueIDs;
+            }
         }
 
         public HashSet<int> GetResidueIDs(List<string> residueNames) {

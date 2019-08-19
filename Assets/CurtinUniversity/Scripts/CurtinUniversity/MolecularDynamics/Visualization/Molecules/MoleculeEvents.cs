@@ -2,15 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MoleculeEvents {
 
-        public delegate void MoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount);
+        //public delegate void MoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount);
+        //public static event MoleculeLoaded OnMoleculeLoaded;
+        //public static void RaiseMoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount) {
+        //    OnMoleculeLoaded?.Invoke(moleculeID, name, description, elements, residues, atomCount, residueCount);
+        //}
+
+        public delegate void MoleculeLoaded(int moleculeID, string name, PrimaryStructure primaryStructure);
         public static event MoleculeLoaded OnMoleculeLoaded;
-        public static void RaiseMoleculeLoaded(int moleculeID, string name, string description, HashSet<string> elements, Dictionary<string, HashSet<int>> residues, int atomCount, int residueCount) {
-            OnMoleculeLoaded?.Invoke(moleculeID, name, description, elements, residues, atomCount, residueCount);
+        public static void RaiseMoleculeLoaded(int moleculeID, string name, PrimaryStructure primaryStructure) {
+            OnMoleculeLoaded?.Invoke(moleculeID, name, primaryStructure);
         }
 
         public delegate void TrajectoryLoaded(int moleculeID, int frameCount);

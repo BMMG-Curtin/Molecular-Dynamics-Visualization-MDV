@@ -6,8 +6,7 @@ using UnityEngine.UI;
 
 using TMPro;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
-using CurtinUniversity.MolecularDynamics.Visualization.Utility;
+using CurtinUniversity.MolecularDynamics.Visualization;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
@@ -59,7 +58,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void initialise() {
 
-            Cleanup.DestroyGameObjects(ElementPanel);
+            UnityCleanup.DestroyGameObjects(ElementPanel);
 
             if (selectedMolecule == null) {
                 return;

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
-
-namespace CurtinUniversity.MolecularDynamics.Model.FileParser {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     // This parser assumes input file is in 32 bit little endian. Also assumes non-CHARMm format. Will error otherwise.
     public class DCDTrajectoryParser {

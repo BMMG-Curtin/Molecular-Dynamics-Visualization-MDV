@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Definitions {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public static class MaximumBondLengths {
 

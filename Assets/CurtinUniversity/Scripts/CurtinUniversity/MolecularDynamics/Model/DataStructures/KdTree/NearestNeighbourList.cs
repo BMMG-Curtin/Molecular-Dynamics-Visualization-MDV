@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree.Math;
 
-namespace CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public interface INearestNeighbourList<TItem, TDistance>
 	{

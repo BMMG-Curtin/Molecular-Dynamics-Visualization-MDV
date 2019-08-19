@@ -1,5 +1,5 @@
 ﻿
-namespace CurtinUniversity.MolecularDynamics.Model.Model {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class PrimaryStructureFrame {
 

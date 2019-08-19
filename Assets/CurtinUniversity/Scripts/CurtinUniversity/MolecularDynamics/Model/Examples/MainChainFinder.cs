@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-using CurtinUniversity.MolecularDynamics.Model.FileParser;
-using CurtinUniversity.MolecularDynamics.Model.Model;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Examples {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public static class MainChainFinder {
 

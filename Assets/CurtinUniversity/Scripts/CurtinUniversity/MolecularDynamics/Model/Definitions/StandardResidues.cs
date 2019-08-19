@@ -1,4 +1,4 @@
-﻿namespace CurtinUniversity.MolecularDynamics.Model.Definitions {
+﻿namespace CurtinUniversity.MolecularDynamics.Model {
 
     public enum StandardResidue {
         AminoAcid,

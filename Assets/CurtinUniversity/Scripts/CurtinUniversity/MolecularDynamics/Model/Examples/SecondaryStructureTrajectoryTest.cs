@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
-using CurtinUniversity.MolecularDynamics.Model.FileParser;
-using CurtinUniversity.MolecularDynamics.Model.FileCreator;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Examples {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public static class SecondaryStructureTrajectoryTest {
 

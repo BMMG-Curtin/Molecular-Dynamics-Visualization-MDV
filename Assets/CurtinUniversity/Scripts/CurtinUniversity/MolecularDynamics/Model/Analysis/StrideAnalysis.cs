@@ -7,10 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-using CurtinUniversity.MolecularDynamics.Model.Model;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Analysis {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     // Note that the analysis matches residue structure to the residue indexes supplied in the input file. 
     // Please be sure that the residue indexes in the file match the residue indexes in the primary structure you are matching against. 

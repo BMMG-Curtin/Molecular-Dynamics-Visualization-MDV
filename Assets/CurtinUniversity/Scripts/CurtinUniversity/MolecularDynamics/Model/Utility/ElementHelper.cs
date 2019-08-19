@@ -1,8 +1,6 @@
 ﻿using System;
 
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Utility {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public static class ElementHelper {
 

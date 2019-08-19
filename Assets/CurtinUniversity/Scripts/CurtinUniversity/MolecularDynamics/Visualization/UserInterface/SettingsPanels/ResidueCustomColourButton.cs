@@ -1,22 +1,22 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿//using UnityEngine;
+//using UnityEngine.UI;
 
-using System.Collections;
+//using System.Collections;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization {
+//namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public class ResidueCustomColourButton : MonoBehaviour {
+//    public class ResidueCustomColourButton : MonoBehaviour {
 
-        private SetCustomColourButtonColour setColour;
-        private Color colour;
+//        private SetCustomColourButtonColour setColour;
+//        private Color colour;
 
-        public void SetSetColorCallback(SetCustomColourButtonColour setColourCallback, Color callbackColour) {
-            setColour = setColourCallback;
-            colour = callbackColour;
-        }
+//        public void SetSetColorCallback(SetCustomColourButtonColour setColourCallback, Color callbackColour) {
+//            setColour = setColourCallback;
+//            colour = callbackColour;
+//        }
 
-        public void ButtonClick() {
-            setColour(colour);
-        }
-    }
-}
+//        public void ButtonClick() {
+//            setColour(colour);
+//        }
+//    }
+//}

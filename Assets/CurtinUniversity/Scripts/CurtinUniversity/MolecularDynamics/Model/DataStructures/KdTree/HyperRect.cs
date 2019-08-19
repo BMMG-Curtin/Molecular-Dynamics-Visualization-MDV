@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree.Math;
 
-namespace CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
-	public struct HyperRect<T>
+    public struct HyperRect<T>
 	{
 		private T[] minPoint;
 		public T[] MinPoint

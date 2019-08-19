@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using CurtinUniversity.MolecularDynamics.Model.Model;
-using CurtinUniversity.MolecularDynamics.Model.Definitions;
-
-using CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree;
-using CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree.Math;
-
 using System.Diagnostics;
 
-namespace CurtinUniversity.MolecularDynamics.Model.Utility {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     public static class BondCalculator {
 

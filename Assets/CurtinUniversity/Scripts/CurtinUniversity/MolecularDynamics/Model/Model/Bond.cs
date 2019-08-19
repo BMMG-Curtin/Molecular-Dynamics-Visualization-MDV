@@ -1,5 +1,5 @@
 ﻿
-namespace CurtinUniversity.MolecularDynamics.Model.Model {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     /// <summary>
     /// A bond between two atoms. Only the atomIDs are stored

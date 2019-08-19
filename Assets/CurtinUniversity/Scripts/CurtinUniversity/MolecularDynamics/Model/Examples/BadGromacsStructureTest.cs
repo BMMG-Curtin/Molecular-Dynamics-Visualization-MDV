@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
-using CurtinUniversity.MolecularDynamics.Model.FileParser;
-
-namespace CurtinUniversity.MolecularDynamics.Model.Examples {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     class BadGromacsStructureTest {
 

@@ -20,19 +20,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private string residueName;
         bool residueEnabled = true;
         bool residueIDsModified = true;
-        private SaveResidueNameEnabledDelegate saveEnabledCallback;
+        private ToggleResidueNameDelegate toggleResidueCallback;
         private OpenResidueIDsDelegate openResidueIDsCallback;
-
-        public object OpenDisplayOptionsCallback { get; private set; }
 
         void Start() {
             buttonColours = GetComponent<Button>().colors;
         }
 
-        public void Initialise(string residueName, bool residueEnabled, bool residueIDsModified, SaveResidueNameEnabledDelegate saveEnabledCallback, OpenResidueIDsDelegate openDisplayCallback) {
+        public void Initialise(string residueName, bool residueEnabled, bool residueIDsModified, ToggleResidueNameDelegate saveEnabledCallback, OpenResidueIDsDelegate openDisplayCallback) {
 
             this.residueName = residueName;
-            this.saveEnabledCallback = saveEnabledCallback;
+            this.toggleResidueCallback = saveEnabledCallback;
             this.openResidueIDsCallback = openDisplayCallback;
             this.residueEnabled = residueEnabled;
             this.residueIDsModified = residueIDsModified;
@@ -60,14 +58,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
             else {
 
-                if (saveEnabledCallback != null) {
+                if (toggleResidueCallback != null) {
 
                     residueEnabled = !residueEnabled;
                     updateButtonColors();
+                    toggleResidueCallback(residueName);
                 }
             }
-
-            saveEnabledCallback(residueName, residueEnabled);
         }
 
         private void updateButtonColors() {

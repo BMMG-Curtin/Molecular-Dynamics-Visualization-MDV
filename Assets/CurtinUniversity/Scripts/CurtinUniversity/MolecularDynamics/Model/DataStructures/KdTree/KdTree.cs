@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree;
-using CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree.Math;
+namespace CurtinUniversity.MolecularDynamics.Model {
 
-namespace CurtinUniversity.MolecularDynamics.Model.DataStructures.KdTree {
-
-	public class KdTree<TKey, TValue> : IKdTree<TKey, TValue>
+    public class KdTree<TKey, TValue> : IKdTree<TKey, TValue>
 	{
 		public KdTree(int dimensions)
 		{

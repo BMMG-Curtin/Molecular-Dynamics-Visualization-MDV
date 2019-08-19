@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 
-using CurtinUniversity.MolecularDynamics.Model.Model;
-
-namespace CurtinUniversity.MolecularDynamics.Model.FileParser {
+namespace CurtinUniversity.MolecularDynamics.Model {
 
     /// <summary>
     /// Some of the code below has been derived from the XTC file parsing routines in VMD.
@@ -617,3 +615,4 @@ namespace CurtinUniversity.MolecularDynamics.Model.FileParser {
         }
     }
 }
+

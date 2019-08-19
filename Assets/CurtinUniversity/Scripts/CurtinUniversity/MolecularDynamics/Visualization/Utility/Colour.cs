@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization.Utility {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public static class Colour {
 
