@@ -10,17 +10,44 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static bool LoadMoleculeOnStart { get; private set; } = false;
         public static string LoadMoleculeFileName { get; private set; } = "";
 
-        public static Color32 ResidueColour1 { get; private set; } = new Color32(255, 0, 0, 255);   // red
-        public static Color32 ResidueColour2 { get; private set; } = new Color32(255, 128, 0, 255); // orange
-        public static Color32 ResidueColour3 { get; private set; } = new Color32(255, 255, 0, 255); // yellow
-        public static Color32 ResidueColour4 { get; private set; } = new Color32(128, 255, 0, 255); // lime
-        public static Color32 ResidueColour5 { get; private set; } = new Color32(0, 255, 0, 255);   // green
-        public static Color32 ResidueColour6 { get; private set; } = new Color32(0, 255, 191, 255); // cyan
-        public static Color32 ResidueColour7 { get; private set; } = new Color32(0, 191, 255, 255); // blue
-        public static Color32 ResidueColour8 { get; private set; } = new Color32(0, 0, 255, 255);   // dark blue
-        public static Color32 ResidueColour9 { get; private set; } = new Color32(191, 0, 255, 255); // purple
-        public static Color32 ResidueColour10 { get; private set; } = new Color32(255, 0, 191, 255); // pink
-        public static Color32 ResidueColourDefault { get; private set; } = new Color32(255, 0, 0, 255);   // red
+
+        // Colors for residue highlighting. 
+        // Uses RGB values ranging from 0-255
+        public static Color32 ResidueColour1  { get; private set; } = new Color32 (255, 0, 0, 255);		// red1
+        public static Color32 ResidueColour2  { get; private set; } = new Color32 (255, 65, 65, 255);   // red2
+        public static Color32 ResidueColour3  { get; private set; } = new Color32 (255, 125, 125, 255); // red3
+        public static Color32 ResidueColour4  { get; private set; } = new Color32 (255, 195, 195, 255); // red4
+        public static Color32 ResidueColour5  { get; private set; } = new Color32 (255, 255, 0, 255); 	// yellow
+        public static Color32 ResidueColour6  { get; private set; } = new Color32 (220, 220, 220, 255);	// grey
+        public static Color32 ResidueColour7  { get; private set; } = new Color32 (195, 195, 255, 255); // blue1
+        public static Color32 ResidueColour8  { get; private set; } = new Color32 (125, 125, 255, 255);	// blue2
+        public static Color32 ResidueColour9  { get; private set; } = new Color32 (65, 65, 255, 255);	// blue3
+        public static Color32 ResidueColour10 { get; private set; } = new Color32 (0, 0, 255, 255);	    // blue4
+        public static Color32 ResidueColour11 { get; private set; } = new Color32 (255, 128, 0, 255);	// orange
+        public static Color32 ResidueColour12 { get; private set; } = new Color32 (128, 255, 0, 255);	// lime
+        public static Color32 ResidueColour13 { get; private set; } = new Color32 (0, 255, 0, 255);		// green
+        public static Color32 ResidueColour14 { get; private set; } = new Color32 (0, 255, 191, 255); 	// cyan
+        public static Color32 ResidueColour15 { get; private set; } = new Color32 (191, 0, 255, 255);	// purple
+
+        // the default needs to be different than all the above colours - it's used in checks to see if an obove color is selected
+        public static Color32 ResidueColourDefault { get; private set; } = new Color32(210, 210, 210, 255);   // grey
+
+        //public static Color32 ResidueColour1 { get; private set; } = new Color32(255, 0, 0, 255);   // red
+        //public static Color32 ResidueColour2 { get; private set; } = new Color32(255, 128, 0, 255); // orange
+        //public static Color32 ResidueColour3 { get; private set; } = new Color32(255, 255, 0, 255); // yellow
+        //public static Color32 ResidueColour4 { get; private set; } = new Color32(128, 255, 0, 255); // lime
+        //public static Color32 ResidueColour5 { get; private set; } = new Color32(0, 255, 0, 255);   // green
+        //public static Color32 ResidueColour6 { get; private set; } = new Color32(0, 255, 191, 255); // cyan
+        //public static Color32 ResidueColour7 { get; private set; } = new Color32(0, 191, 255, 255); // blue
+        //public static Color32 ResidueColour8 { get; private set; } = new Color32(0, 0, 255, 255);   // dark blue
+        //public static Color32 ResidueColour9 { get; private set; } = new Color32(191, 0, 255, 255); // purple
+        //public static Color32 ResidueColour10 { get; private set; } = new Color32(255, 0, 191, 255); // pink
+        //public static Color32 ResidueColour11 { get; private set; } = new Color32(255, 0, 191, 255); // pink
+        //public static Color32 ResidueColour12 { get; private set; } = new Color32(255, 0, 191, 255); // pink
+        //public static Color32 ResidueColour13 { get; private set; } = new Color32(255, 0, 191, 255); // pink
+        //public static Color32 ResidueColour14 { get; private set; } = new Color32(255, 0, 191, 255); // pink
+        //public static Color32 ResidueColour15 { get; private set; } = new Color32(255, 0, 191, 255); // pink
+        //public static Color32 ResidueColourDefault { get; private set; } = new Color32(255, 0, 0, 255);   // red
 
 
         // these settings are contained to this class and will not be overridden by the config file
@@ -116,28 +143,38 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 LoadMoleculeFileName = Config.GetString("LoadMoleculeFileName");
 
             // residue custom colours
-            if (Config.KeyExists("ResidueColour1"))
-                ResidueColour1 = Config.GetRGB("ResidueColour1");
-            if (Config.KeyExists("ResidueColour2"))
-                ResidueColour2 = Config.GetRGB("ResidueColour2");
-            if (Config.KeyExists("ResidueColour3"))
-                ResidueColour3 = Config.GetRGB("ResidueColour3");
-            if (Config.KeyExists("ResidueColour4"))
-                ResidueColour4 = Config.GetRGB("ResidueColour4");
-            if (Config.KeyExists("ResidueColour5"))
-                ResidueColour5 = Config.GetRGB("ResidueColour5");
-            if (Config.KeyExists("ResidueColour6"))
-                ResidueColour6 = Config.GetRGB("ResidueColour6");
-            if (Config.KeyExists("ResidueColour7"))
-                ResidueColour7 = Config.GetRGB("ResidueColour7");
-            if (Config.KeyExists("ResidueColour8"))
-                ResidueColour8 = Config.GetRGB("ResidueColour8");
-            if (Config.KeyExists("ResidueColour9"))
-                ResidueColour9 = Config.GetRGB("ResidueColour9");
-            if (Config.KeyExists("ResidueColour10"))
-                ResidueColour10 = Config.GetRGB("ResidueColour10");
-            if (Config.KeyExists("ResidueColourDefault"))
-                ResidueColourDefault = Config.GetRGB("ResidueColourDefault");
+            //if (Config.KeyExists("ResidueColour1"))
+            //    ResidueColour1 = Config.GetRGB("ResidueColour1");
+            //if (Config.KeyExists("ResidueColour2"))
+            //    ResidueColour2 = Config.GetRGB("ResidueColour2");
+            //if (Config.KeyExists("ResidueColour3"))
+            //    ResidueColour3 = Config.GetRGB("ResidueColour3");
+            //if (Config.KeyExists("ResidueColour4"))
+            //    ResidueColour4 = Config.GetRGB("ResidueColour4");
+            //if (Config.KeyExists("ResidueColour5"))
+            //    ResidueColour5 = Config.GetRGB("ResidueColour5");
+            //if (Config.KeyExists("ResidueColour6"))
+            //    ResidueColour6 = Config.GetRGB("ResidueColour6");
+            //if (Config.KeyExists("ResidueColour7"))
+            //    ResidueColour7 = Config.GetRGB("ResidueColour7");
+            //if (Config.KeyExists("ResidueColour8"))
+            //    ResidueColour8 = Config.GetRGB("ResidueColour8");
+            //if (Config.KeyExists("ResidueColour9"))
+            //    ResidueColour9 = Config.GetRGB("ResidueColour9");
+            //if (Config.KeyExists("ResidueColour10"))
+            //    ResidueColour10 = Config.GetRGB("ResidueColour10");
+            //if (Config.KeyExists("ResidueColour11"))
+            //    ResidueColour11 = Config.GetRGB("ResidueColour11");
+            //if (Config.KeyExists("ResidueColour12"))
+            //    ResidueColour12 = Config.GetRGB("ResidueColour12");
+            //if (Config.KeyExists("ResidueColour13"))
+            //    ResidueColour13 = Config.GetRGB("ResidueColour13");
+            //if (Config.KeyExists("ResidueColour14"))
+            //    ResidueColour14 = Config.GetRGB("ResidueColour14");
+            //if (Config.KeyExists("ResidueColour15"))
+            //    ResidueColour15 = Config.GetRGB("ResidueColour15");
+            //if (Config.KeyExists("ResidueColourDefault"))
+            //    ResidueColourDefault = Config.GetRGB("ResidueColourDefault");
         }
     }
 }

@@ -26,6 +26,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             addColourSelectButton(Settings.ResidueColour8);
             addColourSelectButton(Settings.ResidueColour9);
             addColourSelectButton(Settings.ResidueColour10);
+            addColourSelectButton(Settings.ResidueColour11);
+            addColourSelectButton(Settings.ResidueColour12);
+            addColourSelectButton(Settings.ResidueColour13);
+            addColourSelectButton(Settings.ResidueColour14);
+            addColourSelectButton(Settings.ResidueColour15);
         }
 
         public void Initialise(SetCustomColourButtonColourDelegate setColourCallback) {

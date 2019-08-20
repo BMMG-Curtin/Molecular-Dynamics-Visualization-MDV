@@ -167,7 +167,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     atomSettingsCopy = renderSettings.AtomSettings[atomName].Clone();
                 }
 
-                buttonScript.Initialise(atomSettingsCopy);
+                buttonScript.Initialise(atomSettingsCopy, colourSelectPanel);
             }
         }
 

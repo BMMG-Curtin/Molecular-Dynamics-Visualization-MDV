@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+using UnityEngine;
 using UnityEngine.UI;
 
 using TMPro;
@@ -11,26 +16,85 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TextMeshProUGUI atomNameText;
 
         [SerializeField]
+        private TextMeshProUGUI representationText;
+
+        [SerializeField]
         private Image backgroundImage;
 
-        [SerializeField]
-        private Toggle CPK;
+        private AtomRenderSettings atomSettings;
+        private ResidueCustomColourSelect colourSelectPanel;
 
-        [SerializeField]
-        private Toggle VDW;
 
-        private AtomRenderSettings atomOptions;
+        private List<string> representations;
+        private int selectedRepresentationIndex;
 
-        public void Initialise(AtomRenderSettings options) {
+        private float buttonAlpha;
 
-            UpdateAtomOptions(options);
+        private void Awake() {
+
+            representations = Enum.GetNames(typeof(MolecularRepresentation)).ToList();
+            buttonAlpha = backgroundImage.color.a;
         }
 
-        public void UpdateAtomOptions(AtomRenderSettings options) {
+        public void Initialise(AtomRenderSettings options, ResidueCustomColourSelect colourSelectPanel) {
 
-            this.atomOptions = options;
+            this.atomSettings = options;
+            this.colourSelectPanel = colourSelectPanel;
 
-            atomNameText.text = options.AtomName.ToString();
+            updateAtomOptions();
+        }
+
+        private void updateAtomOptions() {
+
+            atomNameText.text = atomSettings.AtomName.ToString();
+
+            for(int i=0; i < representations.Count; i++) {
+                if(atomSettings.Representation.ToString() == representations[i]) {
+                    selectedRepresentationIndex = i;
+                    break;
+                }
+            }
+
+            representationText.text = atomSettings.Representation.ToString();
+
+            backgroundImage.color = atomSettings.AtomColour;
+            resetAlpha();
+        }
+
+        public void OnNameButtonClick() {
+
+            colourSelectPanel.gameObject.SetActive(true);
+            colourSelectPanel.Initialise(setAtomColor);
+        }
+
+        private void setAtomColor(Color color) {
+
+            atomSettings.AtomColour = color;
+
+            color.a = buttonAlpha;
+            backgroundImage.color = color;
+        }
+
+        private void resetAlpha() {
+
+            Color imageColor = backgroundImage.color;
+            imageColor.a = buttonAlpha;
+            backgroundImage.color = imageColor;
+        }
+
+        public void OnRepresentationButtonClick() {
+
+            selectedRepresentationIndex++;
+
+            if (selectedRepresentationIndex >= representations.Count) {
+                selectedRepresentationIndex = 0;
+            }
+
+            if(Enum.TryParse(representations[selectedRepresentationIndex], out MolecularRepresentation rep)) {
+
+                atomSettings.Representation = rep;
+                representationText.text = representations[selectedRepresentationIndex];
+            }
         }
     }
 }
