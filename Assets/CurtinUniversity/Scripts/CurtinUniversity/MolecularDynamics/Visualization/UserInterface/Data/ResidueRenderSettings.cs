@@ -9,10 +9,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public class ResidueRenderSettings {
 
         public int ResidueID { get; set; }
+        public bool ColourAtoms { get; set; }
+        public MolecularRepresentation? AtomRepresentation { get; set; }
+        public bool ColourBonds{ get; set; }
         public bool LargeBonds { get; set; }
-        public Color32? BondColour { get; set; }
-        public Color32? SecondaryStructureColour { get; set; }
-        public Dictionary<string, AtomRenderSettings> AtomDisplayOptions;
+        public bool ColourSecondaryStructure{ get; set; }
+        public Color ResidueColour;
+
+        public Dictionary<string, AtomRenderSettings> AtomSettings;
 
         private Color defaultColour;
 
@@ -25,19 +29,25 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void SetDefaultOptions() {
 
+            ColourAtoms = false;
+            AtomRepresentation = null;
+            ColourBonds = false;
             LargeBonds = false;
-            BondColour = null;
-            SecondaryStructureColour = null;
-            AtomDisplayOptions = new Dictionary<string, AtomRenderSettings>();
+            ColourSecondaryStructure = false;
+            ResidueColour = defaultColour;
+            AtomSettings = new Dictionary<string, AtomRenderSettings>();
         }
 
         public bool IsDefault() {
 
-            if (LargeBonds == false &&
-                BondColour == null &&
-                SecondaryStructureColour == null &&
-                AtomDisplayOptions != null && 
-                AtomDisplayOptions.Count == 0) {
+            if (ColourAtoms == false && 
+                AtomRepresentation == null && 
+                ColourBonds == false &&
+                LargeBonds == false &&
+                ColourSecondaryStructure == false &&
+                ResidueColour == defaultColour && 
+                AtomSettings != null && 
+                AtomSettings.Count == 0) {
 
                 return true;
             }
@@ -45,16 +55,37 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             return false;
         }
 
+        public ResidueRenderSettings Clone() {
+
+            ResidueRenderSettings clone = new ResidueRenderSettings(ResidueID, defaultColour);
+            clone.ColourAtoms = ColourAtoms;
+            clone.AtomRepresentation = AtomRepresentation;
+            clone.ColourBonds = ColourBonds;
+            clone.LargeBonds = LargeBonds;
+            clone.ColourSecondaryStructure = ColourSecondaryStructure;
+            clone.ResidueColour = ResidueColour;
+
+            clone.AtomSettings = new Dictionary<string, AtomRenderSettings>();
+            foreach(KeyValuePair<string, AtomRenderSettings> atom in AtomSettings) {
+                clone.AtomSettings.Add(atom.Key, atom.Value.Clone());
+            }
+
+            return clone;
+        }
+
         public override string ToString() {
 
             string output =
                 "ResidueID: " + ResidueID + "\n" +
+                "ColourAtoms: " + ColourAtoms + "\n" +
+                "AtomRepresentation: " + AtomRepresentation + "\n" +
+                "ColourBonds: " + ColourBonds + "\n" +
                 "LargeBonds: " + LargeBonds + "\n" +
-                "BondColour: " + BondColour + "\n" +
-                "SecondaryStructureColour: " + BondColour + "\n" +
+                "ColourSecondaryStructure: " + ColourSecondaryStructure + "\n" +
+                "ResidueColour: " + ResidueColour + "\n" +
                 "AtomDisplayOptions: " + "\n";
 
-            foreach (AtomRenderSettings atomOptions in AtomDisplayOptions.Values) {
+            foreach (AtomRenderSettings atomOptions in AtomSettings.Values) {
                 output += atomOptions.ToString() + "\n";
             }
 

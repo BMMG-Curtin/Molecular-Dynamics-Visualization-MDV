@@ -24,13 +24,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         bool residueIDCustomSettings = false;
 
         private ToggleResidueIDDelegate toggleResidueCallback;
-        private OpenCustomResidueRenderSettingsDelegate openCustomSettingsCallback;
+        private OpenResidueCustomSettingsDelegate openCustomSettingsCallback;
 
         private void Awake() {
             buttonColours = GetComponent<Button>().colors;
         }
 
-        public void Initialise(int residueID, bool residueIDEnabled, bool residueIDCustomSettings, ToggleResidueIDDelegate toggleResidueCallback, OpenCustomResidueRenderSettingsDelegate openCustomSettingsCallback) {
+        public void Initialise(int residueID, bool residueIDEnabled, bool residueIDCustomSettings, ToggleResidueIDDelegate toggleResidueCallback, OpenResidueCustomSettingsDelegate openCustomSettingsCallback) {
 
             this.residueID = residueID;
             this.residueIDEnabled = residueIDEnabled;

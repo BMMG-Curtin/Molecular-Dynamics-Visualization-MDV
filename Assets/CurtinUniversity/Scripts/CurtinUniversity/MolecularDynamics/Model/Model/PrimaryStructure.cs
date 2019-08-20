@@ -280,7 +280,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return null;
         }
 
-        public List<Residue> GetResidues(int residueID) {
+        public List<Residue> GetResiduesByID(int residueID) {
 
             // residue IDs can match multiple residues
             List<Residue> matchingResidues = new List<Residue>();

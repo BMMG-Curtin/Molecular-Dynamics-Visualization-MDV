@@ -11,7 +11,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void ToggleResidueNameDelegate(string residueName);
     public delegate void OpenResidueIDsDelegate(string residueName);
-    public delegate void OnCloseResidueIDsPanel();
+    public delegate void ClosedResidueSettingsPanel();
 
     public class ResidueNamesPanel : MonoBehaviour {
 

@@ -10,13 +10,12 @@ using CurtinUniversity.MolecularDynamics.Model;
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void ToggleResidueIDDelegate(int residueID);
-    public delegate void OpenCustomResidueRenderSettingsDelegate(int residueID);
-    public delegate void ClosedCustomRenderSettings();
+    public delegate void OpenResidueCustomSettingsDelegate(int residueID);
 
     public class ResidueIDsPanel : MonoBehaviour {
 
         [SerializeField]
-        private ResidueCustomRenderSettingsPanel CustomRenderSettingsPanel;
+        private ResidueCustomSettingsPanel CustomSettingsPanel;
 
         [SerializeField]
         private GameObject residueIDsPanel;
@@ -40,14 +39,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private MoleculeRenderSettings renderSettings;
         private PrimaryStructure primaryStructure;
         private ResidueRenderSettingsUpdated settingsUpdatedCallback;
-        private OnCloseResidueIDsPanel onClose;
+        private ClosedResidueSettingsPanel onClose;
 
         List<int> residueIDs;
         private Dictionary<int, ResidueIDButton> residueIDButtons;
 
         private bool allResiduesEnabled = true;
 
-        public void Initialise(string residueName, MoleculeRenderSettings settings, PrimaryStructure primaryStructure, ResidueRenderSettingsUpdated settingsUpdatedCallback, OnCloseResidueIDsPanel onClose) {
+        public void Initialise(string residueName, MoleculeRenderSettings settings, PrimaryStructure primaryStructure, ResidueRenderSettingsUpdated settingsUpdatedCallback, ClosedResidueSettingsPanel onClose) {
 
             this.residueName = residueName;
             this.renderSettings = settings;
@@ -210,6 +209,30 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void openCustomResidueRenderSettings(int residueID) {
 
+            List<Residue> residues = primaryStructure.GetResiduesByID(residueID);
+            if(residues.Count == 0) {
+                return;
+            }
+
+            List<int> residueIDs = new List<int>() { residueID };
+            List<string> atomNames = new List<string>();
+
+            foreach (Atom atom in residues[0].Atoms.Values) {
+                atomNames.Add(atom.Name);
+            }
+
+            ResidueRenderSettings residueSettingsCopy = new ResidueRenderSettings(residueID, Settings.ResidueColourDefault);
+            if(renderSettings.CustomResidueRenderSettings.ContainsKey(residueID)) {
+                residueSettingsCopy = renderSettings.CustomResidueRenderSettings[residueID].Clone();
+            }
+
+            CustomSettingsPanel.Initialise(residueIDs, residueName, atomNames, ResidueUpdateType.ID, residueSettingsCopy, settingsUpdatedCallback, onCloseCustomSettingsPanel);
+        }
+
+        private void onCloseCustomSettingsPanel() {
+
+            updateCustomResidueNameStatus();
+            renderResidueButtons();
         }
     }
 }
