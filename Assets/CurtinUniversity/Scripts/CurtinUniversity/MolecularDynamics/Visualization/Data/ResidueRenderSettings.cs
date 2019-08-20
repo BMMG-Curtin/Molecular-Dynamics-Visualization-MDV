@@ -10,7 +10,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public int ResidueID { get; set; }
         public bool ColourAtoms { get; set; }
-        public MolecularRepresentation? AtomRepresentation { get; set; }
+        public MolecularRepresentation AtomRepresentation { get; set; }
         public bool ColourBonds{ get; set; }
         public bool LargeBonds { get; set; }
         public bool ColourSecondaryStructure{ get; set; }
@@ -30,7 +30,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void SetDefaultOptions() {
 
             ColourAtoms = false;
-            AtomRepresentation = null;
+            AtomRepresentation = MolecularRepresentation.None;
             ColourBonds = false;
             LargeBonds = false;
             ColourSecondaryStructure = false;
@@ -41,11 +41,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public bool IsDefault() {
 
             if (ColourAtoms == false && 
-                AtomRepresentation == null && 
+                AtomRepresentation == MolecularRepresentation.None && 
                 ColourBonds == false &&
                 LargeBonds == false &&
                 ColourSecondaryStructure == false &&
-                ResidueColour == defaultColour && 
+                //ResidueColour == defaultColour &&  // dont check colour. if everything else is off then colour doesn't matter
                 AtomSettings != null && 
                 AtomSettings.Count == 0) {
 
@@ -72,6 +72,29 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             return clone;
         }
+
+        public bool Equals(ResidueRenderSettings other) {
+
+            foreach (KeyValuePair<string, AtomRenderSettings> atom in AtomSettings) {
+                if(!other.AtomSettings.ContainsKey(atom.Key) || !other.AtomSettings[atom.Key].Equals(atom.Value)) {
+                    return false;
+                }
+            }
+
+            if (other.ResidueID == ResidueID &&
+                other.ColourAtoms == ColourAtoms &&
+                other.AtomRepresentation == AtomRepresentation &&
+                other.ColourBonds.Equals(ColourBonds) &&
+                other.LargeBonds == LargeBonds && 
+                other.ColourSecondaryStructure == ColourSecondaryStructure &&
+                other.ResidueColour == ResidueColour) {
+
+                return true;
+            }
+
+            return false;
+        }
+
 
         public override string ToString() {
 

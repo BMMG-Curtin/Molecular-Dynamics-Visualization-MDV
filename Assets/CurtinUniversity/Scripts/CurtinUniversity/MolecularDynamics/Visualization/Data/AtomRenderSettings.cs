@@ -49,6 +49,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             return clone;
         }
 
+        public bool Equals(AtomRenderSettings other) {
+
+            if (other.AtomName == AtomName &&
+                other.Representation == Representation &&
+                other.CustomColour == CustomColour && 
+                other.AtomColour.Equals(AtomColour)) {
+
+                return true;
+            }
+
+            return false;
+        }
+
         public override string ToString() {
 
             return

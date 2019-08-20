@@ -1,6 +1,8 @@
-using CurtinUniversity.MolecularDynamics.Visualization;
 
-namespace UnityEngine.EventSystems {
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MouseInputModule : PointerInputModule {
 

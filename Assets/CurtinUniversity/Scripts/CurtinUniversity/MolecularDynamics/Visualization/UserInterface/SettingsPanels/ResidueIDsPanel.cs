@@ -11,6 +11,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void ToggleResidueIDDelegate(int residueID);
     public delegate void OpenResidueCustomSettingsDelegate(int residueID);
+    public delegate void SaveCustomResidueSettingsDelegate(List<int> residueIDs, ResidueRenderSettings customResidueSettings);
+    public delegate void CloseCustomResidueSettingsDelegate();
 
     public class ResidueIDsPanel : MonoBehaviour {
 
@@ -36,7 +38,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private ConfirmDialog ConfirmDialog;
 
         private string residueName;
-        private MoleculeRenderSettings renderSettings;
+        private MoleculeRenderSettings moleculeRenderSettings;
         private PrimaryStructure primaryStructure;
         private ResidueRenderSettingsUpdated settingsUpdatedCallback;
         private ClosedResidueSettingsPanel onClose;
@@ -49,7 +51,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void Initialise(string residueName, MoleculeRenderSettings settings, PrimaryStructure primaryStructure, ResidueRenderSettingsUpdated settingsUpdatedCallback, ClosedResidueSettingsPanel onClose) {
 
             this.residueName = residueName;
-            this.renderSettings = settings;
+            this.moleculeRenderSettings = settings;
             this.primaryStructure = primaryStructure;
             this.settingsUpdatedCallback = settingsUpdatedCallback;
             this.onClose = onClose;
@@ -61,7 +63,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             allResiduesEnabled = true;
             foreach(int residueID in residueIDs) {
-                if(!renderSettings.EnabledResidueIDs.Contains(residueID)) {
+                if(!moleculeRenderSettings.EnabledResidueIDs.Contains(residueID)) {
                     allResiduesEnabled = false;
                     break;
                 }
@@ -78,12 +80,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             foreach (int residueID in residueIDs) {
 
-                if (allResiduesEnabled && !renderSettings.EnabledResidueIDs.Contains(residueID)) {
-                    renderSettings.EnabledResidueIDs.Add(residueID);
+                if (allResiduesEnabled && !moleculeRenderSettings.EnabledResidueIDs.Contains(residueID)) {
+                    moleculeRenderSettings.EnabledResidueIDs.Add(residueID);
                 }
 
-                if (!allResiduesEnabled && renderSettings.EnabledResidueIDs.Contains(residueID)) {
-                    renderSettings.EnabledResidueIDs.Remove(residueID);
+                if (!allResiduesEnabled && moleculeRenderSettings.EnabledResidueIDs.Contains(residueID)) {
+                    moleculeRenderSettings.EnabledResidueIDs.Remove(residueID);
                 }
             }
 
@@ -118,8 +120,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             foreach (int residueID in residueIDs) {
 
-                bool residueEnabled = renderSettings.EnabledResidueIDs.Contains(residueID);
-                bool residueModified = renderSettings.CustomResidueRenderSettings.ContainsKey(residueID);
+                bool residueEnabled = moleculeRenderSettings.EnabledResidueIDs.Contains(residueID);
+                bool residueModified = moleculeRenderSettings.CustomResidueRenderSettings.ContainsKey(residueID);
 
                 GameObject button = (GameObject)Instantiate(residueButtonPrefab, Vector3.zero, Quaternion.identity);
                 button.GetComponent<Image>().color = new Color(1, 1, 1);
@@ -150,12 +152,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 foreach(int residueID in residueIDs) {
 
-                    if (!renderSettings.EnabledResidueIDs.Contains(residueID)) {
-                        renderSettings.EnabledResidueIDs.Add(residueID);
+                    if (!moleculeRenderSettings.EnabledResidueIDs.Contains(residueID)) {
+                        moleculeRenderSettings.EnabledResidueIDs.Add(residueID);
                     }
 
-                    if(renderSettings.CustomResidueRenderSettings.ContainsKey(residueID)) {
-                        renderSettings.CustomResidueRenderSettings.Remove(residueID);
+                    if(moleculeRenderSettings.CustomResidueRenderSettings.ContainsKey(residueID)) {
+                        moleculeRenderSettings.CustomResidueRenderSettings.Remove(residueID);
                     }
                 }
 
@@ -170,11 +172,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void toggleResidue(int residueID) {
 
-            if(renderSettings.EnabledResidueIDs.Contains(residueID)) {
-                renderSettings.EnabledResidueIDs.Remove(residueID);
+            if(moleculeRenderSettings.EnabledResidueIDs.Contains(residueID)) {
+                moleculeRenderSettings.EnabledResidueIDs.Remove(residueID);
             }
             else {
-                renderSettings.EnabledResidueIDs.Add(residueID);
+                moleculeRenderSettings.EnabledResidueIDs.Add(residueID);
             }
 
             updateCustomResidueNameStatus();
@@ -187,23 +189,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             foreach(int residueID in residueIDs) {
 
-                if(!renderSettings.EnabledResidueIDs.Contains(residueID)) {
+                if(!moleculeRenderSettings.EnabledResidueIDs.Contains(residueID)) {
                     custom = true;
                     break;
                 }
 
-                if (renderSettings.CustomResidueRenderSettings.ContainsKey(residueID)) {
+                if (moleculeRenderSettings.CustomResidueRenderSettings.ContainsKey(residueID)) {
                     custom = true;
                     break;
                 }
             }
 
-            if(custom && !renderSettings.CustomResidueNames.Contains(residueName)) {
-                renderSettings.CustomResidueNames.Add(residueName);
+            if(custom && !moleculeRenderSettings.CustomResidueNames.Contains(residueName)) {
+                moleculeRenderSettings.CustomResidueNames.Add(residueName);
             }
 
-            if (!custom && renderSettings.CustomResidueNames.Contains(residueName)) {
-                renderSettings.CustomResidueNames.Remove(residueName);
+            if (!custom && moleculeRenderSettings.CustomResidueNames.Contains(residueName)) {
+                moleculeRenderSettings.CustomResidueNames.Remove(residueName);
             }
         }
 
@@ -222,17 +224,50 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             ResidueRenderSettings residueSettingsCopy = new ResidueRenderSettings(residueID, Settings.ResidueColourDefault);
-            if(renderSettings.CustomResidueRenderSettings.ContainsKey(residueID)) {
-                residueSettingsCopy = renderSettings.CustomResidueRenderSettings[residueID].Clone();
+            if(moleculeRenderSettings.CustomResidueRenderSettings.ContainsKey(residueID)) {
+                residueSettingsCopy = moleculeRenderSettings.CustomResidueRenderSettings[residueID].Clone();
             }
 
-            CustomSettingsPanel.Initialise(residueIDs, residueName, atomNames, ResidueUpdateType.ID, residueSettingsCopy, settingsUpdatedCallback, onCloseCustomSettingsPanel);
+            CustomSettingsPanel.Initialise(residueIDs, residueName, atomNames, ResidueUpdateType.ID, residueSettingsCopy, saveCustomResidueSettings, onCloseCustomResidueSettings);
+
+            //residueIDsPanel.gameObject.SetActive(false);
         }
 
-        private void onCloseCustomSettingsPanel() {
+        private void saveCustomResidueSettings(List<int> residueIDs, ResidueRenderSettings customResidueSettings) {
+
+            if (!customResidueSettings.IsDefault()) {
+
+                Debug.Log("Saving residue settings - not default ");
+
+                foreach (int residueID in residueIDs) {
+
+                    if (moleculeRenderSettings.CustomResidueRenderSettings.ContainsKey(residueID)) {
+                        moleculeRenderSettings.CustomResidueRenderSettings[residueID] = customResidueSettings;
+                    }
+                    else {
+                        moleculeRenderSettings.CustomResidueRenderSettings.Add(residueID, customResidueSettings);
+                    }
+                }
+            }
+            else {
+
+                Debug.Log("Removing residue settings - are default");
+
+                foreach (int residueID in residueIDs) {
+                    if (moleculeRenderSettings.CustomResidueRenderSettings.ContainsKey(residueID)) {
+                        moleculeRenderSettings.CustomResidueRenderSettings.Remove(residueID);
+                    }
+                }
+            }
 
             updateCustomResidueNameStatus();
             renderResidueButtons();
+            settingsUpdatedCallback();
+        }
+
+        private void onCloseCustomResidueSettings() {
+
+            //residueIDsPanel.gameObject.SetActive(true);
         }
     }
 }

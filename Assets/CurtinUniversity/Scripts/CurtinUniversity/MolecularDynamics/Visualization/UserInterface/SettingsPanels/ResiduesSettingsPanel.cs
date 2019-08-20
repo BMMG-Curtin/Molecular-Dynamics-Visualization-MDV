@@ -11,7 +11,6 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    //public delegate void SetCustomColourButtonColour(Color color);
     //public delegate void OpenResidueIDsDelegate(string residueName);
     //public delegate void OpenResidueDisplayOptionsDelegate(ResidueUpdateType residueUpdateType, int residueID);
     //public delegate void SaveResidueNameEnabledDelegate(string residueName, bool enabled, bool updateMolecule = true);
@@ -45,6 +44,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         public GameObject customRenderSettingsPanelGO;
 
+        [SerializeField]
+        public GameObject colourSelectPanelGO;
 
         //[SerializeField]
         //public GameObject residueIDsPanel;
@@ -160,6 +161,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             residueNamesPanelGO.gameObject.SetActive(enable);
             residueIDsPanelGO.gameObject.SetActive(enable);
             customRenderSettingsPanelGO.gameObject.SetActive(enable);
+            colourSelectPanelGO.gameObject.SetActive(enable);
         }
 
         //public void SetModelResidues(int moleculeID, PrimaryStructure primaryStructure) {

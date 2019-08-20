@@ -1,18 +1,17 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public class AtomNameButton : MonoBehaviour {
+    public class ResidueAtomNameButton : MonoBehaviour {
 
         [SerializeField]
-        private Text atomNameText;
+        private TextMeshProUGUI atomNameText;
 
         [SerializeField]
         private Image backgroundImage;
-
-        [SerializeField]
-        private Toggle Enabled;
 
         [SerializeField]
         private Toggle CPK;

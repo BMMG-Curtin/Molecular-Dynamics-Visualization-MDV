@@ -98,7 +98,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return combinedAtoms;
         }
 
-        public Dictionary<int, Atom> GetAtoms(bool standardAtoms = true, bool nonStandardAtoms = true, HashSet<string> includedElements = null, HashSet<string> includedResidues = null) {
+        public Dictionary<int, Atom> GetAtoms(bool standardAtoms = true, bool nonStandardAtoms = true, HashSet<string> includedElements = null, HashSet<string> includedResidueNames = null, HashSet<int> includedResidueIDs = null) {
 
             Dictionary<int, Atom> atoms = new Dictionary<int, Atom>();
 
@@ -109,9 +109,12 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                     if (includedElements == null || includedElements.Contains(atom.Value.Element.ToString().ToUpper())) {
 
-                        if (includedResidues == null || (atom.Value.ResidueName != null && includedResidues.Contains(atom.Value.ResidueName.ToString().ToUpper()))) {
+                        if (includedResidueNames == null || (atom.Value.ResidueName != null && includedResidueNames.Contains(atom.Value.ResidueName.ToString().ToUpper()))) {
 
-                            atoms.Add(atom.Key, atom.Value);
+                            if (includedResidueIDs == null || (includedResidueIDs.Contains(atom.Value.ResidueID))) {
+
+                                atoms.Add(atom.Key, atom.Value);
+                            }
                         }
                     }
                 }

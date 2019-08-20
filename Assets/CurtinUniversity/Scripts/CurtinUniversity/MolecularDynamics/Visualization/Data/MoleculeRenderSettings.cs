@@ -149,15 +149,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         }
 
-        //public override bool Equals(object obj) {
-
-        //    if (obj.GetType() == typeof(MoleculeRenderSettings)) {
-        //        return Equals((MoleculeRenderSettings)obj);
-        //    }
-
-        //    return false;
-        //}
-
         //public bool Equals(MoleculeRenderSettings otherSettings) {
 
         //    return

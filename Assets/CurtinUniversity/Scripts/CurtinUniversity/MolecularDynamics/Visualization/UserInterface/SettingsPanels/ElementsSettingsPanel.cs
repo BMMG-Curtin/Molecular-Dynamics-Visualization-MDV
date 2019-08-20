@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 using TMPro;
 
-using CurtinUniversity.MolecularDynamics.Visualization;
-
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void SetElementDelegate(string elementName, bool enabled);

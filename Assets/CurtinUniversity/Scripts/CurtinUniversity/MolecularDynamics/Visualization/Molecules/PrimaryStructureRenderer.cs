@@ -6,7 +6,6 @@ using System.Linq;
 using UnityEngine;
 
 using CurtinUniversity.MolecularDynamics.Model;
-using CurtinUniversity.MolecularDynamics.Visualization;
 
 using System.Diagnostics;
 
@@ -138,38 +137,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Quaternion atomOrientation = Quaternion.Euler(45, 45, 45);
 
             // generate combined meshes (i.e single GameObject) for atoms with same element/colour
-
             Dictionary<Color, List<Matrix4x4>> mergeTransforms = new Dictionary<Color, List<Matrix4x4>>();
 
-            HashSet<string> enabledElementNames = null;
-            HashSet<string> enabledResiduesNames = null;
-            HashSet<int> enabledResidueIDs = null;
-
-            if (renderSettings.EnabledElements != null && primaryStructure.ElementNames.Count > renderSettings.EnabledElements.Count) {
-                enabledElementNames = renderSettings.EnabledElements;
-            }
-
-            if(renderSettings.EnabledResidueNames != null && primaryStructure.ResidueNames.Count > renderSettings.EnabledResidueNames.Count) {
-                enabledResiduesNames = renderSettings.EnabledResidueNames;
-            }
-
-            if (renderSettings.EnabledResidueIDs != null && primaryStructure.ResidueCount() > renderSettings.EnabledResidueIDs.Count) {
-                enabledResidueIDs = renderSettings.EnabledResidueIDs;
-            }
-
-            Dictionary<int, Atom> atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, enabledElementNames, enabledResiduesNames);
+            Dictionary<int, Atom> atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, renderSettings.EnabledElements, renderSettings.EnabledResidueNames);
 
             foreach (KeyValuePair<int, Atom> item in atoms) {
 
                 Atom atom = item.Value;
-
-                if(enabledResiduesNames != null && !enabledResiduesNames.Contains(atom.ResidueName)) {
-                    continue;
-                }
-
-                if (enabledResidueIDs != null && !enabledResidueIDs.Contains(atom.ResidueID)) {
-                    continue;
-                }
 
                 Vector3 position;
 
@@ -192,28 +166,28 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 Color32 atomColour;
                 MolecularRepresentation customAtomRepresentation = MolecularRepresentation.None;
 
-                //if (renderSettings.CustomResidueRenderSettings != null && renderSettings.CustomResidueRenderSettings.ContainsKey(atom.ResidueID)) {
+                if (renderSettings.CustomResidueRenderSettings != null && renderSettings.CustomResidueRenderSettings.ContainsKey(atom.ResidueID)) {
 
-                //    ResidueRenderSettings displayOptions = renderSettings.CustomResidueRenderSettings[atom.ResidueID];
+                    ResidueRenderSettings displayOptions = renderSettings.CustomResidueRenderSettings[atom.ResidueID];
 
-                    //if (displayOptions != null && displayOptions.ColourAtoms) {
-                    //    atomColour = displayOptions.Colour;
-                    //}
-                    //else {
-                    //    if (!MolecularConstants.CPKColors.TryGetValue(atom.Element.ToString(), out atomColour)) {
-                    //        MolecularConstants.CPKColors.TryGetValue("Other", out atomColour);
-                    //    }
-                    //}
+                    if (displayOptions != null && displayOptions.ColourAtoms) {
+                        atomColour = displayOptions.ResidueColour;
+                    }
+                    else {
+                        if (!MolecularConstants.CPKColors.TryGetValue(atom.Element.ToString(), out atomColour)) {
+                            MolecularConstants.CPKColors.TryGetValue("Other", out atomColour);
+                        }
+                    }
 
-                    //if(displayOptions != null) {
-                    //    customAtomRepresentation = displayOptions.Representation;
-                    //}
-                //}
-                //else {
+                    if (displayOptions != null) {
+                        customAtomRepresentation = displayOptions.AtomRepresentation;
+                    }
+                }
+                else {
                     if (!MolecularConstants.CPKColors.TryGetValue(atom.Element.ToString(), out atomColour)) {
                         MolecularConstants.CPKColors.TryGetValue("Other", out atomColour);
                     }
-                //}
+                }
 
                 float atomSize = getAtomScale(atom.Name, renderSettings, customAtomRepresentation);
                 Vector3 scale = new Vector3(atomSize, atomSize, atomSize);
@@ -251,8 +225,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 MolecularConstants.CPKColors.TryGetValue("Other", out bondColour);
             }
 
-            //Color32 highlightedBondColour = Colour.HSVToRGB(Settings.HighlightedBondColourHue, 1f, 1f);
-
             List<Matrix4x4> standardTransforms = new List<Matrix4x4>();
             Dictionary<Color, List<Matrix4x4>> highlightedTransforms = new Dictionary<Color, List<Matrix4x4>>();
 
@@ -263,29 +235,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Dictionary<int, Atom> atoms;
             Dictionary<int, Atom> highLightedAtoms = new Dictionary<int, Atom>();
 
-            HashSet<string> enabledElementNames = null;
-            HashSet<string> enabledResiduesNames = null;
-            HashSet<int> enabledResidueIDs = null;
+            atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, renderSettings.EnabledElements, renderSettings.EnabledResidueNames, renderSettings.EnabledResidueIDs);
 
-            if (renderSettings.EnabledElements != null && primaryStructure.ElementNames.Count > renderSettings.EnabledElements.Count) {
-                enabledElementNames = renderSettings.EnabledElements;
-            }
-
-            if (renderSettings.EnabledResidueNames != null && primaryStructure.ResidueNames.Count > renderSettings.EnabledResidueNames.Count) {
-                enabledResiduesNames = renderSettings.EnabledResidueNames;
-            }
-
-            if (renderSettings.EnabledResidueIDs != null && primaryStructure.ResidueCount() > renderSettings.EnabledResidueIDs.Count) {
-                enabledResidueIDs = renderSettings.EnabledResidueIDs;
-            }
-
-            atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, enabledElementNames, enabledResidueIDs);
-
-            Dictionary<int, ResidueRenderSettings> residueOptions = null;
             if (renderSettings.CustomResidueRenderSettings != null) {
+
                 HashSet<int> customResidueIDs = new HashSet<int>(renderSettings.CustomResidueRenderSettings.Keys.ToList());
-                highLightedAtoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, renderSettings.EnabledElements, customResidueIDs);
-                residueOptions = renderSettings.CustomResidueRenderSettings;
+                highLightedAtoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, renderSettings.EnabledElements, renderSettings.EnabledResidueNames, customResidueIDs);
             }
 
             foreach (KeyValuePair<int, Bond> bond in bonds) {
@@ -295,16 +250,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 Atom atom2 = null;
 
                 if (!atoms.TryGetValue(bond.Value.Atom1Index, out atom1) || !atoms.TryGetValue(bond.Value.Atom2Index, out atom2)) {
-                    continue;
-                }
-
-                if (enabledResiduesNames != null && 
-                    (!enabledResiduesNames.Contains(atom1.ResidueName) || !enabledResiduesNames.Contains(atom2.ResidueName))) {
-                    continue;
-                }
-
-                if (enabledResidueIDs != null &&
-                    (!enabledResidueIDs.Contains(atom1.ResidueID) || !enabledResidueIDs.Contains(atom2.ResidueID))) {
                     continue;
                 }
 
@@ -346,36 +291,36 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     int atom1residue = primaryStructure.Atoms()[atom1.ID].ResidueID;
                     int atom2residue = primaryStructure.Atoms()[atom2.ID].ResidueID;
 
-                    //// only colour or highlight bonds between atoms of the same residue
-                    //if (atom1residue == atom2residue && residueOptions.ContainsKey(atom1residue) && residueOptions[atom1residue].ColourBonds) {
+                    // only colour or highlight bonds between atoms of the same residue
+                    if (atom1residue == atom2residue && renderSettings.CustomResidueRenderSettings.ContainsKey(atom1residue) && renderSettings.CustomResidueRenderSettings[atom1residue].ColourBonds) {
 
-                    //    ResidueRenderSettings options = residueOptions[atom1residue];
-
-                    //    float cylinderWidth = standardCylinderWidth;
-                    //    if (options.LargeBonds) {
-                    //        cylinderWidth = enlargedCylinderWidth;
-                    //    }
-
-                    //    Vector3 localScale = new Vector3(cylinderWidth, length, cylinderWidth);
-
-                    //    Matrix4x4 bondTransform = Matrix4x4.TRS(position, rotation, localScale);
-
-                    //    if (!highlightedTransforms.ContainsKey(options.Colour)) {
-                    //        highlightedTransforms.Add(options.Colour, new List<Matrix4x4>());
-                    //    }
-
-                    //    highlightedTransforms[options.Colour].Add(bondTransform);
-                    //}
-                    //else {
+                        ResidueRenderSettings options = renderSettings.CustomResidueRenderSettings[atom1residue];
 
                         float cylinderWidth = standardCylinderWidth;
-                        if (atom1residue == atom2residue && residueOptions.ContainsKey(atom1residue) && residueOptions[atom1residue].LargeBonds) {
+                        if (options.LargeBonds) {
+                            cylinderWidth = enlargedCylinderWidth;
+                        }
+
+                        Vector3 localScale = new Vector3(cylinderWidth, length, cylinderWidth);
+
+                        Matrix4x4 bondTransform = Matrix4x4.TRS(position, rotation, localScale);
+
+                        if (!highlightedTransforms.ContainsKey(options.ResidueColour)) {
+                            highlightedTransforms.Add(options.ResidueColour, new List<Matrix4x4>());
+                        }
+
+                        highlightedTransforms[options.ResidueColour].Add(bondTransform);
+                    }
+                    else {
+
+                        float cylinderWidth = standardCylinderWidth;
+                        if (atom1residue == atom2residue && renderSettings.CustomResidueRenderSettings.ContainsKey(atom1residue) && renderSettings.CustomResidueRenderSettings[atom1residue].LargeBonds) {
                             cylinderWidth = enlargedCylinderWidth;
                         }
 
                         Vector3 localScale = new Vector3(cylinderWidth, length, cylinderWidth);
                         standardTransforms.Add(Matrix4x4.TRS(position, rotation, localScale));
-                    //}
+                    }
                 }
                 else {
                     Vector3 localScale = new Vector3(standardCylinderWidth, length, standardCylinderWidth);

@@ -8,208 +8,211 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    public delegate void SetCustomColourButtonColourDelegate(Color color);
+
     public class ResidueCustomSettingsPanel : MonoBehaviour {
 
         [SerializeField]
         private GameObject customSettingsPanel;
 
         [SerializeField]
-        private Text PanelTitle;
+        private ResidueCustomColourSelect colourSelectPanel;
 
         [SerializeField]
-        private Toggle ColourAtomsToggle;
+        private ConfirmDialog confirmDialog;
 
         [SerializeField]
-        private Toggle CPKToggle;
+        private GameObject atomNameButtonPrefab;
 
         [SerializeField]
-        private Toggle VDWToggle;
+        private GameObject atomListContentPanel;
 
         [SerializeField]
-        private Toggle ColourBondsToggle;
+        private Text panelTitle;
 
         [SerializeField]
-        private Toggle LargeBondsToggle;
+        private Toggle colourAtomsToggle;
 
         [SerializeField]
-        private Toggle ColourSecondaryStructureToggle;
+        private Toggle cpkToggle;
 
         [SerializeField]
-        private Button ResidueColourButton;
+        private Toggle vdwToggle;
 
         [SerializeField]
-        private Button ModifyAtomSettingsButton;
+        private Toggle colourBondsToggle;
+
+        [SerializeField]
+        private Toggle largeBondsToggle;
+
+        [SerializeField]
+        private Toggle colourSecondaryStructureToggle;
+
+        [SerializeField]
+        private Button residueColourButton;
 
         private List<int> residueIDs;
         private string residueName;
-        private HashSet<string> atomNames;
+        private List<string> atomNames;
         private ResidueUpdateType residueUpdateType;
         private ResidueRenderSettings renderSettings;
-        private ResidueRenderSettingsUpdated settingsUpdatedCallback;
-        private ClosedResidueSettingsPanel onClose;
+        private SaveCustomResidueSettingsDelegate saveSettingsCallback;
+        private CloseCustomResidueSettingsDelegate onCloseCallback;
 
-        //public void Start() {
+        private ResidueRenderSettings savedRenderSettings;
 
-        //    //addColourSelectButton(Settings.ResidueColour1);
-        //    //addColourSelectButton(Settings.ResidueColour2);
-        //    //addColourSelectButton(Settings.ResidueColour3);
-        //    //addColourSelectButton(Settings.ResidueColour4);
-        //    //addColourSelectButton(Settings.ResidueColour5);
-        //    //addColourSelectButton(Settings.ResidueColour6);
-        //    //addColourSelectButton(Settings.ResidueColour7);
-        //    //addColourSelectButton(Settings.ResidueColour8);
-        //    //addColourSelectButton(Settings.ResidueColour9);
-        //    //addColourSelectButton(Settings.ResidueColour10);
-        //}
+        private void OnDisable() {
+            colourSelectPanel.gameObject.SetActive(false);
+        }
 
-        public void Initialise(List<int> residueIDs, string residueName, List<string> atomNames, ResidueUpdateType residueUpdateType, ResidueRenderSettings renderSettings, ResidueRenderSettingsUpdated settingsUpdatedCallback, ClosedResidueSettingsPanel onClose) {
+        public void Initialise(List<int> residueIDs, string residueName, List<string> atomNames, ResidueUpdateType residueUpdateType, ResidueRenderSettings renderSettings, SaveCustomResidueSettingsDelegate saveSettings, CloseCustomResidueSettingsDelegate onClose) {
 
             this.residueIDs = residueIDs;
             this.residueName = residueName;
+            this.atomNames = atomNames;
             this.renderSettings = renderSettings;
             this.residueUpdateType = residueUpdateType;
-            this.settingsUpdatedCallback = settingsUpdatedCallback;
-            this.onClose = onClose;
+            this.saveSettingsCallback = saveSettings;
+            this.onCloseCallback = onClose;
 
-            LoadSettings();
+            this.savedRenderSettings = renderSettings.Clone();
+
+            loadSettings();
             customSettingsPanel.SetActive(true);
         }
 
-        public void LoadSettings() {
+        public void OpenColourSelectPanel() {
 
-            if (residueUpdateType == ResidueUpdateType.ID) {
-                PanelTitle.text = "Residue " + renderSettings.ResidueID + " - Custom Settings";
-            }
-            else if (residueUpdateType == ResidueUpdateType.Name) {
-                PanelTitle.text = "Residue " + residueName + " - Custom Settings";
-            }
-            else {
-                PanelTitle.text = "Custom Residue Settings";
-            }
-
-            ColourAtomsToggle.isOn = renderSettings.ColourAtoms;
-
-            CPKToggle.isOn = false;
-            VDWToggle.isOn = false;
-
-            if (renderSettings.AtomRepresentation == MolecularRepresentation.CPK) {
-                CPKToggle.isOn = true;
-            }
-            else if(renderSettings.AtomRepresentation == MolecularRepresentation.VDW) {
-                VDWToggle.isOn = true;
-            }
-
-            ColourBondsToggle.isOn = renderSettings.ColourBonds;
-            LargeBondsToggle.isOn = renderSettings.LargeBonds;
-            ColourSecondaryStructureToggle.isOn = renderSettings.ColourSecondaryStructure;
-
-            setResidueColourButtonColour(renderSettings.ResidueColour);
-
-            if (residueUpdateType == ResidueUpdateType.ID || residueUpdateType == ResidueUpdateType.Name) {
-                ModifyAtomSettingsButton.interactable = false;
-            }
-
-            // create atom option buttons
-
-            //List<string> atomNames = new List<string>();
-            //foreach(KeyValuePair<int, Atom> atom in residue.Atoms) {
-            //    if(!atomNames.Contains(atom.Value.Name)) {
-            //        atomNames.Add(atom.Value.Name);
-            //    }
-            //}
-
-            //foreach(string atomName in atomNames) {
-
-            //    GameObject atomOptionsButton = GameObject.Instantiate(AtomNameButtonPrefab);
-            //    atomOptionsButton.transform.SetParent(AtomNameListContentPanel.transform);
-            //    AtomNameButton buttonScript = atomOptionsButton.GetComponent<AtomNameButton>();
-
-            //    if(renderSettings.AtomDisplayOptions.ContainsKey(atomName)) {
-            //        renderSettings.AtomDisplayOptions.Add(atomName, new AtomRenderSettings(atomName, Settings.ResidueColourDefault));
-            //    }
-
-            //    buttonScript.Initialise(renderSettings.AtomDisplayOptions[atomName]);
-            //}
-        }
-
-        public void CloseSettingsPanel() {
-
-            customSettingsPanel.SetActive(false);
-            onClose();
-        }
-
-        public void SaveSettings() {
-
-            //renderSettings.LargeBonds = LargeBondsToggle.isOn;
-
-            //if (BondsColourToggle.isOn) {
-            //    renderSettings.BondColour = ColourBondsToggle.isOn;
-            //}
-            //else {
-            //    renderSettings.BondColour = null;
-            //}
-
-            //if (Colo.isOn) {
-            //    renderSettings.BondColour = ColourBondsToggle.isOn;
-            //}
-            //else {
-            //    renderSettings.BondColour = null;
-            //}
-
-
-            //renderSettings.ColourSecondaryStructure = ColourSecondaryStructureToggle.isOn;
-
-            //ResiduesPanel.SaveResidueDisplayOptions(residueUpdateType, renderSettings, true);
+            colourSelectPanel.gameObject.SetActive(true);
+            colourSelectPanel.Initialise(setResidueColour);
         }
 
         public void RestoreDefaults() {
 
             renderSettings.SetDefaultOptions();
-            LoadSettings();
-            //ResiduesPanel.SaveResidueDisplayOptions(residueUpdateType, renderSettings, true);
+            loadSettings();
         }
 
-        //public void OpenColourSelectPanel() {
-        //    ColorSelectPanel.SetActive(true);
-        //}
+        public void SaveRenderSettings() {
 
-        //private void SaveAndCloseColourSelectPanel(Color colour) {
+            savePanelToRenderSettings();
 
-        //    setCustomColourButtonColour(colour);
-        //    ColorSelectPanel.SetActive(false);
-        //    renderSettings.Colour = colour;
-        //    ResiduesPanel.SaveResidueDisplayOptions(residueUpdateType, renderSettings, true);
-        //}
+            Debug.Log("Save button click");
+
+            if (!renderSettings.Equals(savedRenderSettings)) {
+
+                Debug.Log("Save button - residues settings changed. Calling save settings");
+
+                saveSettingsCallback(residueIDs, renderSettings);
+                savedRenderSettings = renderSettings.Clone();
+            }
+        }
+
+        public void OnCloseButton() {
+
+            savePanelToRenderSettings();
+
+            if (!renderSettings.Equals(savedRenderSettings)) {
+                confirmDialog.gameObject.SetActive(true);
+                confirmDialog.Initialise("Residue settings have changed.\nWould you like to save?", saveRenderSettingsAndClose);
+            }
+            else {
+                customSettingsPanel.SetActive(false);
+            }
+
+            onCloseCallback();
+        }
+
+        public void loadSettings() {
+
+            if (residueUpdateType == ResidueUpdateType.ID) {
+                panelTitle.text = "Residue " + renderSettings.ResidueID + " - Custom Settings";
+            }
+            else if (residueUpdateType == ResidueUpdateType.Name) {
+                panelTitle.text = "Residue " + residueName + " - Custom Settings";
+            }
+            else {
+                panelTitle.text = "Custom Residue Settings";
+            }
+
+            colourAtomsToggle.isOn = renderSettings.ColourAtoms;
+
+            cpkToggle.isOn = false;
+            vdwToggle.isOn = false;
+
+            if (renderSettings.AtomRepresentation == MolecularRepresentation.CPK) {
+                cpkToggle.isOn = true;
+            }
+            else if (renderSettings.AtomRepresentation == MolecularRepresentation.VDW) {
+                vdwToggle.isOn = true;
+            }
+
+            colourBondsToggle.isOn = renderSettings.ColourBonds;
+            largeBondsToggle.isOn = renderSettings.LargeBonds;
+            colourSecondaryStructureToggle.isOn = renderSettings.ColourSecondaryStructure;
+
+            setResidueColourButtonColour(renderSettings.ResidueColour);
+
+            // create atom option buttons
+            UnityCleanup.DestroyGameObjects(atomListContentPanel);
+
+            foreach (string atomName in atomNames) {
+
+                GameObject atomOptionsButton = GameObject.Instantiate(atomNameButtonPrefab);
+                atomOptionsButton.transform.SetParent(atomListContentPanel.transform, false);
+                ResidueAtomNameButton buttonScript = atomOptionsButton.GetComponent<ResidueAtomNameButton>();
+
+                AtomRenderSettings atomSettingsCopy = new AtomRenderSettings(atomName, Settings.ResidueColourDefault);
+                if (renderSettings.AtomSettings.ContainsKey(atomName)) {
+                    atomSettingsCopy = renderSettings.AtomSettings[atomName].Clone();
+                }
+
+                buttonScript.Initialise(atomSettingsCopy);
+            }
+        }
+
+        private void savePanelToRenderSettings() {
+
+            renderSettings.ColourAtoms = colourAtomsToggle.isOn;
+
+            if (cpkToggle.isOn) {
+                renderSettings.AtomRepresentation = MolecularRepresentation.CPK;
+            }
+            else if (vdwToggle.isOn) {
+                renderSettings.AtomRepresentation = MolecularRepresentation.VDW;
+            }
+            else {
+                renderSettings.AtomRepresentation = MolecularRepresentation.None;
+            }
+
+            renderSettings.ColourBonds = colourBondsToggle.isOn;
+            renderSettings.LargeBonds = largeBondsToggle.isOn;
+            renderSettings.ColourSecondaryStructure = colourSecondaryStructureToggle.isOn;
+        }
+
+        private void saveRenderSettingsAndClose(bool confirmedSave) {
+
+            if (confirmedSave) {
+                saveSettingsCallback(residueIDs, renderSettings);
+            }
+
+            customSettingsPanel.SetActive(false);
+        }
+
+        private void setResidueColour(Color color) {
+
+            renderSettings.ResidueColour = color;
+            setResidueColourButtonColour(renderSettings.ResidueColour);
+        }
 
         private void setResidueColourButtonColour(Color colour) {
 
-            ColorBlock buttonColours = ResidueColourButton.colors;
+            ColorBlock buttonColours = residueColourButton.colors;
             buttonColours.normalColor = colour;
             buttonColours.highlightedColor = colour;
             buttonColours.pressedColor = colour;
             buttonColours.colorMultiplier = 1f;
-            ResidueColourButton.colors = buttonColours;
+            residueColourButton.colors = buttonColours;
         }
-
-
-        //private void addColourSelectButton(Color colour) {
-
-        //    GameObject button = (GameObject)Instantiate(ColorSelectButtonPrefab, Vector3.zero, Quaternion.identity);
-
-        //    ResidueCustomColourButton buttonScript = button.GetComponent<ResidueCustomColourButton>();
-        //    buttonScript.SetSetColorCallback(SaveAndCloseColourSelectPanel, colour);
-
-        //    ColorBlock colors = button.GetComponent<Button>().colors;
-        //    colors.normalColor = colour;
-        //    colors.highlightedColor = colour;
-        //    colors.pressedColor = colour;
-        //    button.GetComponent<Button>().colors = colors;
-
-        //    RectTransform rect = button.GetComponent<RectTransform>();
-        //    rect.SetParent(ColorSelectPanelButtonList.GetComponent<RectTransform>(), false);
-        //    rect.localPosition = new Vector3(0, 0, 0);
-        //    rect.localRotation = Quaternion.Euler(0, 0, 0);
-        //    rect.localScale = Vector3.one;
-        //}
     }
 }

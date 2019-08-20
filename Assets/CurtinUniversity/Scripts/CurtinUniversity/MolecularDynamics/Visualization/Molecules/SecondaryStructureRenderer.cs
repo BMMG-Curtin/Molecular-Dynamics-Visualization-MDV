@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Visualization;
 using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
@@ -197,13 +196,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                     if (renderSettings.CustomResidueRenderSettings != null && renderSettings.CustomResidueRenderSettings.ContainsKey(residue.ID)) {
 
-                        ResidueRenderSettings displayOptions = renderSettings.CustomResidueRenderSettings[residue.ID];
+                        ResidueRenderSettings residueRenderSettings = renderSettings.CustomResidueRenderSettings[residue.ID];
 
-                        //if (displayOptions != null && displayOptions.ColourSecondaryStructure) {
+                        if (residueRenderSettings != null && residueRenderSettings.ColourSecondaryStructure) {
 
-                        //    node.VertexColor = displayOptions.Colour;
-                        //    foundColour = true;
-                        //}
+                            node.VertexColor = residueRenderSettings.ResidueColour;
+                            foundColour = true;
+                        }
                     }
 
                     if (foundColour == false) {
