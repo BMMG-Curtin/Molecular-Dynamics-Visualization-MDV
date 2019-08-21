@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-using CurtinUniversity.MolecularDynamics.Model;
-
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void SetCustomColourButtonColourDelegate(Color? color);
@@ -64,12 +62,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private ResidueRenderSettings savedRenderSettings;
 
-        private bool autoSaveSettingUpdates = true;
-        private bool initialised = false;
+        private bool autoSaveSettingUpdates = false;
 
         private void OnDisable() {
 
-            initialised = false;
             colourSelectPanel.gameObject.SetActive(false);
         }
 
@@ -86,8 +82,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             this.savedRenderSettings = renderSettings.Clone();
 
             loadSettings();
-            initialised = true;
             customSettingsPanel.SetActive(true);
+
+            autoSaveSettingUpdates = true;
         }
 
         public void OpenColourSelectPanel() {
@@ -104,7 +101,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void AutoSaveSettings() {
-            if(initialised && autoSaveSettingUpdates) {
+
+            if(autoSaveSettingUpdates) {
                 SaveRenderSettings();
             }
         }
@@ -122,13 +120,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void OnCloseButton() {
 
-            savePanelToRenderSettings();
+            if (!autoSaveSettingUpdates) {
+                savePanelToRenderSettings();
+            }
 
             if (!renderSettings.Equals(savedRenderSettings)) {
                 confirmDialog.gameObject.SetActive(true);
                 confirmDialog.Initialise("Residue settings have changed.\nWould you like to save?", saveRenderSettingsAndClose);
             }
             else {
+                autoSaveSettingUpdates = false;
                 customSettingsPanel.SetActive(false);
             }
 
@@ -231,6 +232,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 saveSettingsCallback(residueIDs, renderSettings, residueUpdateType);
             }
 
+            autoSaveSettingUpdates = false;
             customSettingsPanel.SetActive(false);
         }
 

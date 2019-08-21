@@ -349,11 +349,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             HashSet<int> residueIDs = new HashSet<int>();
 
             foreach (KeyValuePair<int, Residue> residue in residues) {
-                foreach (string name in residueNames) {
-                    if (residue.Value.Name.Equals(name)) {
-                        residueIDs.Add(residue.Key);
-                        break;
-                    }
+                if(residueNames.Contains(residue.Value.Name)) {
+                    residueIDs.Add(residue.Value.ID);
                 }
             }
 
@@ -394,15 +391,15 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         public Dictionary<string, HashSet<int>> GetResidueIDsByName() {
 
-            Dictionary<string, HashSet<int>> residues = new Dictionary<string, HashSet<int>>();
+            Dictionary<string, HashSet<int>> residuesByName = new Dictionary<string, HashSet<int>>();
 
             foreach(string residueName in ResidueNames) {
 
                 HashSet<int> residueIDs = GetResidueIDs(new List<string>() { residueName });
-                residues.Add(residueName, residueIDs);
+                residuesByName.Add(residueName, residueIDs);
             }
 
-            return residues;
+            return residuesByName;
         }
 
         public Dictionary<int, Residue> GetStandardResidues() {
