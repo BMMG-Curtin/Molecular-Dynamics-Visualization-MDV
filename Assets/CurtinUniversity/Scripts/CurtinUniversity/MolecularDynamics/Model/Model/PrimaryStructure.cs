@@ -310,6 +310,20 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return matchingResidues;
         }
 
+        public List<Residue> GetResiduesByID(List<int> residueIDs) {
+
+            // residue IDs can match multiple residues
+            List<Residue> matchingResidues = new List<Residue>();
+
+            foreach (KeyValuePair<int, Residue> residue in residues) {
+                if (residueIDs.Contains(residue.Value.ID)) {
+                    matchingResidues.Add(residue.Value);
+                }
+            }
+
+            return matchingResidues;
+        }
+
         public HashSet<int> ResidueIDs {
 
             get {

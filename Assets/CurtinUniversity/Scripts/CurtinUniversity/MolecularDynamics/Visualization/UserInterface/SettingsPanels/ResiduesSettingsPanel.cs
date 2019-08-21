@@ -47,6 +47,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         public GameObject colourSelectPanelGO;
 
+        [SerializeField]
+        public GameObject residueUpdateRangePanelGO;
+
         //[SerializeField]
         //public GameObject residueIDsPanel;
 
@@ -162,6 +165,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             residueIDsPanelGO.gameObject.SetActive(enable);
             customRenderSettingsPanelGO.gameObject.SetActive(enable);
             colourSelectPanelGO.gameObject.SetActive(enable);
+            residueUpdateRangePanelGO.gameObject.SetActive(enable);
         }
 
         //public void SetModelResidues(int moleculeID, PrimaryStructure primaryStructure) {

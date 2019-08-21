@@ -10,6 +10,8 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    public delegate void AtomSubButtonClickDelegate();
+
     public class ResidueAtomNameButton : MonoBehaviour {
 
         [SerializeField]
@@ -21,8 +23,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private Image backgroundImage;
 
+        [SerializeField]
+        private ResidueAtomSubButton nameSubButton;
+
+        [SerializeField]
+        private ResidueAtomSubButton representationSubButton;
+
         public AtomRenderSettings AtomSettings { get; private set; }
         private ResidueCustomColourSelect colourSelectPanel;
+        private AtomButtonClickDelegate onClick;
 
         private List<string> representations;
         private int selectedRepresentationIndex;
@@ -33,12 +42,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             representations = Enum.GetNames(typeof(MolecularRepresentation)).ToList();
             buttonAlpha = backgroundImage.color.a;
+
+            // we are using subbuttons to capture clicks via IPointerDownHandler to 
+            // stop the OnClick component eventhandlers consuming the mouse wheel input
+            nameSubButton.Initialise(nameButtonClick);
+            representationSubButton.Initialise(representationButtonClick);
         }
 
-        public void Initialise(AtomRenderSettings settings, ResidueCustomColourSelect colourSelectPanel) {
+        public void Initialise(AtomRenderSettings settings, ResidueCustomColourSelect colourSelectPanel, AtomButtonClickDelegate onClick) {
 
             this.AtomSettings = settings;
             this.colourSelectPanel = colourSelectPanel;
+            this.onClick = onClick;
 
             updateAtomSettingsDisplay();
         }
@@ -60,7 +75,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             resetAlpha();
         }
 
-        public void OnNameButtonClick() {
+        private void nameButtonClick() {
 
             colourSelectPanel.gameObject.SetActive(true);
             colourSelectPanel.Initialise(setAtomColor);
@@ -77,7 +92,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 AtomSettings.AtomColour = (Color)color;
             }
 
-            updateAtomSettingsDisplay();
+            backgroundImage.color = AtomSettings.AtomColour;
+            resetAlpha();
+
+            onClick();
         }
 
         private void resetAlpha() {
@@ -87,7 +105,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             backgroundImage.color = imageColor;
         }
 
-        public void OnRepresentationButtonClick() {
+        private void representationButtonClick() {
 
             selectedRepresentationIndex++;
 
@@ -100,6 +118,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 AtomSettings.Representation = rep;
                 representationText.text = representations[selectedRepresentationIndex];
             }
+
+            onClick();
         }
     }
 }

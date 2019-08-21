@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 using CurtinUniversity.MolecularDynamics.Model;
 
+using TMPro;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void ToggleResidueIDDelegate(int residueID);
@@ -16,7 +18,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public class ResidueIDsPanel : MonoBehaviour {
 
         [SerializeField]
-        private ResidueCustomSettingsPanel CustomSettingsPanel;
+        private ResidueCustomSettingsPanel customSettingsPanel;
 
         [SerializeField]
         private GameObject residueIDsPanel;
@@ -34,7 +36,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Text toggleResiduesButtonText;
 
         [SerializeField]
-        private ConfirmDialog ConfirmDialog;
+        private ConfirmDialog confirmDialog;
+
+        [SerializeField]
+        private TextMeshProUGUI ResidueNameInformationText;
 
         private string residueName;
         private MoleculeRenderSettings moleculeRenderSettings;
@@ -57,6 +62,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             this.settingsUpdatedCallback = settingsUpdatedCallback;
             this.onClose = onClose;
 
+            ResidueNameInformationText.text = "Showing residue IDs for " + residueName;
+
             residueIDs = primaryStructure.GetResidueIDs(new List<String>() { residueName }).ToList();
             residueIDs.Sort();
 
@@ -75,7 +82,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             residueIDsPanel.SetActive(true);
         }
 
-        public void ToggleAllResidues() {
+        public void OnToggleAllResiduesButton() {
 
             allResiduesEnabled = !allResiduesEnabled;
 
@@ -100,7 +107,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             settingsUpdatedCallback();
         }
 
-        public void UpdateAllResidues() {
+        public void OnUpdateAllResiduesButton() {
 
             List<string> atomNames = new List<string>();
 
@@ -116,13 +123,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             bool residueSettingsAllTheSame = true;
 
             foreach(Residue residue in residues) {
+
                 if(residue.Atoms.Count > residueMostAtoms.Atoms.Count) {
                     residueMostAtoms = residue;
+                    break;
                 }
 
                 if (!moleculeRenderSettings.CustomResidueRenderSettings.ContainsKey(residue.ID) || 
                     !moleculeRenderSettings.CustomResidueRenderSettings[residue.ID].Equals(moleculeRenderSettings.CustomResidueRenderSettings[firstResidueID])) {
                     residueSettingsAllTheSame = false;
+                    break;
                 }
             }
 
@@ -137,13 +147,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
 
-            CustomSettingsPanel.Initialise(residueIDs, residueName, atomNames, ResidueUpdateType.Name, panelResidueSettings, saveCustomResidueIDSettings, onCloseCustomResidueSettings);
+            customSettingsPanel.Initialise(residueIDs, residueName, atomNames, ResidueUpdateType.Name, panelResidueSettings, saveCustomResidueIDSettings, onCloseCustomResidueSettings);
         }
 
-        public void ResetAllResidues() {
+        public void OnResetAllResiduesButton() {
 
-            ConfirmDialog.gameObject.SetActive(true);
-            ConfirmDialog.Initialise("Would you like to delete custom settings for\nresidue " + residueName + "?", onConfirmReset);
+            confirmDialog.gameObject.SetActive(true);
+            confirmDialog.Initialise("Would you like to delete custom settings for\nresidue " + residueName + "?", onConfirmReset);
         }
 
         public void CloseResidueIDsPanel() {
@@ -269,7 +279,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 residueSettings = moleculeRenderSettings.CustomResidueRenderSettings[residueID].Clone();
             }
 
-            CustomSettingsPanel.Initialise(residueIDs, residueName, atomNames, ResidueUpdateType.ID, residueSettings, saveCustomResidueIDSettings, onCloseCustomResidueSettings);
+            customSettingsPanel.Initialise(residueIDs, residueName, atomNames, ResidueUpdateType.ID, residueSettings, saveCustomResidueIDSettings, onCloseCustomResidueSettings);
 
             //residueIDsPanel.gameObject.SetActive(false);
         }

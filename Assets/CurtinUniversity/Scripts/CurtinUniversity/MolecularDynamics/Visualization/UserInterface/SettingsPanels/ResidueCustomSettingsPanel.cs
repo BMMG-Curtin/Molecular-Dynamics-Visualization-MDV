@@ -9,6 +9,7 @@ using CurtinUniversity.MolecularDynamics.Model;
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void SetCustomColourButtonColourDelegate(Color? color);
+    public delegate void AtomButtonClickDelegate();
 
     public class ResidueCustomSettingsPanel : MonoBehaviour {
 
@@ -63,7 +64,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private ResidueRenderSettings savedRenderSettings;
 
+        private bool autoSaveSettingUpdates = true;
+        private bool initialised = false;
+
         private void OnDisable() {
+
+            initialised = false;
             colourSelectPanel.gameObject.SetActive(false);
         }
 
@@ -80,6 +86,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             this.savedRenderSettings = renderSettings.Clone();
 
             loadSettings();
+            initialised = true;
             customSettingsPanel.SetActive(true);
         }
 
@@ -93,6 +100,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             renderSettings.SetDefaultOptions();
             loadSettings();
+            AutoSaveSettings();
+        }
+
+        public void AutoSaveSettings() {
+            if(initialised && autoSaveSettingUpdates) {
+                SaveRenderSettings();
+            }
         }
 
         public void SaveRenderSettings() {
@@ -160,20 +174,28 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             atomButtons = new Dictionary<string, ResidueAtomNameButton>();
             UnityCleanup.DestroyGameObjects(atomListContentPanel);
 
-            foreach (string atomName in atomNames) {
+            if (atomNames != null) {
 
-                GameObject atomOptionsButton = GameObject.Instantiate(atomNameButtonPrefab);
-                atomOptionsButton.transform.SetParent(atomListContentPanel.transform, false);
-                ResidueAtomNameButton buttonScript = atomOptionsButton.GetComponent<ResidueAtomNameButton>();
+                foreach (string atomName in atomNames) {
 
-                AtomRenderSettings atomSettingsCopy = new AtomRenderSettings(atomName, Settings.ResidueColourDefault);
-                if (renderSettings.AtomSettings.ContainsKey(atomName)) {
-                    atomSettingsCopy = renderSettings.AtomSettings[atomName].Clone();
+                    GameObject atomOptionsButton = GameObject.Instantiate(atomNameButtonPrefab);
+                    atomOptionsButton.transform.SetParent(atomListContentPanel.transform, false);
+                    ResidueAtomNameButton buttonScript = atomOptionsButton.GetComponent<ResidueAtomNameButton>();
+
+                    AtomRenderSettings atomSettingsCopy = new AtomRenderSettings(atomName, Settings.ResidueColourDefault);
+                    if (renderSettings.AtomSettings.ContainsKey(atomName)) {
+                        atomSettingsCopy = renderSettings.AtomSettings[atomName].Clone();
+                    }
+
+                    buttonScript.Initialise(atomSettingsCopy, colourSelectPanel, AutoSaveSettings);
+
+                    if (!atomButtons.ContainsKey(atomName)) {
+                        atomButtons.Add(atomName, buttonScript);
+                    }
+                    else {
+                        Debug.Log("Duplicate atom name in custom residue settings");
+                    }
                 }
-
-                buttonScript.Initialise(atomSettingsCopy, colourSelectPanel);
-
-                atomButtons.Add(atomName, buttonScript);
             }
         }
 
@@ -221,6 +243,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 renderSettings.ResidueColour = (Color)color;
             }
             setResidueColourButtonColour(renderSettings.ResidueColour);
+
+            AutoSaveSettings();
         }
 
         private void setResidueColourButtonColour(Color colour) {
