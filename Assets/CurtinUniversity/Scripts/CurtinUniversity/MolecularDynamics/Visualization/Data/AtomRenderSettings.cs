@@ -9,7 +9,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public string AtomName { get; set; }
         public MolecularRepresentation Representation { get; set; }
         public bool CustomColour { get; set; }
-        public Color32 AtomColour { get; set; }
+        public Color AtomColour { get; set; }
 
         private Color defaultColour;
 
@@ -23,6 +23,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void SetDefaultOptions() {
 
             Representation = MolecularRepresentation.None;
+            CustomColour = false;
+            AtomColour = defaultColour;
+        }
+
+        public void SetDefaultColour() {
+
             CustomColour = false;
             AtomColour = defaultColour;
         }

@@ -37,6 +37,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             this.setColourCallback = setColourCallback;
         }
 
+        public void OnNoColourButton() {
+            saveAndCloseColourSelectPanel(null);
+        }
+
         private void addColourSelectButton(Color colour) {
 
             GameObject button = (GameObject)Instantiate(ColorSelectButtonPrefab, Vector3.zero, Quaternion.identity);
@@ -54,7 +58,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             rect.SetParent(ButtonParent.transform, false);
         }
 
-        private void saveAndCloseColourSelectPanel(Color colour) {
+        private void saveAndCloseColourSelectPanel(Color? colour) {
 
             setColourCallback(colour);
             gameObject.SetActive(false);

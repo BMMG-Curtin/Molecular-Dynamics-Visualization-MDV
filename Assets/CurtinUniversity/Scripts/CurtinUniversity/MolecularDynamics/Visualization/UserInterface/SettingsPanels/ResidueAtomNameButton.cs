@@ -21,9 +21,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private Image backgroundImage;
 
-        private AtomRenderSettings atomSettings;
+        public AtomRenderSettings AtomSettings { get; private set; }
         private ResidueCustomColourSelect colourSelectPanel;
-
 
         private List<string> representations;
         private int selectedRepresentationIndex;
@@ -36,28 +35,28 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             buttonAlpha = backgroundImage.color.a;
         }
 
-        public void Initialise(AtomRenderSettings options, ResidueCustomColourSelect colourSelectPanel) {
+        public void Initialise(AtomRenderSettings settings, ResidueCustomColourSelect colourSelectPanel) {
 
-            this.atomSettings = options;
+            this.AtomSettings = settings;
             this.colourSelectPanel = colourSelectPanel;
 
-            updateAtomOptions();
+            updateAtomSettingsDisplay();
         }
 
-        private void updateAtomOptions() {
+        private void updateAtomSettingsDisplay() {
 
-            atomNameText.text = atomSettings.AtomName.ToString();
+            atomNameText.text = AtomSettings.AtomName.ToString();
 
             for(int i=0; i < representations.Count; i++) {
-                if(atomSettings.Representation.ToString() == representations[i]) {
+                if(AtomSettings.Representation.ToString() == representations[i]) {
                     selectedRepresentationIndex = i;
                     break;
                 }
             }
 
-            representationText.text = atomSettings.Representation.ToString();
+            representationText.text = AtomSettings.Representation.ToString();
 
-            backgroundImage.color = atomSettings.AtomColour;
+            backgroundImage.color = AtomSettings.AtomColour;
             resetAlpha();
         }
 
@@ -67,12 +66,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             colourSelectPanel.Initialise(setAtomColor);
         }
 
-        private void setAtomColor(Color color) {
+        private void setAtomColor(Color? color) {
 
-            atomSettings.AtomColour = color;
+            if (color == null) {
+                AtomSettings.SetDefaultColour();
+            }
+            else {
 
-            color.a = buttonAlpha;
-            backgroundImage.color = color;
+                AtomSettings.CustomColour = true;
+                AtomSettings.AtomColour = (Color)color;
+            }
+
+            updateAtomSettingsDisplay();
         }
 
         private void resetAlpha() {
@@ -92,7 +97,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if(Enum.TryParse(representations[selectedRepresentationIndex], out MolecularRepresentation rep)) {
 
-                atomSettings.Representation = rep;
+                AtomSettings.Representation = rep;
                 representationText.text = representations[selectedRepresentationIndex];
             }
         }

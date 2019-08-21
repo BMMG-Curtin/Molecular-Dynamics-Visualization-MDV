@@ -5,24 +5,3 @@ LoadMoleculeOnStart: True
 // LoadMoleculeFileName: C240.xyz
 LoadMoleculeFileName: AB.gro
 
-// Colors for residue highlighting. 
-// Uses RGB values ranging from 0-255
-ResidueColour1: 255, 0, 0 		// red1
-ResidueColour2: 255, 65, 65 	// red2
-ResidueColour3: 255, 125, 125 	// red3
-ResidueColour4: 255, 195, 195 	// red4
-ResidueColour5: 255, 255, 0 	// yellow
-ResidueColour6: 220, 220, 220 	// grey
-ResidueColour7: 195, 195, 255 	// blue1
-ResidueColour8: 125, 125, 255 	// blue2
-ResidueColour9: 65, 65, 255 	// blue3
-ResidueColour10: 0, 0, 255 	    // blue4
-ResidueColour11: 255, 128, 0	// orange
-ResidueColour12: 128, 255, 0 	// lime
-ResidueColour13: 0, 255, 0 		// green
-ResidueColour14: 0, 255, 191 	// cyan
-ResidueColour15: 191, 0, 255 	// purple
-
-// the default needs to be different than all the above colours
-ResidueColourDefault: 210, 210, 210 // grey 
-

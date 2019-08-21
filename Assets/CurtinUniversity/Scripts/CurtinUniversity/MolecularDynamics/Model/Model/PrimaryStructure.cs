@@ -255,10 +255,10 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             }
         }
 
-        public void AddResidue(int residueID, Residue residue) {
+        public void AddResidue(int residueIndex, Residue residue) {
 
             try {
-                residues.Add(residueID, residue);
+                residues.Add(residueIndex, residue);
             }
             catch (ArgumentException) {
                 // do nothing. Don't add new data that clashes with existing data.
@@ -281,6 +281,19 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             }
 
             return null;
+        }
+
+        public List<Residue> GetResiduesByName(string residueName) {
+
+            List<Residue> matchingResidues = new List<Residue>();
+
+            foreach (KeyValuePair<int, Residue> residue in residues) {
+                if (residue.Value.Name == residueName) {
+                    matchingResidues.Add(residue.Value);
+                }
+            }
+
+            return matchingResidues;
         }
 
         public List<Residue> GetResiduesByID(int residueID) {
@@ -349,6 +362,20 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                 return residueNames;
             }
+        }
+
+        public HashSet<string> ResidueNamesForIDs(List<int> residueIDs) {
+
+            // we use a HashSet because residue names are not unique when iterating across residues
+            HashSet<string> matchedNames = new HashSet<string>();
+
+            foreach (KeyValuePair<int, Residue> residue in residues) {
+                if(residueIDs.Contains(residue.Value.ID)) {
+                    matchedNames.Add(residue.Value.Name);
+                }
+            }
+
+            return matchedNames;
         }
 
         public Dictionary<string, HashSet<int>> GetResidueIDsByName() {

@@ -8,7 +8,7 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public delegate void SetCustomColourButtonColourDelegate(Color color);
+    public delegate void SetCustomColourButtonColourDelegate(Color? color);
 
     public class ResidueCustomSettingsPanel : MonoBehaviour {
 
@@ -59,6 +59,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private SaveCustomResidueSettingsDelegate saveSettingsCallback;
         private CloseCustomResidueSettingsDelegate onCloseCallback;
 
+        private Dictionary<string, ResidueAtomNameButton> atomButtons;
+
         private ResidueRenderSettings savedRenderSettings;
 
         private void OnDisable() {
@@ -97,14 +99,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             savePanelToRenderSettings();
 
-            Debug.Log("Save button click");
+            if (!renderSettings.Equals(savedRenderSettings) || residueUpdateType != ResidueUpdateType.ID) {
 
-            if (!renderSettings.Equals(savedRenderSettings)) {
-
-                Debug.Log("Save button - residues settings changed. Calling save settings");
-
-                saveSettingsCallback(residueIDs, renderSettings);
                 savedRenderSettings = renderSettings.Clone();
+                saveSettingsCallback(residueIDs, renderSettings, residueUpdateType);
             }
         }
 
@@ -126,7 +124,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void loadSettings() {
 
             if (residueUpdateType == ResidueUpdateType.ID) {
-                panelTitle.text = "Residue " + renderSettings.ResidueID + " - Custom Settings";
+                if (residueIDs != null && residueIDs.Count > 0) {
+                    panelTitle.text = "Residue " + residueIDs[0] + " - Custom Settings";
+                }
+                else {
+                    panelTitle.text = "Residue - Custom Settings";
+                }
             }
             else if (residueUpdateType == ResidueUpdateType.Name) {
                 panelTitle.text = "Residue " + residueName + " - Custom Settings";
@@ -154,6 +157,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             setResidueColourButtonColour(renderSettings.ResidueColour);
 
             // create atom option buttons
+            atomButtons = new Dictionary<string, ResidueAtomNameButton>();
             UnityCleanup.DestroyGameObjects(atomListContentPanel);
 
             foreach (string atomName in atomNames) {
@@ -168,6 +172,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
 
                 buttonScript.Initialise(atomSettingsCopy, colourSelectPanel);
+
+                atomButtons.Add(atomName, buttonScript);
             }
         }
 
@@ -188,20 +194,32 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             renderSettings.ColourBonds = colourBondsToggle.isOn;
             renderSettings.LargeBonds = largeBondsToggle.isOn;
             renderSettings.ColourSecondaryStructure = colourSecondaryStructureToggle.isOn;
+
+            renderSettings.AtomSettings = new Dictionary<string, AtomRenderSettings>();
+            foreach(ResidueAtomNameButton atomButton in atomButtons.Values) {
+                if(!atomButton.AtomSettings.IsDefault()) {
+                    renderSettings.AtomSettings.Add(atomButton.AtomSettings.AtomName, atomButton.AtomSettings);
+                }
+            }
         }
 
         private void saveRenderSettingsAndClose(bool confirmedSave) {
 
             if (confirmedSave) {
-                saveSettingsCallback(residueIDs, renderSettings);
+                saveSettingsCallback(residueIDs, renderSettings, residueUpdateType);
             }
 
             customSettingsPanel.SetActive(false);
         }
 
-        private void setResidueColour(Color color) {
+        private void setResidueColour(Color? color) {
 
-            renderSettings.ResidueColour = color;
+            if(color == null) {
+                renderSettings.SetDefaultColour();
+            }
+            else {
+                renderSettings.ResidueColour = (Color)color;
+            }
             setResidueColourButtonColour(renderSettings.ResidueColour);
         }
 

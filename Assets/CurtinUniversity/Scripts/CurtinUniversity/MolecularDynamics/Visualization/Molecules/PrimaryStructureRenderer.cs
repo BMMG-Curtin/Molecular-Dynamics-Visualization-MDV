@@ -139,7 +139,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             // generate combined meshes (i.e single GameObject) for atoms with same element/colour
             Dictionary<Color, List<Matrix4x4>> mergeTransforms = new Dictionary<Color, List<Matrix4x4>>();
 
-            Dictionary<int, Atom> atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, renderSettings.EnabledElements, renderSettings.EnabledResidueNames);
+            Dictionary<int, Atom> atoms = primaryStructure.GetAtoms(renderSettings.ShowStandardResidues, renderSettings.ShowNonStandardResidues, renderSettings.EnabledElements, renderSettings.EnabledResidueNames, renderSettings.EnabledResidueIDs);
 
             foreach (KeyValuePair<int, Atom> item in atoms) {
 
@@ -163,25 +163,46 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     position.z = position.z * -1;
                 }
 
-                Color32 atomColour;
-                MolecularRepresentation customAtomRepresentation = MolecularRepresentation.None;
+                Color32? customColour = null;
+                MolecularRepresentation? customRepresentation = null;
 
                 if (renderSettings.CustomResidueRenderSettings != null && renderSettings.CustomResidueRenderSettings.ContainsKey(atom.ResidueID)) {
 
-                    ResidueRenderSettings displayOptions = renderSettings.CustomResidueRenderSettings[atom.ResidueID];
+                    ResidueRenderSettings residueSettings = renderSettings.CustomResidueRenderSettings[atom.ResidueID];
 
-                    if (displayOptions != null && displayOptions.ColourAtoms) {
-                        atomColour = displayOptions.ResidueColour;
-                    }
-                    else {
-                        if (!MolecularConstants.CPKColors.TryGetValue(atom.Element.ToString(), out atomColour)) {
-                            MolecularConstants.CPKColors.TryGetValue("Other", out atomColour);
+                    if (residueSettings != null) {
+
+                        // use the atom specific settings if available. 
+                        if (residueSettings.AtomSettings.ContainsKey(atom.Name)) {
+
+                            AtomRenderSettings atomSettings = residueSettings.AtomSettings[atom.Name];
+
+                            if (atomSettings.CustomColour) {
+                                customColour = atomSettings.AtomColour;
+                            }
+
+                            if (atomSettings.Representation != MolecularRepresentation.None) {
+                                customRepresentation = atomSettings.Representation;
+                            }
+                        }
+
+                        // if we didn't get from atom specific settings then get from residue settings
+                        if (customColour == null && residueSettings.ColourAtoms) {
+                            customColour = residueSettings.ResidueColour;
+                        }
+
+                        if (customRepresentation == null) {
+                            if (residueSettings.AtomRepresentation != MolecularRepresentation.None) {
+                                customRepresentation = residueSettings.AtomRepresentation;
+                            }
                         }
                     }
+                }
 
-                    if (displayOptions != null) {
-                        customAtomRepresentation = displayOptions.AtomRepresentation;
-                    }
+                Color32 atomColour = Color.white;
+
+                if (customColour != null) {
+                    atomColour = (Color)customColour;
                 }
                 else {
                     if (!MolecularConstants.CPKColors.TryGetValue(atom.Element.ToString(), out atomColour)) {
@@ -189,7 +210,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     }
                 }
 
-                float atomSize = getAtomScale(atom.Name, renderSettings, customAtomRepresentation);
+                float atomSize = getAtomScale(atom.Name, renderSettings, customRepresentation);
                 Vector3 scale = new Vector3(atomSize, atomSize, atomSize);
 
 
@@ -409,14 +430,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private float getAtomScale(string elementName, MoleculeRenderSettings settings, MolecularRepresentation customAtomRepresentation) {
+        private float getAtomScale(string elementName, MoleculeRenderSettings settings, MolecularRepresentation? customRepresentation) {
 
             // set atom size
             float atomSize = 1;
             float representationScale = 1;
 
-            MolecularRepresentation atomRepresentation = customAtomRepresentation;
-            if(atomRepresentation == MolecularRepresentation.None) {
+            MolecularRepresentation atomRepresentation;
+
+            if (customRepresentation != null && customRepresentation != MolecularRepresentation.None) {
+                atomRepresentation = (MolecularRepresentation)customRepresentation;
+            }
+            else {
                 atomRepresentation = settings.Representation;
             }
 
