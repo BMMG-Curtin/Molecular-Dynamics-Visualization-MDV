@@ -43,10 +43,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static float MinBondScale { get; private set; }      = 0.1f;
         public static float DefaultBondScale { get; private set; }  = 1f;
         public static float CPKScaleFactor { get; private set; }    = 0.5f;
-        public static string[] AtomMeshQualityValues { get; private set; }  = new[] { "Low", "Medium", "High" };
-        public static string[] BondMeshQualityValues { get; private set; }  = new[] { "Low", "Medium", "High" };
-        public static int DefaultAtomMeshQuality { get; private set; }      = 1; // Index to the above meshQualityValues array = 2;
-        public static int DefaultBondMeshQuality { get; private set; }      = 1; // Index to the above meshQualityValues array = 2;
+        public static string[] PrimaryStructureMeshQualityValues { get; private set; }  = new[] { "Low", "Medium", "High" };
+        public static int DefaultPrimaryStructureMeshQuality { get; private set; }      = 1; // Index to the above meshQualityValues array = 2;
         public static int LowMeshQualityThreshold { get; private set; }     = 30000; // over this amount of model atoms, app will change mesh quality to low
         public static int LowMeshQualityValue { get; private set; }         = 0;
 

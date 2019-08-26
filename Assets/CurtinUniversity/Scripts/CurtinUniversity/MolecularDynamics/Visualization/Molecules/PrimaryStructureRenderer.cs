@@ -225,7 +225,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
 
             // create the meshes by colour
-            GameObject prefab = AtomPrefabs[Settings.DefaultAtomMeshQuality];
+            GameObject prefab = AtomPrefabs[Settings.DefaultPrimaryStructureMeshQuality];
             GameObject parent = new GameObject("CombinedMeshParent");
             parent.SetActive(false);
 
@@ -349,7 +349,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
 
-            GameObject prefab = BondPrefabs[Settings.DefaultAtomMeshQuality];
+            GameObject prefab = BondPrefabs[Settings.DefaultPrimaryStructureMeshQuality];
 
             GameObject parent = new GameObject("StandardCombinedMeshParent");
             parent.SetActive(false);

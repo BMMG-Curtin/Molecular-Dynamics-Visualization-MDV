@@ -10,14 +10,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public GameObject VisualisationPanel;
         public GameObject ElementsPanel;
         public GameObject ResiduesPanel;
-        public GameObject PhysicsPanel;
+        public GameObject InteractionsPanel;
         public GameObject OtherPanel;
 
         public GameObject MoleculesPanelButton;
         public GameObject VisualisationPanelButton;
         public GameObject ElementsPanelButton;
         public GameObject ResiduesPanelButton;
-        public GameObject PhysicsPanelButton;
+        public GameObject InteractionsPanelButton;
         public GameObject OtherPanelButton;
 
         private Color enabledColor = new Color(96f / 255f, 39f / 255f, 13f / 255f, 100f);
@@ -55,11 +55,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             ResiduesPanel.SetActive(true);
         }
 
-        public void ShowPhysicsPanel() {
+        public void ShowInteractionsPanel() {
 
             disablePanels();
-            PhysicsPanelButton.GetComponent<Image>().color = enabledColor;
-            PhysicsPanel.SetActive(true);
+            InteractionsPanelButton.GetComponent<Image>().color = enabledColor;
+            InteractionsPanel.SetActive(true);
         }
 
         public void ShowOtherPanel() {
@@ -78,19 +78,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void disablePanels() {
 
-            OtherPanelButton.GetComponent<Image>().color = disabledColor;
             MoleculesPanelButton.GetComponent<Image>().color = disabledColor;
             VisualisationPanelButton.GetComponent<Image>().color = disabledColor;
             ElementsPanelButton.GetComponent<Image>().color = disabledColor;
             ResiduesPanelButton.GetComponent<Image>().color = disabledColor;
-            PhysicsPanelButton.GetComponent<Image>().color = disabledColor;
+            InteractionsPanelButton.GetComponent<Image>().color = disabledColor;
+            OtherPanelButton.GetComponent<Image>().color = disabledColor;
 
-            OtherPanel.SetActive(false);
             MoleculesPanel.SetActive(false);
             VisualisationPanel.SetActive(false);
             ElementsPanel.SetActive(false);
             ResiduesPanel.SetActive(false);
-            PhysicsPanel.SetActive(false);
+            InteractionsPanel.SetActive(false);
+            OtherPanel.SetActive(false);
         }
     }
 }

@@ -12,6 +12,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public Toggle LightsToggle;
 
         public Text PrimaryStructureMeshQualityText;
+        private int primaryStructureMeshQuality;
+        private string playerPrefsMeshQualityKey = @"PrimaryStructureMeshQuality";
 
         public Text MouseSpeedText;
         public float mouseSpeedMultiplier = 3f;
@@ -32,6 +34,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 setMouseSpeed(mouseSpeed);
             }
+
+            if (PlayerPrefs.HasKey(playerPrefsMeshQualityKey)) {
+                primaryStructureMeshQuality = PlayerPrefs.GetInt(playerPrefsMeshQualityKey);
+            }
+            else {
+                primaryStructureMeshQuality = Settings.DefaultPrimaryStructureMeshQuality;
+            }
+
+            primaryStructureMeshQuality = Mathf.Clamp(primaryStructureMeshQuality, 0, Settings.PrimaryStructureMeshQualityValues.Length - 1);
+            PlayerPrefs.SetInt(playerPrefsMeshQualityKey, primaryStructureMeshQuality);
+            PrimaryStructureMeshQualityText.text = Settings.PrimaryStructureMeshQualityValues[primaryStructureMeshQuality];
         }
 
         public void SetSceneSettings(SceneSettings settings) {
@@ -81,10 +94,34 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             mouseSpeed = speed;
 
-            MouseCursor.GetComponent<Visualization.MousePointer>().MouseSpeed = mouseSpeed * Settings.MouseSpeedMultiplier;
+            MouseCursor.GetComponent<MousePointer>().MouseSpeed = mouseSpeed * Settings.MouseSpeedMultiplier;
             MouseSpeedText.text = mouseSpeed.ToString();
 
             PlayerPrefs.SetInt(playerPrefsMouseSpeedKey, speed);
+        }
+
+        public void IncreaseAtomMeshQuality() {
+
+            if (primaryStructureMeshQuality < Settings.PrimaryStructureMeshQualityValues.Length - 1) {
+                primaryStructureMeshQuality++;
+                PrimaryStructureMeshQualityText.text = Settings.PrimaryStructureMeshQualityValues[primaryStructureMeshQuality];
+
+                // request rerender
+            }
+
+            PlayerPrefs.SetInt(playerPrefsMeshQualityKey, primaryStructureMeshQuality);
+        }
+
+        public void DecreaseAtomMeshQuality() {
+
+            if (primaryStructureMeshQuality > 0) {
+                primaryStructureMeshQuality--;
+                PrimaryStructureMeshQualityText.text = Settings.PrimaryStructureMeshQualityValues[primaryStructureMeshQuality];
+
+                // request rerender
+            }
+
+            PlayerPrefs.SetInt(playerPrefsMeshQualityKey, primaryStructureMeshQuality);
         }
     }
 }
