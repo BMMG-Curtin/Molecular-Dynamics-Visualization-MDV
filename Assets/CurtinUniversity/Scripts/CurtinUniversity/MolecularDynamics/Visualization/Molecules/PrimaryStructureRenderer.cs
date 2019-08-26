@@ -56,7 +56,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             MoleculeEvents.RaiseRenderMessage("Bonds calculated [" + watch.ElapsedMilliseconds + "ms]", false);
         }
 
-        public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame) {
+        public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame, int meshQuality) {
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -82,7 +82,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
 
                 if (settings.ShowAtoms) {
-                    yield return StartCoroutine(createModelAtomsByElement(settings, frame));
+                    yield return StartCoroutine(createModelAtomsByElement(settings, frame, meshQuality));
                 }
 
                 if (settings.Representation != MolecularRepresentation.VDW && settings.ShowBonds) {
@@ -91,7 +91,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                         yield return StartCoroutine(calculateBonds());
 
                     if (bonds != null && bonds.Count > 0)
-                        yield return StartCoroutine(createModelBonds(settings, frame));
+                        yield return StartCoroutine(createModelBonds(settings, frame, meshQuality));
                 }
 
                 if (settings.ShowMainChains) {
@@ -132,7 +132,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             yield break;
         }
 
-        private IEnumerator createModelAtomsByElement(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame) {
+        private IEnumerator createModelAtomsByElement(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame, int meshQuality) {
 
             Quaternion atomOrientation = Quaternion.Euler(45, 45, 45);
 
@@ -225,7 +225,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
 
             // create the meshes by colour
-            GameObject prefab = AtomPrefabs[Settings.DefaultPrimaryStructureMeshQuality];
+            GameObject prefab = AtomPrefabs[meshQuality];
             GameObject parent = new GameObject("CombinedMeshParent");
             parent.SetActive(false);
 
@@ -238,7 +238,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             yield break;
         }
 
-        private IEnumerator createModelBonds(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame) {
+        private IEnumerator createModelBonds(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame, int meshQuality) {
 
             // set colour for bonds
             Color32 bondColour;
@@ -349,7 +349,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
 
-            GameObject prefab = BondPrefabs[Settings.DefaultPrimaryStructureMeshQuality];
+            GameObject prefab = BondPrefabs[meshQuality];
 
             GameObject parent = new GameObject("StandardCombinedMeshParent");
             parent.SetActive(false);

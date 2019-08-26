@@ -43,10 +43,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static float MinBondScale { get; private set; }      = 0.1f;
         public static float DefaultBondScale { get; private set; }  = 1f;
         public static float CPKScaleFactor { get; private set; }    = 0.5f;
-        public static string[] PrimaryStructureMeshQualityValues { get; private set; }  = new[] { "Low", "Medium", "High" };
-        public static int DefaultPrimaryStructureMeshQuality { get; private set; }      = 1; // Index to the above meshQualityValues array = 2;
-        public static int LowMeshQualityThreshold { get; private set; }     = 30000; // over this amount of model atoms, app will change mesh quality to low
-        public static int LowMeshQualityValue { get; private set; }         = 0;
+        public static string[] MeshQualityValues { get; private set; }  = new[] { "Low", "Medium", "High" };
+        public static int DefaultMeshQuality { get; private set; }      = 1; // Index to the above meshQualityValues array = 2;
+        public static int LowMeshQualityThreshold { get; private set; } = 30000; // over this amount of model atoms, app will change mesh quality to low
+        public static int LowMeshQualityValue { get; private set; }     = 0;
+        public static bool DefaultAutoMeshQuality { get; private set; } = true;
 
         // secondary structure settings
         public static Color32 AlphaHelixColour { get; private set; } = new Color32(0, 0, 255, 1);     // blue
@@ -105,6 +106,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 LoadMoleculeOnStart = Config.GetBool("LoadMoleculeOnStart");
             if (Config.KeyExists("LoadMoleculeFileName")) 
                 LoadMoleculeFileName = Config.GetString("LoadMoleculeFileName");
+
+            // Mesh Quality Settings
+            if (Config.KeyExists("LowMeshQualityThreshold"))
+                LowMeshQualityThreshold = Config.GetInt("LowMeshQualityThreshold");
         }
     }
 }

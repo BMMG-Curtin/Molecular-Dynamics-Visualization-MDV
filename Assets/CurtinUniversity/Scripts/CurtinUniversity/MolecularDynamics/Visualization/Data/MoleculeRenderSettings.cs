@@ -17,17 +17,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public MolecularRepresentation Representation { get; set; }
 
-        // secondary structure settings
-        public bool ShowSecondaryStructure { get; set; }
-        public bool ShowHelices { get; set; }
-        public bool ShowSheets { get; set; }
-        public bool ShowTurns { get; set; }
-        public bool SmoothNodes { get; set; }
-
-        // box settings
-        public bool ShowSimulationBox { get; set; }
-        public bool CalculateBoxEveryFrame { get; set; }
-
         [SerializeField]
         private float atomScale;
         public float AtomScale {
@@ -71,6 +60,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
         }
+
+        // secondary structure settings
+        public bool ShowSecondaryStructure { get; set; }
+        public bool ShowHelices { get; set; }
+        public bool ShowSheets { get; set; }
+        public bool ShowTurns { get; set; }
+        public bool SmoothNodes { get; set; }
+
+        // box settings
+        public bool ShowSimulationBox { get; set; }
+        public bool CalculateBoxEveryFrame { get; set; }
 
         // element settings
         public HashSet<string> EnabledElements { get; set; }
@@ -146,65 +146,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             return output;
-
         }
-
-        //public bool Equals(MoleculeRenderSettings otherSettings) {
-
-        //    return
-        //        EqualPrimaryStructureSettings(otherSettings) &&
-        //        EqualSecondaryStructureSettings(otherSettings) &&
-        //        EqualBoxSettings(otherSettings) &&
-        //        EqualElementSettings(otherSettings) &&
-        //        EqualResidueSettings(otherSettings);
-        //}
-
-
-        //public bool EqualPrimaryStructureSettings(MoleculeRenderSettings otherSettings) {
-
-        //    return
-        //        otherSettings.ShowPrimaryStructure == ShowPrimaryStructure &&
-        //        otherSettings.ShowBonds == ShowBonds &&
-        //        otherSettings.ShowAtoms == ShowAtoms &&
-        //        otherSettings.ShowStandardResidues == ShowStandardResidues &&
-        //        otherSettings.ShowNonStandardResidues == ShowNonStandardResidues &&
-        //        otherSettings.ShowMainChains == ShowMainChains &&
-        //        otherSettings.Representation == Representation && 
-        //        otherSettings.AtomScale == AtomScale &&
-        //        otherSettings.BondScale == BondScale;
-        //}
-
-        //public bool EqualSecondaryStructureSettings(MoleculeRenderSettings otherSettings) {
-
-        //    return
-        //        otherSettings.ShowSecondaryStructure == ShowSecondaryStructure &&
-        //        otherSettings.ShowHelices == ShowHelices &&
-        //        otherSettings.ShowSheets == ShowSheets &&
-        //        otherSettings.ShowTurns == ShowTurns;
-        //}
-
-        //public bool EqualBoxSettings(MoleculeRenderSettings otherSettings) {
-
-        //    return
-        //        otherSettings.ShowSimulationBox == ShowSimulationBox &&
-        //        otherSettings.CalculateBoxEveryFrame == CalculateBoxEveryFrame;
-        //}
-
-        //public bool EqualElementSettings(MoleculeRenderSettings otherSettings) {
-        //    return otherSettings.EnabledElements == EnabledElements;
-        //}
-
-        //public bool EqualResidueSettings(MoleculeRenderSettings otherSettings) {
-
-
-        //    return
-        //        otherSettings.EnabledResidueNames == EnabledResidueNames &&
-        //        otherSettings.EnabledResidueIDs == EnabledResidueIDs &&
-        //        otherSettings.CustomResidueNames == CustomResidueNames &&
-
-// Note the below doesn't work. Custom residue settings not properly comparing against each other
-
-        //        otherSettings.CustomResidueRenderSettings == CustomResidueRenderSettings;
-        //}
     }
 }

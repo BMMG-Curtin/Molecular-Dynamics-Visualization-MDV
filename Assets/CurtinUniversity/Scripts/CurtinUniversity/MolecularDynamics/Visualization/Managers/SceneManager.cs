@@ -35,14 +35,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             UserInterfaceEvents.OnShowMolecule += molecules.ShowMolecule;
             UserInterfaceEvents.OnHideMolecule += molecules.HideMolecule;
             UserInterfaceEvents.OnMoleculeRenderSettingsUpdated += molecules.UpdateMoleculeRenderSettings;
-            UserInterfaceEvents.OnSceneSettingsUpdated += onSceneSettingsUpdated;
+            UserInterfaceEvents.OnGeneralSettingsUpdated += onGeneralSettingsUpdated;
 
             MoleculeEvents.OnMoleculeLoaded += onMoleculeLoaded;
             MoleculeEvents.OnMoleculeLoaded += userInterface.MoleculeLoaded;
             MoleculeEvents.OnTrajectoryLoaded += userInterface.MoleculeTrajectoryLoaded;
             MoleculeEvents.OnRenderMessage += onMoleculeRenderMessage;
 
-            SceneSettings sceneSettings = SceneSettings.Default();
+            GeneralSettings sceneSettings = GeneralSettings.Default();
             userInterface.SetSceneSettings(sceneSettings);
             scene.Settings = sceneSettings;
             scene.Lighting.SetLighting(Vector3.zero, 20f, 20f);
@@ -92,8 +92,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private void onSceneSettingsUpdated(SceneSettings settings) {
+        private void onGeneralSettingsUpdated(GeneralSettings settings) {
+
             scene.Settings = settings;
+            molecules.UpdateMeshQuality(settings.AutoMeshQuality, settings.MeshQuality);
+
         }
     }
 }

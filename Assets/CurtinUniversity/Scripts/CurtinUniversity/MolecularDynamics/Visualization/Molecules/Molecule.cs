@@ -47,6 +47,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private bool awaitingRender = false;
 
         private MoleculeRenderSettings awaitingRenderSettings;
+        private int awaitingMeshQuality;
         private int? awaitingFrameNumber;
 
         public void Initialise(PrimaryStructure primaryStructure, MoleculeRenderSettings renderSettings) {
@@ -99,14 +100,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (!rendering && awaitingRender) {
 
                 awaitingRender = false;
-                StartCoroutine(Render(awaitingRenderSettings, awaitingFrameNumber));
+                StartCoroutine(Render(awaitingRenderSettings, awaitingMeshQuality, awaitingFrameNumber));
             }
         }
 
-        public IEnumerator Render(MoleculeRenderSettings renderSettings, int? frameNumber = null) {
+        public IEnumerator Render(MoleculeRenderSettings renderSettings, int meshQuality, int? frameNumber = null) {
 
             if(rendering) {
                 awaitingRenderSettings = renderSettings;
+                awaitingMeshQuality = meshQuality;
                 awaitingFrameNumber = frameNumber;
                 awaitingRender = true;
                 yield break;
@@ -124,7 +126,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 frame = primaryStructureTrajectory.GetFrame((int)frameNumber);
             }
 
-            yield return StartCoroutine(PrimaryStructureRenderer.Render(renderSettings, frame));
+            yield return StartCoroutine(PrimaryStructureRenderer.Render(renderSettings, frame, meshQuality));
 
             // secondary structure render
 

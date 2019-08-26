@@ -76,7 +76,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void SetSceneSettings(SceneSettings settings) {
+        public void SetSceneSettings(GeneralSettings settings) {
             applicationSettings.SetSceneSettings(settings);
         }
 

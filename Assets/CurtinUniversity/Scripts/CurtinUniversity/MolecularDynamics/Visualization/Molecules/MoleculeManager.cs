@@ -21,13 +21,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private HashSet<int> moleculesToMove;
         private HashSet<int> movingMolecules;
 
+        private Dictionary<int, MoleculeRenderSettings> cachedRenderSettings;
+        private Dictionary<int, int?> cachedFrameNumbers;
+
         private bool loadingFile;
+
+        private int meshQuality = Settings.DefaultMeshQuality;
+        private bool autoMeshQuality = Settings.DefaultAutoMeshQuality;
 
         private void Awake() {
 
             molecules = new Dictionary<int, Molecule>();
             moleculesToMove = new HashSet<int>();
             movingMolecules = new HashSet<int>();
+            cachedRenderSettings = new Dictionary<int, MoleculeRenderSettings>();
+            cachedFrameNumbers = new Dictionary<int, int?>();
             loadingFile = false;
         }
 
@@ -54,13 +62,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void LoadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
 
-            if(molecules.ContainsKey(moleculeID)) {
+            if (molecules.ContainsKey(moleculeID)) {
 
                 MoleculeEvents.RaiseRenderMessage("Error Loading Molecule: already loaded", true);
                 return;
             }
 
             if (!loadingFile) {
+
+                cacheRenderSettings(moleculeID, settings, null);
                 StartCoroutine(loadMolecule(moleculeID, filePath, settings));
             }
         }
@@ -115,8 +125,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void UpdateMoleculeRenderSettings(int moleculeID, MoleculeRenderSettings settings, int? frameNumber = null) {
 
-            if(molecules.ContainsKey(moleculeID)) {
-                StartCoroutine(molecules[moleculeID].Render(settings, frameNumber));
+            cacheRenderSettings(moleculeID, settings, frameNumber);
+
+            if (molecules.ContainsKey(moleculeID)) {
+                StartCoroutine(molecules[moleculeID].Render(settings, meshQuality, frameNumber));
+            }
+        }
+
+        public void UpdateMeshQuality(bool autoMeshQuality, int newMeshQuality) {
+
+            int oldAtomMeshQuality = this.meshQuality;
+            this.meshQuality = newMeshQuality;
+            this.autoMeshQuality = autoMeshQuality;
+
+            updateMeshQuality(); // could change meshQuality, depending on autoMeshQuality value
+
+            if (oldAtomMeshQuality != meshQuality) {
+                reRenderMolecules();
             }
         }
 
@@ -150,7 +175,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void RemoveMolecule(int moleculeID) {
 
-            if(molecules.ContainsKey(moleculeID)) {
+            if (molecules.ContainsKey(moleculeID)) {
 
                 GameObject.Destroy(molecules[moleculeID].gameObject);
 
@@ -159,12 +184,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 if (moleculesToMove.Contains(moleculeID)) {
                     moleculesToMove.Remove(moleculeID);
                 }
+
+                updateMeshQuality();
             }
         }
 
         private IEnumerator loadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
 
             loadingFile = true;
+            int oldAtomMeshQuality = this.meshQuality;
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
             MoleculeEvents.RaiseRenderMessage("Loading Structure File: " + filePath, false);
@@ -203,11 +231,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 Molecule molecule = moleculeGO.GetComponent<Molecule>();
                 molecule.Initialise(primaryStructure, settings);
-                yield return StartCoroutine(molecule.Render(settings));
-
                 molecules.Add(moleculeID, molecule);
 
+                // check to see if the meshQuality needs to change given the new primary structure
+                updateMeshQuality();
+
+                yield return StartCoroutine(molecule.Render(settings, meshQuality));
                 MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure);
+            }
+
+            if (oldAtomMeshQuality != meshQuality) {
+                reRenderMolecules();
             }
 
             loadingFile = false;
@@ -255,6 +289,64 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             return count;
+        }
+
+        private void cacheRenderSettings(int moleculeID, MoleculeRenderSettings renderSettings, int? frameNumber) {
+
+            if (cachedRenderSettings.ContainsKey(moleculeID)) {
+                cachedRenderSettings[moleculeID] = renderSettings;
+            }
+            else {
+                cachedRenderSettings.Add(moleculeID, renderSettings);
+            }
+
+            if (cachedFrameNumbers.ContainsKey(moleculeID)) {
+                cachedFrameNumbers[moleculeID] = frameNumber;
+            }
+            else {
+                cachedFrameNumbers.Add(moleculeID, frameNumber);
+            }
+        }
+
+        private void updateMeshQuality() {
+
+            if (autoMeshQuality) {
+
+                int totalAtomCount = 0;
+                foreach (Molecule molecule in molecules.Values) {
+                    totalAtomCount += molecule.PrimaryStructure.AtomCount();
+                }
+
+                if (totalAtomCount > Settings.LowMeshQualityThreshold) {
+                    meshQuality = Settings.LowMeshQualityValue;
+                }
+                else {
+                    meshQuality = Settings.DefaultMeshQuality;
+                }
+            }
+        }
+
+        private void reRenderMolecules() {
+
+            foreach (KeyValuePair<int, Molecule> molecule in molecules) {
+
+                int moleculeID = molecule.Key;
+
+                MoleculeRenderSettings settings = null;
+                if(cachedRenderSettings.ContainsKey(moleculeID)) {
+                    settings = cachedRenderSettings[moleculeID];
+                }
+                else {
+                    settings = MoleculeRenderSettings.Default();
+                }
+
+                int? frameNumber = null;
+                if (cachedFrameNumbers.ContainsKey(moleculeID)) {
+                    frameNumber = cachedFrameNumbers[moleculeID];
+                }
+
+                StartCoroutine(molecules[moleculeID].Render(settings, meshQuality, frameNumber));
+            }
         }
     }
 }

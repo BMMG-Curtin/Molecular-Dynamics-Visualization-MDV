@@ -22,10 +22,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             OnRemoveMolecule?.Invoke(moleculeID);
         }
 
-        public delegate void SceneSettingsUpdated(SceneSettings settings);
-        public static event SceneSettingsUpdated OnSceneSettingsUpdated;
-        public static void RaiseSceneSettingsUpdated(SceneSettings settings) {
-            OnSceneSettingsUpdated?.Invoke(settings);
+        public delegate void GeneralSettingsUpdated(GeneralSettings settings);
+        public static event GeneralSettingsUpdated OnGeneralSettingsUpdated;
+        public static void RaiseGeneralSettingsUpdated(GeneralSettings settings) {
+            OnGeneralSettingsUpdated?.Invoke(settings);
         }
 
         public delegate void MoleculeRenderSettingsUpdated(int moleculeID, MoleculeRenderSettings settings, int? frameNumber);

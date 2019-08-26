@@ -8,9 +8,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public GameObject Ground;
         public Lighting Lighting;
 
-        private SceneSettings settings;
+        private GeneralSettings settings;
 
-        public SceneSettings Settings {
+        public GeneralSettings Settings {
 
             get {
                 return settings;

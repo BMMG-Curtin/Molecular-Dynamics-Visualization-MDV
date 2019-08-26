@@ -10,17 +10,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public Toggle GroundToggle;
         public Toggle ShadowsToggle;
         public Toggle LightsToggle;
+        public Toggle AutoMeshQualityToggle;
 
-        public Text PrimaryStructureMeshQualityText;
-        private int primaryStructureMeshQuality;
-        private string playerPrefsMeshQualityKey = @"PrimaryStructureMeshQuality";
+        public Text MeshQualityText;
+        private int meshQuality;
 
         public Text MouseSpeedText;
         public float mouseSpeedMultiplier = 3f;
         private string playerPrefsMouseSpeedKey = @"MouseSpeed";
         private int mouseSpeed = 1;
 
-        private SceneSettings sceneSettings;
+        private GeneralSettings generalSettings;
 
         public void Awake() {
             
@@ -35,47 +35,41 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 setMouseSpeed(mouseSpeed);
             }
 
-            if (PlayerPrefs.HasKey(playerPrefsMeshQualityKey)) {
-                primaryStructureMeshQuality = PlayerPrefs.GetInt(playerPrefsMeshQualityKey);
-            }
-            else {
-                primaryStructureMeshQuality = Settings.DefaultPrimaryStructureMeshQuality;
-            }
-
-            primaryStructureMeshQuality = Mathf.Clamp(primaryStructureMeshQuality, 0, Settings.PrimaryStructureMeshQualityValues.Length - 1);
-            PlayerPrefs.SetInt(playerPrefsMeshQualityKey, primaryStructureMeshQuality);
-            PrimaryStructureMeshQualityText.text = Settings.PrimaryStructureMeshQualityValues[primaryStructureMeshQuality];
+            AutoMeshQualityToggle.isOn = Settings.DefaultAutoMeshQuality;
+            meshQuality = Settings.DefaultMeshQuality;
+            meshQuality = Mathf.Clamp(meshQuality, 0, Settings.MeshQualityValues.Length - 1);
+            MeshQualityText.text = AutoMeshQualityToggle.isOn ? "Auto" : MeshQualityText.text = Settings.MeshQualityValues[meshQuality];
         }
 
-        public void SetSceneSettings(SceneSettings settings) {
+        public void SetSceneSettings(GeneralSettings settings) {
 
-            sceneSettings = settings;
+            generalSettings = settings;
             reloadUIControls();
         }
 
         private void reloadUIControls() {
 
-            GroundToggle.isOn = sceneSettings.ShowGround;
-            ShadowsToggle.isOn = sceneSettings.ShowShadows;
-            LightsToggle.isOn = sceneSettings.LightsOn;
+            GroundToggle.isOn = generalSettings.ShowGround;
+            ShadowsToggle.isOn = generalSettings.ShowShadows;
+            LightsToggle.isOn = generalSettings.LightsOn;
         }
 
         public void OnGroundToggleChanged() {
 
-            sceneSettings.ShowGround = GroundToggle.isOn;
-            UserInterfaceEvents.RaiseSceneSettingsUpdated(sceneSettings);
+            generalSettings.ShowGround = GroundToggle.isOn;
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
         }
 
         public void OnShadowsToggleChanged() {
 
-            sceneSettings.ShowShadows = ShadowsToggle.isOn;
-            UserInterfaceEvents.RaiseSceneSettingsUpdated(sceneSettings);
+            generalSettings.ShowShadows = ShadowsToggle.isOn;
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
         }
 
         public void OnLightsToggleChanged() {
 
-            sceneSettings.LightsOn= LightsToggle.isOn;
-            UserInterfaceEvents.RaiseSceneSettingsUpdated(sceneSettings);
+            generalSettings.LightsOn= LightsToggle.isOn;
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
         }
 
         public void InreaseMouseSpeed() {
@@ -100,28 +94,42 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             PlayerPrefs.SetInt(playerPrefsMouseSpeedKey, speed);
         }
 
-        public void IncreaseAtomMeshQuality() {
+        public void IncreaseMeshQuality() {
 
-            if (primaryStructureMeshQuality < Settings.PrimaryStructureMeshQualityValues.Length - 1) {
-                primaryStructureMeshQuality++;
-                PrimaryStructureMeshQualityText.text = Settings.PrimaryStructureMeshQualityValues[primaryStructureMeshQuality];
-
-                // request rerender
+            if(AutoMeshQualityToggle.isOn) {
+                return;
             }
 
-            PlayerPrefs.SetInt(playerPrefsMeshQualityKey, primaryStructureMeshQuality);
+            if (meshQuality < Settings.MeshQualityValues.Length - 1) {
+
+                meshQuality++;
+                MeshQualityText.text = Settings.MeshQualityValues[meshQuality];
+
+                generalSettings.MeshQuality = meshQuality;
+                UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            }
         }
 
-        public void DecreaseAtomMeshQuality() {
+        public void DecreaseMeshQuality() {
 
-            if (primaryStructureMeshQuality > 0) {
-                primaryStructureMeshQuality--;
-                PrimaryStructureMeshQualityText.text = Settings.PrimaryStructureMeshQualityValues[primaryStructureMeshQuality];
-
-                // request rerender
+            if (AutoMeshQualityToggle.isOn) {
+                return;
             }
 
-            PlayerPrefs.SetInt(playerPrefsMeshQualityKey, primaryStructureMeshQuality);
+            if (meshQuality > 0) {
+                meshQuality--;
+                MeshQualityText.text = Settings.MeshQualityValues[meshQuality];
+
+                generalSettings.MeshQuality = meshQuality;
+                UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            }
+        }
+
+        public void OnAutoMeshQualityToggleChanged() {
+
+            MeshQualityText.text = AutoMeshQualityToggle.isOn ? "Auto" : MeshQualityText.text = Settings.MeshQualityValues[meshQuality];
+            generalSettings.AutoMeshQuality = AutoMeshQualityToggle.isOn;
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
         }
     }
 }
