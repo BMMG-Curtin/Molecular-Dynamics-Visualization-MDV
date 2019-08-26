@@ -5,20 +5,36 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class OtherSettingsPanel : MonoBehaviour {
 
-        public GameObject MouseCursor;
+        [SerializeField]
+        private GameObject mouseCursor;
 
-        public Toggle GroundToggle;
-        public Toggle ShadowsToggle;
-        public Toggle LightsToggle;
-        public Toggle AutoMeshQualityToggle;
+        [SerializeField]
+        private Toggle groundToggle;
 
-        public Text MeshQualityText;
-        private int meshQuality;
+        [SerializeField]
+        private Toggle shadowsToggle;
 
-        public Text MouseSpeedText;
-        public float mouseSpeedMultiplier = 3f;
+        [SerializeField]
+        private Toggle lightsToggle;
+
+        [SerializeField]
+        private Toggle autoMeshQualityToggle;
+
+        [SerializeField]
+        private Text meshQualityText;
+
+        [SerializeField]
+        private Text mouseSpeedText;
+
+        [SerializeField]
+        private float mouseSpeedMultiplier = 3f;
+
+        [SerializeField]
+        private ConfirmDialog confirmDialog;
+
         private string playerPrefsMouseSpeedKey = @"MouseSpeed";
         private int mouseSpeed = 1;
+        private int meshQuality;
 
         private GeneralSettings generalSettings;
 
@@ -35,10 +51,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 setMouseSpeed(mouseSpeed);
             }
 
-            AutoMeshQualityToggle.isOn = Settings.DefaultAutoMeshQuality;
+            autoMeshQualityToggle.isOn = Settings.DefaultAutoMeshQuality;
             meshQuality = Settings.DefaultMeshQuality;
             meshQuality = Mathf.Clamp(meshQuality, 0, Settings.MeshQualityValues.Length - 1);
-            MeshQualityText.text = AutoMeshQualityToggle.isOn ? "Auto" : MeshQualityText.text = Settings.MeshQualityValues[meshQuality];
+            meshQualityText.text = autoMeshQualityToggle.isOn ? "Auto" : meshQualityText.text = Settings.MeshQualityValues[meshQuality];
         }
 
         public void SetSceneSettings(GeneralSettings settings) {
@@ -49,26 +65,26 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void reloadUIControls() {
 
-            GroundToggle.isOn = generalSettings.ShowGround;
-            ShadowsToggle.isOn = generalSettings.ShowShadows;
-            LightsToggle.isOn = generalSettings.LightsOn;
+            groundToggle.isOn = generalSettings.ShowGround;
+            shadowsToggle.isOn = generalSettings.ShowShadows;
+            lightsToggle.isOn = generalSettings.LightsOn;
         }
 
         public void OnGroundToggleChanged() {
 
-            generalSettings.ShowGround = GroundToggle.isOn;
+            generalSettings.ShowGround = groundToggle.isOn;
             UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
         }
 
         public void OnShadowsToggleChanged() {
 
-            generalSettings.ShowShadows = ShadowsToggle.isOn;
+            generalSettings.ShowShadows = shadowsToggle.isOn;
             UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
         }
 
         public void OnLightsToggleChanged() {
 
-            generalSettings.LightsOn= LightsToggle.isOn;
+            generalSettings.LightsOn= lightsToggle.isOn;
             UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
         }
 
@@ -88,22 +104,22 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             mouseSpeed = speed;
 
-            MouseCursor.GetComponent<MousePointer>().MouseSpeed = mouseSpeed * Settings.MouseSpeedMultiplier;
-            MouseSpeedText.text = mouseSpeed.ToString();
+            mouseCursor.GetComponent<MousePointer>().MouseSpeed = mouseSpeed * Settings.MouseSpeedMultiplier;
+            mouseSpeedText.text = mouseSpeed.ToString();
 
             PlayerPrefs.SetInt(playerPrefsMouseSpeedKey, speed);
         }
 
         public void IncreaseMeshQuality() {
 
-            if(AutoMeshQualityToggle.isOn) {
+            if(autoMeshQualityToggle.isOn) {
                 return;
             }
 
             if (meshQuality < Settings.MeshQualityValues.Length - 1) {
 
                 meshQuality++;
-                MeshQualityText.text = Settings.MeshQualityValues[meshQuality];
+                meshQualityText.text = Settings.MeshQualityValues[meshQuality];
 
                 generalSettings.MeshQuality = meshQuality;
                 UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
@@ -112,13 +128,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void DecreaseMeshQuality() {
 
-            if (AutoMeshQualityToggle.isOn) {
+            if (autoMeshQualityToggle.isOn) {
                 return;
             }
 
             if (meshQuality > 0) {
                 meshQuality--;
-                MeshQualityText.text = Settings.MeshQualityValues[meshQuality];
+                meshQualityText.text = Settings.MeshQualityValues[meshQuality];
 
                 generalSettings.MeshQuality = meshQuality;
                 UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
@@ -127,9 +143,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void OnAutoMeshQualityToggleChanged() {
 
-            MeshQualityText.text = AutoMeshQualityToggle.isOn ? "Auto" : MeshQualityText.text = Settings.MeshQualityValues[meshQuality];
-            generalSettings.AutoMeshQuality = AutoMeshQualityToggle.isOn;
+            meshQualityText.text = autoMeshQualityToggle.isOn ? "Auto" : meshQualityText.text = Settings.MeshQualityValues[meshQuality];
+            generalSettings.AutoMeshQuality = autoMeshQualityToggle.isOn;
             UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+        }
+
+        public void OnQuitApplicationButton() {
+
+            confirmDialog.gameObject.SetActive(true);
+            confirmDialog.Initialise("Quit application?", quitApplication);
+        }
+
+        private void quitApplication(bool confirmed) {
+            if(confirmed) {
+                Application.Quit();
+            }
         }
     }
 }

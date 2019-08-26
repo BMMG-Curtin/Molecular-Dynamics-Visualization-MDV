@@ -37,9 +37,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private ElementsSettingsPanel elementsSettingsPanel;
 
         [SerializeField]
-        private Visualization.ResiduesSettingsPanel residuesSettingsPanel;
+        private ResiduesSettingsPanel residuesSettingsPanel;
 
-        public bool ToggleWholeInterface = false;
+        [SerializeField]
+        private bool toggleWholeInterface = false;
 
         public bool IsActive { get { return UserInterfaceCanvas.activeSelf; } }
 
@@ -59,6 +60,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (Cursor.lockState != CursorLockMode.Locked) {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+            }
+
+            if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.BackQuote)) {
+                ToogleUserInterface();
             }
 
             if (Settings.DebugMessages) {
@@ -97,7 +102,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ToogleUserInterface() {
 
-            if (ToggleWholeInterface) {
+            if (toggleWholeInterface) {
                 UserInterfaceCanvas.SetActive(!UserInterfaceCanvas.activeSelf);
             }
             else {
@@ -108,7 +113,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ShowUserInterface() {
 
-            if (ToggleWholeInterface) {
+            if (toggleWholeInterface) {
                 UserInterfaceCanvas.SetActive(true);
             }
             else {
@@ -119,7 +124,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void HideUserInterface() {
 
-            if (ToggleWholeInterface) {
+            if (toggleWholeInterface) {
                 UserInterfaceCanvas.SetActive(false);
             }
             else {
@@ -130,7 +135,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public bool UIActive() {
 
-            if (ToggleWholeInterface) {
+            if (toggleWholeInterface) {
 
                 return UserInterfaceCanvas.activeSelf;
             }
