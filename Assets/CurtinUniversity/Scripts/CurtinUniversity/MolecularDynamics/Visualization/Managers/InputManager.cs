@@ -15,7 +15,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public bool NoModifiersPressed { get; private set; }
 
         private static InputManager _instance;
-
         public static InputManager Instance { get { return _instance; } }
 
         private void Awake() {

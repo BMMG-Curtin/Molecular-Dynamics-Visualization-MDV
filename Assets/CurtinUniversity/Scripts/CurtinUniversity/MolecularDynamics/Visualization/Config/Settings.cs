@@ -71,7 +71,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static bool CalculateBoxEveryFrame { get; private set; } // recalculate bounding box for each frame based on coordinate shifts
 
         // user interface settings
-        public static string StartMessage { get; private set; }      = "Welcome to the Molecular Dynamics Viewer";
+        public static string StartMessage { get; private set; }      = "Welcome to Molecular Dynamics Visualization";
         public static int MinMouseSpeed { get; private set; }        = 1;
         public static int MaxMouseSpeed { get; private set; }        = 10;
         public static int MouseSpeedMultiplier { get; private set; } = 3;

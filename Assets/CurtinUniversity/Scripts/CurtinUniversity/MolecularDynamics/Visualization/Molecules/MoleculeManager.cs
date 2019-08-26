@@ -29,6 +29,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private int meshQuality = Settings.DefaultMeshQuality;
         private bool autoMeshQuality = Settings.DefaultAutoMeshQuality;
 
+        private bool moleculeAutoRotate = false;
+        private float moleculeAutoRotateSpeed = 10f;
+
         private void Awake() {
 
             molecules = new Dictionary<int, Molecule>();
@@ -41,7 +44,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void Update() {
 
-            if (Input.GetMouseButtonDown(0)) {
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.LeftShift)) {
 
                 foreach (int moleculeID in moleculesToMove) {
 
@@ -50,13 +53,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
 
-            if (Input.GetMouseButtonUp(0)) {
+            if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift)) {
 
                 foreach (int moleculeID in movingMolecules) {
                     molecules[moleculeID].transform.SetParent(this.transform, true);
                 }
 
                 movingMolecules.Clear();
+            }
+
+            if(Input.GetKeyDown(KeyCode.Space)) {
+                moleculeAutoRotate = !moleculeAutoRotate;
+            }
+
+            if (moleculeAutoRotate) {
+                foreach(Molecule molecule in molecules.Values) {
+                    molecule.transform.Rotate(Vector3.up, moleculeAutoRotateSpeed * Time.deltaTime);
+                }
             }
         }
 
