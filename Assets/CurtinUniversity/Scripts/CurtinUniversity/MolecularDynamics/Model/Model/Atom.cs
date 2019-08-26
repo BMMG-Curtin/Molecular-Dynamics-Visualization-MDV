@@ -29,8 +29,24 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         }
 
         public override string ToString() {
-            // return "Atom [" + Name + "][" + Element + "][" + Group + "][" + Position + "]";
             return "Atom [" + ID + "][" + Name + "][" + Element + "][" + Position + "]";
+        }
+
+        public string ToStringExtended() {
+
+            return
+                "Atom:" +
+                "Index: [" + Index + "]\n" +
+                "ID: [" + ID + "]\n" +
+                "Name: [" + Name + "]\n" +
+                "Element: [" + Element + "]\n" +
+                "Position: [" + Position + "]\n" +
+                "ResidueIndex: [" + ResidueIndex + "]\n" +
+                "ResidueID: [" + ResidueID + "]\n" +
+                "ResidueName: [" + ResidueName + "]\n" +
+                "ResidueType: [" + ResidueType + "]\n" +
+                "ChainIndex: [" + ChainIndex + "]\n" +
+                "ChainID: [" + ChainID + "]\n";
         }
     }
 }

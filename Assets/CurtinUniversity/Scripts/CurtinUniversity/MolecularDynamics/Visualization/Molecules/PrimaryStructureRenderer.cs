@@ -306,11 +306,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 Quaternion rotation = Quaternion.FromToRotation(Vector3.up, atom1pos - atom2pos);
 
+                if (highLightedAtoms != null && highLightedAtoms.Count > 0 && highLightedAtoms.ContainsKey(atom1.Index) && highLightedAtoms.ContainsKey(atom2.Index)) {
 
-                if (highLightedAtoms != null && highLightedAtoms.Count > 0 && highLightedAtoms.ContainsKey(atom1.ID) && highLightedAtoms.ContainsKey(atom2.ID)) {
-
-                    int atom1residue = primaryStructure.Atoms()[atom1.ID].ResidueID;
-                    int atom2residue = primaryStructure.Atoms()[atom2.ID].ResidueID;
+                    int atom1residue = atom1.ResidueID;
+                    int atom2residue = atom2.ResidueID;
 
                     // only colour or highlight bonds between atoms of the same residue
                     if (atom1residue == atom2residue && renderSettings.CustomResidueRenderSettings.ContainsKey(atom1residue) && renderSettings.CustomResidueRenderSettings[atom1residue].ColourBonds) {
@@ -344,6 +343,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     }
                 }
                 else {
+
                     Vector3 localScale = new Vector3(standardCylinderWidth, length, standardCylinderWidth);
                     standardTransforms.Add(Matrix4x4.TRS(position, rotation, localScale));
                 }
