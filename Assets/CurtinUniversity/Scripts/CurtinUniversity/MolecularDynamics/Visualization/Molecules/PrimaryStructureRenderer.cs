@@ -50,7 +50,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            bonds = primaryStructure.GenerateBonds();
+            bonds = primaryStructure.GenerateBonds(Settings.NumberOfProcessorCores);
 
             watch.Stop();
             MoleculeEvents.RaiseRenderMessage("Bonds calculated [" + watch.ElapsedMilliseconds + "ms]", false);

@@ -504,24 +504,10 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return output;
         }
 
-        public Dictionary<int, Bond> GenerateBonds() {
-            return BondCalculator.CalculateBonds(atoms);
-        }
+        public Dictionary<int, Bond> GenerateBonds(int processorCores) {
 
-        public Dictionary<int, Bond> GenerateStandardResidueBonds() {
-
-            Dictionary<int, Residue> residues = GetStandardResidues();
-            Dictionary<int, Atom> atoms = GetAtoms(new List<int>(residues.Keys));
-
-            return BondCalculator.CalculateBonds(atoms);
-        }
-
-        public Dictionary<int, Bond> GenerateNonStandardResidueBonds() {
-
-            Dictionary<int, Residue> residues = GetNonStandardResidues();
-            Dictionary<int, Atom> atoms = GetAtoms(new List<int>(residues.Keys));
-
-            return BondCalculator.CalculateBonds(atoms);
+            BondCalculator bondCalculator = new BondCalculator();
+            return bondCalculator.CalculateBonds(atoms, processorCores);
         }
     }
 }

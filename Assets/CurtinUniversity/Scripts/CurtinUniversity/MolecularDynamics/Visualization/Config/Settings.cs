@@ -95,6 +95,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static bool DebugMessages = true; // for the debug messages in the UI console
         public static bool DebugFlag = false; // used to swicth changes at runtime for debugging purposes
 
+        // System Information
+        public static int NumberOfProcessorCores = 6;
+
         // load default settings from config file
         // some settings may be overwritten in relevant classes by stored player preferences 
         public static void Load() {
@@ -110,6 +113,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             // Mesh Quality Settings
             if (Config.KeyExists("LowMeshQualityThreshold"))
                 LowMeshQualityThreshold = Config.GetInt("LowMeshQualityThreshold");
+
+            if (Config.KeyExists("NumberOfProcessorCores"))
+                NumberOfProcessorCores = Config.GetInt("NumberOfProcessorCores");
+
+            Debug.Log("Processor Cores: " + NumberOfProcessorCores);
         }
     }
 }

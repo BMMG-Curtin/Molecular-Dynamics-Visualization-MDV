@@ -60,7 +60,9 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             stopWatch.Reset();
             stopWatch.Start();
 
-            Dictionary<int, Bond> bonds = model.GenerateBonds();
+            int NumberOfProcessorCores = 6;
+
+            Dictionary<int, Bond> bonds = model.GenerateBonds(NumberOfProcessorCores);
             Console.WriteLine("Bond generation complete [" + stopWatch.ElapsedMilliseconds + " ms]");
 
             int count = 0;
