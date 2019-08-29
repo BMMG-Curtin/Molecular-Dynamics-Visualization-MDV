@@ -57,7 +57,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void ResidueClick() {
 
             if (InputManager.Instance.ShiftPressed) {
-                openCustomSettingsCallback?.Invoke(residueID);
+                if (openCustomSettingsCallback != null) {
+                    openCustomSettingsCallback(residueID);
+                }
             }
             else {
 

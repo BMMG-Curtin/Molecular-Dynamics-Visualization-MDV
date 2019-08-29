@@ -42,16 +42,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private List<ConsoleMessage> messages = new List<ConsoleMessage>();
 
         private static readonly Dictionary<ConsoleMessageType, Color> messageTypeColors = new Dictionary<ConsoleMessageType, Color> {
-        { ConsoleMessageType.Banner, Color.green },
-        { ConsoleMessageType.Standard, Color.white },
-        { ConsoleMessageType.Warning, Color.yellow },
-        { ConsoleMessageType.Error, Color.cyan },
-    };
+            { ConsoleMessageType.Banner, Color.green },
+            { ConsoleMessageType.Standard, Color.white },
+            { ConsoleMessageType.Warning, Color.yellow },
+            { ConsoleMessageType.Error, Color.cyan },
+        };
 
         private bool newBanner = true;
         private bool newMessages = true;
 
-        void Start() {
+        void Awake() {
 
             ShowBanner = false;
             if (Settings.DebugMessages)

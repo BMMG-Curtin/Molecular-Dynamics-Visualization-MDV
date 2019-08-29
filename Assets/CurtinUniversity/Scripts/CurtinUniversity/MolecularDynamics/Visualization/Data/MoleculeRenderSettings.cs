@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 
@@ -128,12 +129,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 "AtomScale: " + AtomScale + "\n" +
                 "BondScale: " + BondScale + "\n";
 
-            output += EnabledElements == null ? "null\n" : string.Join("", EnabledElements) + "\n";
-
-
-            output += EnabledResidueNames == null ? "null\n" : string.Join("", EnabledResidueNames) + "\n";
-            output += EnabledResidueIDs == null ? "null\n" : string.Join("", EnabledResidueIDs) + "\n";
-            output += CustomResidueNames == null ? "null\n" : string.Join("", CustomResidueNames) + "\n";
+            output += EnabledElements == null ? "null\n" : string.Join("", EnabledElements.ToArray()) + "\n";
+            output += EnabledResidueNames == null ? "null\n" : string.Join("", EnabledResidueNames.ToArray()) + "\n";
+            output += EnabledResidueIDs == null ? "null\n" : string.Join("", Array.ConvertAll(EnabledResidueIDs.ToArray(), element => element.ToString())) + "\n";
+            output += CustomResidueNames == null ? "null\n" : string.Join("", CustomResidueNames.ToArray()) + "\n";
 
             if (CustomResidueRenderSettings == null) {
                 output += "ResidueOptions: null\n";

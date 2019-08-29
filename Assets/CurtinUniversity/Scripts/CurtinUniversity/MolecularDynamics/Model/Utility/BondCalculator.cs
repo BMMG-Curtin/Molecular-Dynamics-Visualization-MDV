@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -20,14 +19,16 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         private Dictionary<int, Atom> atoms;
         private Dictionary<ElementPair, float> maxBondLengths;
 
-        private ConcurrentDictionary<int, Bond> bonds;
+        private Dictionary<int, Bond> bonds;
         private KdTree<float, int> tree;
 
         // Iterative tree search will find duplicate bonds if the atoms at the search position aren't removed. 
         // Tree removal is more expensive than keeping a seperate collection and checking if found bond already in collection
         // HashSet<long> addedBonds = new HashSet<long>();
-        private ConcurrentDictionary<string, int> addedBonds;
+        private HashSet<string> addedBonds;
         private int bondID = 0;
+
+        private readonly object bondAddLock = new object();
 
         // Calculate bonds between the specified set of atoms based on the distance between bond atoms.
         // 
@@ -49,9 +50,9 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             this.atoms = atoms;
             this.maxBondLengths = maxBondLengths;
 
-            bonds = new ConcurrentDictionary<int, Bond>();
+            bonds = new Dictionary<int, Bond>();
             tree = new KdTree<float, int>(3, new FloatMath());
-            addedBonds = new ConcurrentDictionary<string, int>();
+            addedBonds = new HashSet<string>();
             bondID = 0;
 
             UnityEngine.Debug.Log("Generating Atom Tree");
@@ -72,7 +73,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             List<Thread> threadList = new List<Thread>();
             List<int> atomIndexes = atoms.Keys.ToList();
             int threadCount = processorCores - 1;
-            if (threadCount <= 0){
+            if (threadCount <= 0) {
                 threadCount = 1;
             }
 
@@ -81,7 +82,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             for (int i = 0; i < atomIndexes.Count; i += maxAtomsPerThread) {
 
                 int threadAtomCount = maxAtomsPerThread;
-                if(i > atomIndexes.Count - threadAtomCount - 1) {
+                if (i > atomIndexes.Count - threadAtomCount - 1) {
                     threadAtomCount = atomIndexes.Count - i - 1;
                 }
 
@@ -124,7 +125,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     string bondKey = getBondKey(atom.Index, bondAtomNode.Value);
 
                     // check it hasn't been added previously (i.e. bond in reverse). 
-                    if (!addedBonds.ContainsKey(bondKey)) {
+                    if (!addedBonds.Contains(bondKey)) {
 
                         Atom bondAtom = atoms[bondAtomNode.Value];
 
@@ -151,8 +152,10 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                             }
                         }
 
-                        bonds.TryAdd(++bondID, new Bond(atomIndex, bondAtomNode.Value));
-                        addedBonds.TryAdd(bondKey, 1);
+                        lock (bondAddLock) {
+                            bonds.Add(++bondID, new Bond(atomIndex, bondAtomNode.Value));
+                            addedBonds.Add(bondKey);
+                        }
                     }
                 }
             }
@@ -177,3 +180,4 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         }
     }
 }
+

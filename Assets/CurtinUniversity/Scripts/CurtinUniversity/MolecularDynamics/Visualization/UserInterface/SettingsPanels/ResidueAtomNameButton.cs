@@ -113,10 +113,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 selectedRepresentationIndex = 0;
             }
 
-            if(Enum.TryParse(representations[selectedRepresentationIndex], out MolecularRepresentation rep)) {
-
-                AtomSettings.Representation = rep;
+            try {
+                AtomSettings.Representation = (MolecularRepresentation)Enum.Parse(typeof(MolecularRepresentation), representations[selectedRepresentationIndex]);
                 representationText.text = representations[selectedRepresentationIndex];
+            }
+            catch (Exception) {
+                // ingore
             }
 
             onClick();
