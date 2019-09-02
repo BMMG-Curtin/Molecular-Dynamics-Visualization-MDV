@@ -12,6 +12,8 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    public delegate void LoadMoleculeRenderSettingsDelegate(int moleculeID, MoleculeRenderSettings renderSettings);
+
     public class MoleculesSettingsPanel : MonoBehaviour {
 
         [SerializeField]
@@ -173,23 +175,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
-            try {
+            UserInterfaceEvents.RaiseLoadMoleculeRenderSettings(molecule.ID, fullPath, loadSettings);
+         }
 
-                string json = File.ReadAllText(fullPath);
+        private void loadSettings(int moleculeID, MoleculeRenderSettings settings) {
 
-                fsData data = fsJsonParser.Parse(json);
-                object settings = null;
-                (new fsSerializer()).TryDeserialize(data, typeof(MoleculeRenderSettings), ref settings).AssertSuccessWithoutWarnings();
-                molecule.RenderSettings = (MoleculeRenderSettings)settings;
+            MoleculeSettings molecule = molecules.Get(moleculeID);
 
-                UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
-
-                Debug.Log("Loaded new settings for molecule " + molecule.Name);
-            }
-            catch (Exception e) {
-                console.ShowError("Error loading settings - " + e.Message);
+            if (molecule == null) {
                 return;
             }
+
+            molecule.RenderSettings = (MoleculeRenderSettings)settings;
+            UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
         }
 
         public void OnSaveSettingsButton() {
@@ -214,25 +212,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
-            try {
-
-                fsSerializer serializer = new fsSerializer();
-                fsData data;
-                serializer.TrySerialize<MoleculeRenderSettings>(molecule.RenderSettings, out data).AssertSuccessWithoutWarnings();
-                string json = fsJsonPrinter.CompressedJson(data);
-
-                if (!fullPath.EndsWith(Settings.MDVSettingsFileExtension)) {
-                    fullPath += Settings.MDVSettingsFileExtension;
-                }
-
-                File.WriteAllText(fullPath, json);
-                console.ShowMessage("Saved molecule settings to: " + fullPath);
-            }
-            catch (Exception e) {
-
-                console.ShowError("Error saving molecule settings: " + e.Message);
-                return;
-            }
+            UserInterfaceEvents.RaiseSaveMoleculeRenderSettings(molecule.ID, fullPath, molecule.RenderSettings);
         }
 
         public void OnLoadTrajectoryButton() {

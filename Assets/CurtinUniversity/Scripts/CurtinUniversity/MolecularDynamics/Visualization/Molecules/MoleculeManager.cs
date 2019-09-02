@@ -62,7 +62,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift)) {
 
                 foreach (int moleculeID in movingMolecules) {
-                    molecules[moleculeID].transform.SetParent(this.transform, true);
+                    if (molecules.ContainsKey(moleculeID)) {
+                        molecules[moleculeID].transform.SetParent(this.transform, true);
+                    }
                 }
 
                 movingMolecules.Clear();
@@ -189,6 +191,25 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (molecules.ContainsKey(moleculeID) && moleculesToMove.Contains(moleculeID)) {
                 moleculesToMove.Remove(moleculeID);
+            }
+        }
+
+        public SerializableTransform GetMoleculeTransform(int moleculeID) {
+
+            if (molecules.ContainsKey(moleculeID)) {
+                return new SerializableTransform(molecules[moleculeID].transform);
+            }
+
+            return null;
+        }
+
+        public void SetMoleculeTransform(int moleculeID, SerializableTransform moleculeTransform) {
+
+            if (molecules.ContainsKey(moleculeID) && moleculeTransform != null) {
+
+                molecules[moleculeID].transform.position = moleculeTransform.Position;
+                molecules[moleculeID].transform.rotation = moleculeTransform.Rotation;
+                molecules[moleculeID].transform.localScale = moleculeTransform.Scale;
             }
         }
 
