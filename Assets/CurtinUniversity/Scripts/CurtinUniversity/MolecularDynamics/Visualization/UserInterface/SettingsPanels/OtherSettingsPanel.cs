@@ -15,7 +15,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Toggle shadowsToggle;
 
         [SerializeField]
-        private Toggle lightsToggle;
+        private Toggle mainLightsToggle;
+
+        [SerializeField]
+        private Toggle fillLightsToggle;
+
+        [SerializeField]
+        private Text lightIntensityText;
+
+        [SerializeField]
+        private Text autoRotateSpeedText;
 
         [SerializeField]
         private Toggle autoMeshQualityToggle;
@@ -33,12 +42,24 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private ConfirmDialog confirmDialog;
 
         private string playerPrefsMouseSpeedKey = @"MouseSpeed";
+        private string playerPrefsGroundKey = @"SceneGround";
+        private string playerPrefsShadowsKey = @"SceneShadows";
+        private string playerPrefsMainLightKey = @"SceneMainLights";
+        private string playerPrefsFillLightKey = @"SceneFillLights";
+        private string playerPrefsLightIntensityKey = @"SceneLightIntensity";
+        private string playerPrefsAutoRotateKey = @"AnimationAutoRotateSpeed";
+        private string playerPrefsAutoMeshQualityKey = @"RenderAutoMeshQuality";
+        private string playerPrefsMeshQualityKey = @"RenderMeshQuality";
+
+        private int lightIntensity = 1;
         private int mouseSpeed = 1;
-        private int meshQuality;
+        private int autoRotateSpeed = 1;
 
         private GeneralSettings generalSettings;
 
         public void Awake() {
+
+            // Set UI specific settings here
             
             if (PlayerPrefs.HasKey(playerPrefsMouseSpeedKey)) {
 
@@ -48,55 +69,146 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     mouseSpeed = 1;
                 }
 
-                setMouseSpeed(mouseSpeed);
+                SetMouseSpeed(mouseSpeed);
             }
-
-            autoMeshQualityToggle.isOn = Settings.DefaultAutoMeshQuality;
-            meshQuality = Settings.DefaultMeshQuality;
-            meshQuality = Mathf.Clamp(meshQuality, 0, Settings.MeshQualityValues.Length - 1);
-            meshQualityText.text = autoMeshQualityToggle.isOn ? "Auto" : meshQualityText.text = Settings.MeshQualityValues[meshQuality];
         }
 
         public void SetSceneSettings(GeneralSettings settings) {
 
             generalSettings = settings;
-            reloadUIControls();
-        }
 
-        private void reloadUIControls() {
+            if (PlayerPrefs.HasKey(playerPrefsMainLightKey)) {
+                generalSettings.MainLightsOn = PlayerPrefs.GetInt(playerPrefsMainLightKey) > 0 ? true : false;
+            }
+
+            if (PlayerPrefs.HasKey(playerPrefsFillLightKey)) {
+                generalSettings.FillLightsOn = PlayerPrefs.GetInt(playerPrefsFillLightKey) > 0 ? true : false;
+            }
+
+            if (PlayerPrefs.HasKey(playerPrefsShadowsKey)) {
+                generalSettings.ShowShadows = PlayerPrefs.GetInt(playerPrefsShadowsKey) > 0 ? true : false;
+            }
+
+            if (PlayerPrefs.HasKey(playerPrefsGroundKey)) {
+                generalSettings.ShowGround = PlayerPrefs.GetInt(playerPrefsGroundKey) > 0 ? true : false;
+            }
+
+            if (PlayerPrefs.HasKey(playerPrefsLightIntensityKey)) {
+                lightIntensity = PlayerPrefs.GetInt(playerPrefsLightIntensityKey);
+            }
+
+            if (PlayerPrefs.HasKey(playerPrefsAutoMeshQualityKey)) {
+                generalSettings.AutoMeshQuality = PlayerPrefs.GetInt(playerPrefsAutoMeshQualityKey) > 0 ? true : false;
+            }
+
+            if (PlayerPrefs.HasKey(playerPrefsMeshQualityKey)) {
+                generalSettings.MeshQuality = PlayerPrefs.GetInt(playerPrefsMeshQualityKey);
+            }
+
+            if (PlayerPrefs.HasKey(playerPrefsAutoRotateKey)) {
+                autoRotateSpeed = PlayerPrefs.GetInt(playerPrefsAutoRotateKey);
+            }
 
             groundToggle.isOn = generalSettings.ShowGround;
             shadowsToggle.isOn = generalSettings.ShowShadows;
-            lightsToggle.isOn = generalSettings.LightsOn;
+            mainLightsToggle.isOn = generalSettings.MainLightsOn;
+            fillLightsToggle.isOn = generalSettings.FillLightsOn;
+
+            lightIntensityText.text = lightIntensity.ToString();
+            generalSettings.LightIntensity = (float)(lightIntensity - Settings.MinLightIntensity) / (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity);
+
+            autoMeshQualityToggle.isOn = generalSettings.AutoMeshQuality;
+            generalSettings.MeshQuality = Mathf.Clamp(generalSettings.MeshQuality, 0, Settings.MeshQualityValues.Length - 1);
+            meshQualityText.text = generalSettings.AutoMeshQuality ? "Auto" : Settings.MeshQualityValues[generalSettings.MeshQuality];
+
+            autoRotateSpeedText.text = autoRotateSpeed.ToString();
+            generalSettings.AutoRotateSpeed = (float)(autoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed- Settings.MinAutoRotateSpeed);
+
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
         }
 
         public void OnGroundToggleChanged() {
 
             generalSettings.ShowGround = groundToggle.isOn;
             UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsGroundKey, groundToggle.isOn ? 1 : 0);
         }
 
         public void OnShadowsToggleChanged() {
 
             generalSettings.ShowShadows = shadowsToggle.isOn;
             UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsShadowsKey, shadowsToggle.isOn ? 1 : 0);
         }
 
-        public void OnLightsToggleChanged() {
+        public void OnMainLightsToggleChanged() {
 
-            generalSettings.LightsOn= lightsToggle.isOn;
+            generalSettings.MainLightsOn= mainLightsToggle.isOn;
             UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsMainLightKey, mainLightsToggle.isOn ? 1 : 0);
+        }
+
+        public void OnFillLightsToggleChanged() {
+
+            generalSettings.FillLightsOn = fillLightsToggle.isOn;
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsFillLightKey, fillLightsToggle.isOn ? 1 : 0);
+        }
+
+
+        public void IncreaseLightIntensity() {
+            SetLightIntensity(lightIntensity + 1);
+        }
+
+        public void DecreaseLightIntensity() {
+            SetLightIntensity(lightIntensity - 1);
+        }
+
+        public void SetLightIntensity(int intensity) {
+
+            if (lightIntensity < Settings.MinLightIntensity || lightIntensity > Settings.MaxLightIntensity) {
+                return;
+            }
+
+            lightIntensity = intensity;
+            lightIntensityText.text = lightIntensity.ToString();
+
+            generalSettings.LightIntensity = (float)(lightIntensity - Settings.MinLightIntensity) / (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity);
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsLightIntensityKey, lightIntensity);
+        }
+
+        public void InreaseAutoRotateSpeed() {
+            SetAutoRotateSpeed(autoRotateSpeed + 1);
+        }
+
+        public void DecreaseAutoRotateSpeed() {
+            SetAutoRotateSpeed(autoRotateSpeed - 1);
+        }
+
+        public void SetAutoRotateSpeed(int speed) {
+
+            if (speed > Settings.MaxAutoRotateSpeed || speed < Settings.MinAutoRotateSpeed) {
+                return;
+            }
+
+            autoRotateSpeed = speed;
+            autoRotateSpeedText.text = autoRotateSpeed.ToString();
+
+            generalSettings.AutoRotateSpeed = (float)(autoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed);
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsAutoRotateKey, autoRotateSpeed);
         }
 
         public void InreaseMouseSpeed() {
-            setMouseSpeed(mouseSpeed + 1);
+            SetMouseSpeed(mouseSpeed + 1);
         }
 
         public void DecreaseMouseSpeed() {
-            setMouseSpeed(mouseSpeed - 1);
+            SetMouseSpeed(mouseSpeed - 1);
         }
 
-        private void setMouseSpeed(int speed) {
+        public void SetMouseSpeed(int speed) {
 
             if (speed > Settings.MaxMouseSpeed || speed < Settings.MinMouseSpeed) {
                 return;
@@ -111,41 +223,33 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void IncreaseMeshQuality() {
-
-            if(autoMeshQualityToggle.isOn) {
-                return;
-            }
-
-            if (meshQuality < Settings.MeshQualityValues.Length - 1) {
-
-                meshQuality++;
-                meshQualityText.text = Settings.MeshQualityValues[meshQuality];
-
-                generalSettings.MeshQuality = meshQuality;
-                UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
-            }
+            SetMeshQuality(generalSettings.MeshQuality + 1);
         }
 
         public void DecreaseMeshQuality() {
+            SetMeshQuality(generalSettings.MeshQuality -1);
+        }
 
-            if (autoMeshQualityToggle.isOn) {
+        public void SetMeshQuality(int meshQuality) { 
+
+            if(autoMeshQualityToggle.isOn ||
+                generalSettings.MeshQuality > Settings.MeshQualityValues.Length - 1 ||
+                generalSettings.MeshQuality < 0) {
                 return;
             }
 
-            if (meshQuality > 0) {
-                meshQuality--;
-                meshQualityText.text = Settings.MeshQualityValues[meshQuality];
-
-                generalSettings.MeshQuality = meshQuality;
-                UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
-            }
+            generalSettings.MeshQuality = meshQuality;
+            meshQualityText.text = Settings.MeshQualityValues[generalSettings.MeshQuality];
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsMeshQualityKey, generalSettings.MeshQuality);
         }
 
         public void OnAutoMeshQualityToggleChanged() {
 
-            meshQualityText.text = autoMeshQualityToggle.isOn ? "Auto" : meshQualityText.text = Settings.MeshQualityValues[meshQuality];
+            meshQualityText.text = autoMeshQualityToggle.isOn ? "Auto" : Settings.MeshQualityValues[generalSettings.MeshQuality];
             generalSettings.AutoMeshQuality = autoMeshQualityToggle.isOn;
             UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsAutoMeshQualityKey, autoMeshQualityToggle.isOn ? 1 : 0);
         }
 
         public void OnQuitApplicationButton() {

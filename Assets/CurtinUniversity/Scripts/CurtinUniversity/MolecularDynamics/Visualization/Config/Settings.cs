@@ -81,15 +81,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static string GromacsFileExtension { get; private set; }
         public static string[] StructureFileExtensions { get; private set; }
         public static string[] TrajectoryFileExtensions { get; private set; }
-        public static string MDVSettingsFileExtension = ".mdv";
+        public static string MDVSettingsFileExtension { get; private set; }
         public static string StrideExecutablePath { get; private set; }
         public static string TmpFilePath { get; private set; }
 
         // lighting setttings
-        public static float DefaultFillLightBrightness { get; private set; }
-        public static float DefaultSpotLightBrightness { get; private set; }
-        public static float DefaultMainLightBrightness { get; private set; }
-        public static float DefaultAreaLightBrightness { get; private set; }
+        public static int DefaultLightIntensity { get; private set; }
+        public static int MaxLightIntensity { get; private set; }
+        public static int MinLightIntensity { get; private set; }
+
+        // animnation setttings
+        public static int DefaultAutoRotateSpeed { get; private set; }
+        public static int MaxAutoRotateSpeed { get; private set; }
+        public static int MinAutoRotateSpeed { get; private set; }
 
         // debug settings
         public static bool DebugMessages = true; // for the debug messages in the UI console
@@ -100,6 +104,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public static void Load() {
 
+            Debug.Log("Loading settings class settings");
             loadDefaults();
             loadFromSettingsFile();
         }
@@ -109,22 +114,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             LoadMoleculeOnStart = false;
             LoadMoleculeFileName = "";
 
-            ResidueColour1 = new Color32(255, 0, 0, 255);		// red1
+            ResidueColour1 = new Color32(255, 0, 0, 255);	  // red1
             ResidueColour2 = new Color32(255, 65, 65, 255);   // red2
             ResidueColour3 = new Color32(255, 125, 125, 255); // red3
             ResidueColour4 = new Color32(255, 195, 195, 255); // red4
-            ResidueColour5 = new Color32(255, 255, 0, 255); 	// yellow
-            ResidueColour6 = new Color32(220, 220, 220, 255);	// grey
-            ResidueColour7 = new Color32(195, 195, 255, 255); // blue1
-            ResidueColour8 = new Color32(125, 125, 255, 255);	// blue2
-            ResidueColour9 = new Color32(65, 65, 255, 255);	// blue3
-            ResidueColour10 = new Color32(0, 0, 255, 255);	    // blue4
-            ResidueColour11 = new Color32(255, 128, 0, 255);	// orange
-            ResidueColour12 = new Color32(128, 255, 0, 255);	// lime
-            ResidueColour13 = new Color32(0, 255, 0, 255);		// green
-            ResidueColour14 = new Color32(0, 255, 191, 255); 	// cyan
-            ResidueColour15 = new Color32(191, 0, 255, 255);	// purple
-            ResidueColourDefault = new Color32(150, 150, 150, 255);   // grey
+            ResidueColour5 = new Color32(220, 220, 220, 255); // grey
+            ResidueColour6 = new Color32(0, 0, 255, 255);	  // blue1
+            ResidueColour7 = new Color32(65, 65, 255, 255);	  // blue2
+            ResidueColour8 = new Color32(125, 125, 255, 255); // blue3
+            ResidueColour9 = new Color32(195, 195, 255, 255); // blue4
+            ResidueColour10 = new Color32(0, 255, 191, 255);  // cyan
+            ResidueColour11 = new Color32(0, 255, 0, 255);    // green
+            ResidueColour12 = new Color32(128, 255, 0, 255);  // lime
+            ResidueColour13 = new Color32(255, 255, 0, 255);  // yellow
+            ResidueColour14 = new Color32(255, 128, 0, 255);  // orange
+            ResidueColour15 = new Color32(191, 0, 255, 255);  // purple
+
+            ResidueColourDefault = new Color32(150, 150, 150, 255);   // grey (default needs to be different than any above)
 
             FlipZCoordinates = true; // chemistry simulation coordinate systems are left handed, Unity coordinate system is right handed. This setting will flip z coordinates in the model views to compensate. 
             ModelHoverHeight = 2.5f;
@@ -172,12 +178,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             StrideExecutablePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + @"stride_WIN32.exe";
             TmpFilePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar;
 
+            DefaultLightIntensity = 5;
+            MaxLightIntensity = 10;
+            MinLightIntensity = 1;
 
-            DefaultFillLightBrightness = 0.2f;
-            DefaultSpotLightBrightness = 0.3f;
-            DefaultMainLightBrightness = 0.3f;
-            DefaultAreaLightBrightness = 0.3f;
-        }
+            DefaultAutoRotateSpeed = 5;
+            MaxAutoRotateSpeed = 10;
+            MinAutoRotateSpeed = 1;
+    }
 
         private static void loadFromSettingsFile() {
 

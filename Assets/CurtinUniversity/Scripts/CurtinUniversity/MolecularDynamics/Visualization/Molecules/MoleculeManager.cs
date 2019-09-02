@@ -26,11 +26,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private bool loadingFile;
 
-        private int meshQuality = Settings.DefaultMeshQuality;
-        private bool autoMeshQuality = Settings.DefaultAutoMeshQuality;
+        private int meshQuality;
+        private bool autoMeshQuality;
 
         private bool moleculeAutoRotate = false;
+
         private float moleculeAutoRotateSpeed = 10f;
+        private float maxAutoRotateSpeed = 50f;
+        private float minAutoRotateSpeed = 2f;
 
         private void Awake() {
 
@@ -40,7 +43,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             cachedRenderSettings = new Dictionary<int, MoleculeRenderSettings>();
             cachedFrameNumbers = new Dictionary<int, int?>();
             loadingFile = false;
-        }
+
+            meshQuality = Settings.DefaultMeshQuality;
+            autoMeshQuality = Settings.DefaultAutoMeshQuality;
+    }
 
         private void Update() {
 
@@ -184,6 +190,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (molecules.ContainsKey(moleculeID) && moleculesToMove.Contains(moleculeID)) {
                 moleculesToMove.Remove(moleculeID);
             }
+        }
+
+        public void SetAutoRotateSpeed(float speed) {
+            moleculeAutoRotateSpeed = (speed * (maxAutoRotateSpeed - minAutoRotateSpeed)) + minAutoRotateSpeed;
         }
 
         public void RemoveMolecule(int moleculeID) {

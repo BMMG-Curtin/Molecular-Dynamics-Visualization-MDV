@@ -21,8 +21,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 settings = value;
 
                 Ground.SetActive(settings.ShowGround);
-                Lighting.EnableLighting(settings.LightsOn);
+                Lighting.EnableLighting(settings.MainLightsOn, settings.FillLightsOn);
                 Lighting.EnableShadows(settings.ShowShadows);
+                Lighting.SetLightIntensity(settings.LightIntensity);
             }
         }
     }
