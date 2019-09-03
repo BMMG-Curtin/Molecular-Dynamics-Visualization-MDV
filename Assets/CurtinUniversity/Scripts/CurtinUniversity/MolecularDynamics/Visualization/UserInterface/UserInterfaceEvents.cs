@@ -59,19 +59,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public delegate void EnableMoveMolecule(int moleculeID);
-        public static event EnableMoveMolecule OnEnableMoveMolecule;
-        public static void RaiseDisableMoveMolecule(int moleculeID) {
-            if (OnEnableMoveMolecule != null) {
-                OnEnableMoveMolecule(moleculeID);
-            }
-        }
-
-        public delegate void DisableMoveMolecule(int moleculeID);
-        public static event DisableMoveMolecule OnDisableMoveMolecule;
-        public static void RaiseEnableMoveMolecule(int moleculeID) {
-            if (OnDisableMoveMolecule != null) {
-                OnDisableMoveMolecule(moleculeID);
+        public delegate void MoleculeSelected(int moleculeID, bool selected);
+        public static event MoleculeSelected OnMoleculeSelected;
+        public static void RaiseOnMoleculeSelected(int moleculeID, bool selected) {
+            if (OnMoleculeSelected != null) {
+                OnMoleculeSelected(moleculeID, selected);
             }
         }
 

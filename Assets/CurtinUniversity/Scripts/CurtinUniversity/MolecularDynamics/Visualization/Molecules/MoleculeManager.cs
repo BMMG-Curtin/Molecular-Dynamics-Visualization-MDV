@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 
 using UnityEngine;
@@ -18,8 +19,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject CameraMolecules;
 
         private Dictionary<int, Molecule> molecules;
-        private HashSet<int> moleculesToMove;
-        private HashSet<int> movingMolecules;
+        private HashSet<int> selectedMolecules;
+        private HashSet<int> rotatingMolecules;
 
         private Dictionary<int, MoleculeRenderSettings> cachedRenderSettings;
         private Dictionary<int, int?> cachedFrameNumbers;
@@ -38,8 +39,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private void Awake() {
 
             molecules = new Dictionary<int, Molecule>();
-            moleculesToMove = new HashSet<int>();
-            movingMolecules = new HashSet<int>();
+            selectedMolecules = new HashSet<int>();
+            rotatingMolecules = new HashSet<int>();
             cachedRenderSettings = new Dictionary<int, MoleculeRenderSettings>();
             cachedFrameNumbers = new Dictionary<int, int?>();
             loadingFile = false;
@@ -52,31 +53,39 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.LeftShift)) {
 
-                foreach (int moleculeID in moleculesToMove) {
+                foreach (int moleculeID in selectedMolecules) {
 
-                    molecules[moleculeID].transform.SetParent(CameraMolecules.transform, true);
-                    movingMolecules.Add(moleculeID);
+                    //molecules[moleculeID].transform.SetParent(CameraMolecules.transform, true);
+                    //movingMolecules.Add(moleculeID);
                 }
             }
 
             if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift)) {
 
-                foreach (int moleculeID in movingMolecules) {
-                    if (molecules.ContainsKey(moleculeID)) {
-                        molecules[moleculeID].transform.SetParent(this.transform, true);
-                    }
-                }
+                //foreach (int moleculeID in movingMolecules) {
+                //    if (molecules.ContainsKey(moleculeID)) {
+                //        molecules[moleculeID].transform.SetParent(this.transform, true);
+                //    }
+                //}
 
-                movingMolecules.Clear();
+                //movingMolecules.Clear();
             }
 
             if(Input.GetKeyDown(KeyCode.Space)) {
-                moleculeAutoRotate = !moleculeAutoRotate;
+
+                foreach(int moleculeID in selectedMolecules) {
+                    if(rotatingMolecules.Contains(moleculeID)) {
+                        rotatingMolecules.Remove(moleculeID);
+                    }
+                    else {
+                        rotatingMolecules.Add(moleculeID);
+                    }
+                }
             }
 
-            if (moleculeAutoRotate) {
-                foreach(Molecule molecule in molecules.Values) {
-                    molecule.transform.Rotate(Vector3.up, moleculeAutoRotateSpeed * Time.deltaTime);
+            foreach (int moleculeID in rotatingMolecules) {
+                if (molecules.ContainsKey(moleculeID)) {
+                    molecules[moleculeID].transform.Rotate(Vector3.up, moleculeAutoRotateSpeed * Time.deltaTime);
                 }
             }
         }
@@ -244,17 +253,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void EnableMoveMolecule(int moleculeID) {
+        public void SetMoleculeSelected(int moleculeID, bool selected) {
 
             if (molecules.ContainsKey(moleculeID)) {
-                moleculesToMove.Add(moleculeID);
-            }
-        }
 
-        public void DisableMoveMolecule(int moleculeID) {
-
-            if (molecules.ContainsKey(moleculeID) && moleculesToMove.Contains(moleculeID)) {
-                moleculesToMove.Remove(moleculeID);
+                if (selected) {
+                    selectedMolecules.Add(moleculeID);
+                }
+                else if(selectedMolecules.Contains(moleculeID)) {
+                    selectedMolecules.Remove(moleculeID);
+                }
             }
         }
 
@@ -289,8 +297,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 molecules.Remove(moleculeID);
 
-                if (moleculesToMove.Contains(moleculeID)) {
-                    moleculesToMove.Remove(moleculeID);
+                if (selectedMolecules.Contains(moleculeID)) {
+                    selectedMolecules.Remove(moleculeID);
+                }
+
+                if (rotatingMolecules.Contains(moleculeID)) {
+                    rotatingMolecules.Remove(moleculeID);
                 }
 
                 updateMeshQuality();
