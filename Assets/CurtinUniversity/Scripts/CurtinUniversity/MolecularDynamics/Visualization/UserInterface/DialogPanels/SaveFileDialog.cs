@@ -195,7 +195,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private void onConfirmSave(bool confirmed) {
+        private void onConfirmSave(bool confirmed, object data = null) {
 
             if (confirmed) {
 

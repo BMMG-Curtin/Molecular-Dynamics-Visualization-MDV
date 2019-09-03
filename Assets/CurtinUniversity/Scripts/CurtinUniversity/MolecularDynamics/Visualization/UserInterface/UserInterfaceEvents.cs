@@ -75,19 +75,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public delegate void SaveMoleculeRenderSettings(int moleculeID, string filePath, MoleculeRenderSettings renderSettings);
-        public static event SaveMoleculeRenderSettings OnSaveMoleculeRenderSettings;
-        public static void RaiseSaveMoleculeRenderSettings(int moleculeID, string filePath, MoleculeRenderSettings renderSettings) {
-            if (OnSaveMoleculeRenderSettings != null) {
-                OnSaveMoleculeRenderSettings(moleculeID, filePath, renderSettings);
+        public delegate void SaveMoleculeSettings(MoleculeSettings settings, string saveFilePath);
+        public static event SaveMoleculeSettings OnSaveMoleculeSettings;
+        public static void RaiseSaveMoleculeSettings(MoleculeSettings settings, string saveFilePath) {
+            if (OnSaveMoleculeSettings != null) {
+                OnSaveMoleculeSettings(settings, saveFilePath);
             }
         }
 
-        public delegate void LoadMoleculeRenderSettings(int moleculeID, string filePath, LoadMoleculeRenderSettingsDelegate loadMoleculeRenderSettingsCallback);
-        public static event LoadMoleculeRenderSettings OnLoadMoleculeRenderSettings;
-        public static void RaiseLoadMoleculeRenderSettings(int moleculeID, string filePath, LoadMoleculeRenderSettingsDelegate loadMoleculeRenderSettingsCallback) {
-            if (OnLoadMoleculeRenderSettings != null) {
-                OnLoadMoleculeRenderSettings(moleculeID, filePath, loadMoleculeRenderSettingsCallback);
+        public delegate void LoadMoleculeSettings(int moleculeID, string filePath, bool loadStructure, bool loadTrajectory, bool loadRenderSettings, bool loadMoleculeTransform, bool loadCameraTransform, LoadMoleculeRenderSettingsDelegate loadMoleculeRenderSettingsCallback);
+        public static event LoadMoleculeSettings OnLoadMoleculeSettings;
+        public static void RaiseLoadMoleculeSettings(int moleculeID, string filePath, bool loadStructure, bool loadTrajectory, bool loadRenderSettings, bool loadMoleculeTransform, bool loadCameraTransform, LoadMoleculeRenderSettingsDelegate loadMoleculeRenderSettingsCallback) {
+            if (OnLoadMoleculeSettings != null) {
+                OnLoadMoleculeSettings(moleculeID, filePath, loadStructure, loadTrajectory, loadRenderSettings, loadMoleculeTransform, loadCameraTransform, loadMoleculeRenderSettingsCallback);
             }
         }
     }

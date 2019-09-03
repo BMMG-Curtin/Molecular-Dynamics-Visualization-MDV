@@ -226,7 +226,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private void saveRenderSettingsAndClose(bool confirmedSave) {
+        private void saveRenderSettingsAndClose(bool confirmedSave, object data = null) {
 
             if (confirmedSave) {
                 saveSettingsCallback(residueIDs, renderSettings, residueUpdateType);

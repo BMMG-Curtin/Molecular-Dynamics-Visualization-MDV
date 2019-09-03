@@ -258,7 +258,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             confirmDialog.Initialise("Quit application?", quitApplication);
         }
 
-        private void quitApplication(bool confirmed) {
+        private void quitApplication(bool confirmed, object data = null) {
             if(confirmed) {
                 Application.Quit();
             }

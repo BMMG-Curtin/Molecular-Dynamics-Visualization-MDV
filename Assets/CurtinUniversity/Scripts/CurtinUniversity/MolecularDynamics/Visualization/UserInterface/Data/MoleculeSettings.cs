@@ -14,6 +14,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public int BondCount;
         public int ResidueCount;
         public bool HasTrajectory;
+        public string TrajectoryFilePath;
         public int TrajectoryFrameCount;
         public int? CurrentTrajectoryFrameNumber;
         public MoleculeRenderSettings RenderSettings;
@@ -30,6 +31,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             AtomCount = 0;
             ResidueCount = 0;
             HasTrajectory = false;
+            TrajectoryFilePath = "";
             TrajectoryFrameCount = 0;
             CurrentTrajectoryFrameNumber = null;
             RenderSettings = MoleculeRenderSettings.Default();

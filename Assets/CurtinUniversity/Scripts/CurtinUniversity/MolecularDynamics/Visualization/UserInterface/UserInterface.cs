@@ -96,8 +96,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             residuesSettingsPanel.SetPrimaryStructure(id, primaryStructure); 
         }
 
-        public void MoleculeTrajectoryLoaded(int moleculeID, int frameCount) {
-            moleculeSettingsPanel.TrajectoryLoaded(moleculeID, frameCount);
+        public void MoleculeTrajectoryLoaded(int moleculeID, string filePath, int frameCount) {
+            moleculeSettingsPanel.TrajectoryLoaded(moleculeID, filePath, frameCount);
         }
 
         public void ToogleUserInterface() {

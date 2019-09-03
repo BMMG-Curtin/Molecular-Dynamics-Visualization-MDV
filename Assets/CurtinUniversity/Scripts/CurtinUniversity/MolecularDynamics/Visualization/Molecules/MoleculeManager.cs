@@ -82,18 +82,82 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void LoadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
+            StartCoroutine(LoadMoleculeStructure(moleculeID, filePath, settings));
+        }
+
+        public IEnumerator LoadMolecule(int moleculeID, string structureFilePath, string trajectoryFilePath, MoleculeRenderSettings settings) {
+
+            yield return StartCoroutine(LoadMoleculeStructure(moleculeID, structureFilePath, settings));
+            LoadMoleculeTrajectory(moleculeID, trajectoryFilePath);
+        }
+
+        public IEnumerator LoadMoleculeStructure(int moleculeID, string filePath, MoleculeRenderSettings settings) {
 
             if (molecules.ContainsKey(moleculeID)) {
 
                 MoleculeEvents.RaiseRenderMessage("Error Loading Molecule: already loaded", true);
-                return;
+                yield break;
             }
 
-            if (!loadingFile) {
-
-                cacheRenderSettings(moleculeID, settings, null);
-                StartCoroutine(loadMolecule(moleculeID, filePath, settings));
+            if (loadingFile) {
+                MoleculeEvents.RaiseRenderMessage("Can't Load Molecule: another molecule currently loading", true);
+                yield break;
             }
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            MoleculeEvents.RaiseRenderMessage("Loading Structure File: " + filePath, false);
+
+            loadingFile = true;
+            cacheRenderSettings(moleculeID, settings, null);
+            int oldAtomMeshQuality = this.meshQuality;
+
+            PrimaryStructure primaryStructure = null;
+
+            try {
+                if (filePath.EndsWith(".gro")) {
+                    primaryStructure = GROStructureParser.GetStructure(filePath);
+                }
+                else if (filePath.EndsWith(".xyz")) {
+                    primaryStructure = XYZStructureParser.GetStructure(filePath);
+                }
+                else if (filePath.EndsWith(".pdb")) {
+                    primaryStructure = PDBStructureParser.GetPrimaryStructure(filePath);
+                }
+            }
+            catch (FileParseException ex) {
+
+                Debug.Log("Error Loading Structure File: " + ex.Message);
+                MoleculeEvents.RaiseRenderMessage("Error Loading Structure File: " + ex.Message, true);
+                loadingFile = false;
+                yield break;
+            }
+
+            watch.Stop();
+            MoleculeEvents.RaiseRenderMessage("Structure File Load Complete [" + watch.ElapsedMilliseconds + "ms]", false);
+            yield return null;
+
+            if (primaryStructure != null) {
+
+                GameObject moleculeGO = GameObject.Instantiate(MoleculePrefab);
+                moleculeGO.transform.parent = this.transform;
+                moleculeGO.SetActive(true);
+
+                Molecule molecule = moleculeGO.GetComponent<Molecule>();
+                molecule.Initialise(primaryStructure, settings);
+                molecules.Add(moleculeID, molecule);
+
+                // check to see if the meshQuality needs to change given the new primary structure
+                updateMeshQuality();
+
+                yield return StartCoroutine(molecule.Render(settings, meshQuality));
+                MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure);
+            }
+
+            if (oldAtomMeshQuality != meshQuality) {
+                reRenderMolecules();
+            }
+
+            loadingFile = false;
         }
 
         public void LoadMoleculeTrajectory(int moleculeID, string filePath) {
@@ -140,7 +204,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (trajectory != null) {
 
                 molecules[moleculeID].SetTrajectory(trajectory);
-                MoleculeEvents.RaiseTrajectoryLoaded(moleculeID, trajectory.FrameCount());
+                MoleculeEvents.RaiseTrajectoryLoaded(moleculeID, filePath, trajectory.FrameCount());
             }
         }
 
@@ -231,64 +295,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 updateMeshQuality();
             }
-        }
-
-        private IEnumerator loadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
-
-            loadingFile = true;
-            int oldAtomMeshQuality = this.meshQuality;
-
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            MoleculeEvents.RaiseRenderMessage("Loading Structure File: " + filePath, false);
-            yield return new WaitForSeconds(0.05f);
-
-            PrimaryStructure primaryStructure = null;
-
-            try {
-                if (filePath.EndsWith(".gro")) {
-                    primaryStructure = GROStructureParser.GetStructure(filePath);
-                }
-                else if (filePath.EndsWith(".xyz")) {
-                    primaryStructure = XYZStructureParser.GetStructure(filePath);
-                }
-                else if (filePath.EndsWith(".pdb")) {
-                    primaryStructure = PDBStructureParser.GetPrimaryStructure(filePath);
-                }
-            }
-            catch (FileParseException ex) {
-
-                Debug.Log("Error Loading Structure File: " + ex.Message);
-                MoleculeEvents.RaiseRenderMessage("Error Loading Structure File: " + ex.Message, true);
-                loadingFile = false;
-                yield break;
-            }
-
-            watch.Stop();
-            MoleculeEvents.RaiseRenderMessage("Structure File Load Complete [" + watch.ElapsedMilliseconds + "ms]", false);
-            yield return new WaitForSeconds(0.05f);
-
-            if (primaryStructure != null) {
-
-                GameObject moleculeGO = GameObject.Instantiate(MoleculePrefab);
-                moleculeGO.transform.parent = this.transform;
-                moleculeGO.SetActive(true);
-
-                Molecule molecule = moleculeGO.GetComponent<Molecule>();
-                molecule.Initialise(primaryStructure, settings);
-                molecules.Add(moleculeID, molecule);
-
-                // check to see if the meshQuality needs to change given the new primary structure
-                updateMeshQuality();
-
-                yield return StartCoroutine(molecule.Render(settings, meshQuality));
-                MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure);
-            }
-
-            if (oldAtomMeshQuality != meshQuality) {
-                reRenderMolecules();
-            }
-
-            loadingFile = false;
         }
 
         private int loadTrajectoryAtomCount(string trajectoryFile) {

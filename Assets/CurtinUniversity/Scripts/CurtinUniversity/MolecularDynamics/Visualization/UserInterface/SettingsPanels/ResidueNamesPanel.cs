@@ -207,7 +207,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             customSettingsPanel.Initialise(residueIDs, null, atomNames, ResidueUpdateType.All, panelResidueSettings, saveCustomResidueSettings, onCloseCustomResidueSettings);
         }
 
-        private void onConfirmReset(bool confirmed) {
+        private void onConfirmReset(bool confirmed, object data = null) {
 
             if (confirmed) {
 

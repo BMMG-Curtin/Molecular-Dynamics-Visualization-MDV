@@ -81,7 +81,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static string GromacsFileExtension { get; private set; }
         public static string[] StructureFileExtensions { get; private set; }
         public static string[] TrajectoryFileExtensions { get; private set; }
-        public static string MDVSettingsFileExtension { get; private set; }
+        public static string SettingsFileExtension { get; private set; }
         public static string StrideExecutablePath { get; private set; }
         public static string TmpFilePath { get; private set; }
 
@@ -174,7 +174,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             GromacsFileExtension = ".gro";
             StructureFileExtensions = new[] { ".gro", ".xyz", ".pdb" };
             TrajectoryFileExtensions = new[] { ".xtc", ".dcd" };
-            MDVSettingsFileExtension = ".mdv";
+            SettingsFileExtension = ".mdv";
             StrideExecutablePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + @"stride_WIN32.exe";
             TmpFilePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar;
 

@@ -23,6 +23,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject saveFileDialog;
 
         [SerializeField]
+        private ConfirmDialog confirmDialog;
+
+        [SerializeField]
         private MessageConsole console;
 
         [SerializeField]
@@ -102,6 +105,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             loadFileDialog.SetActive(true);
             LoadFileDialog dialog = loadFileDialog.GetComponent<LoadFileDialog>();
             List<string> validFileExtensions = new List<string>(Settings.StructureFileExtensions);
+            validFileExtensions.Add(Settings.SettingsFileExtension);
             dialog.Initialise(validFileExtensions, onLoadMoleculeFileSubmitted);
         }
 
@@ -154,15 +158,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void OnLoadSettingsButton() {
+        public void OnLoadRenderSettingsButton() {
 
             loadFileDialog.SetActive(true);
             LoadFileDialog dialog = loadFileDialog.GetComponent<LoadFileDialog>();
-            List<string> validFileExtensions = new List<string>() { Settings.MDVSettingsFileExtension };
-            dialog.Initialise(validFileExtensions, onLoadSettingsFileSubmitted);
+            List<string> validFileExtensions = new List<string>() { Settings.SettingsFileExtension };
+            dialog.Initialise(validFileExtensions, onLoadRenderSettingsFileSubmitted);
         }
 
-        private void onLoadSettingsFileSubmitted(string fileName, string fullPath) { 
+        private void onLoadRenderSettingsFileSubmitted(string fileName, string fullPath) { 
 
             MoleculeSettings molecule = molecules.GetSelected();
 
@@ -175,10 +179,27 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
-            UserInterfaceEvents.RaiseLoadMoleculeRenderSettings(molecule.ID, fullPath, loadSettings);
-         }
+            confirmDialog.gameObject.SetActive(true);
+            confirmDialog.Initialise("Load camera and molecule positions from settings file also?", onConfirmLoadTransformsFromSettings, fullPath);
+        }
 
-        private void loadSettings(int moleculeID, MoleculeRenderSettings settings) {
+        private void onConfirmLoadTransformsFromSettings(bool confirmed, object data = null) {
+
+            MoleculeSettings molecule = molecules.GetSelected();
+
+            if (molecule == null || data == null) {
+                return;
+            }
+
+            try {
+                UserInterfaceEvents.RaiseLoadMoleculeSettings(molecule.ID, (string)data, false, false, true, confirmed, confirmed, loadRenderSettings);
+            }
+            catch (InvalidCastException) {
+                // do nothing
+            }
+        }
+
+        private void loadRenderSettings(int moleculeID, MoleculeRenderSettings settings) {
 
             MoleculeSettings molecule = molecules.Get(moleculeID);
 
@@ -200,7 +221,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             saveFileDialog.SetActive(true);
             SaveFileDialog dialog = saveFileDialog.GetComponent<SaveFileDialog>();
-            List<string> validFileExtensions = new List<string>() { Settings.MDVSettingsFileExtension };
+            List<string> validFileExtensions = new List<string>() { Settings.SettingsFileExtension };
             dialog.Initialise(validFileExtensions, onSaveSettingsFileSubmitted);
         }
 
@@ -212,7 +233,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
-            UserInterfaceEvents.RaiseSaveMoleculeRenderSettings(molecule.ID, fullPath, molecule.RenderSettings);
+            UserInterfaceEvents.RaiseSaveMoleculeSettings(molecule, fullPath);
         }
 
         public void OnLoadTrajectoryButton() {
@@ -223,7 +244,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             dialog.Initialise(validFileExtensions, onLoadTrajectoryFileSubmitted);
         }
 
-        public void TrajectoryLoaded(int id, int frameCount) {
+        public void TrajectoryLoaded(int id, string filePath, int frameCount) {
 
             if (molecules.Contains(id)) {
 
@@ -231,6 +252,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 MoleculeSettings settings = molecules.Get(id);
                 settings.HasTrajectory = true;
+                settings.TrajectoryFilePath = filePath;
                 settings.TrajectoryFrameCount = frameCount;
                 settings.CurrentTrajectoryFrameNumber = null;
 
@@ -341,7 +363,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             MoleculeSettings molecule = molecules.Add(filePath);
 
-            UserInterfaceEvents.RaiseLoadMolecule(molecule.ID, filePath, molecule.RenderSettings);
+            if (fileName.EndsWith(Settings.SettingsFileExtension)) {
+                UserInterfaceEvents.RaiseLoadMoleculeSettings(molecule.ID, filePath, true, true, true, true, true, loadRenderSettings);
+            }
+            else {
+                UserInterfaceEvents.RaiseLoadMolecule(molecule.ID, filePath, molecule.RenderSettings);
+            }
         }
 
         private void onLoadTrajectoryFileSubmitted(string fileName, string filePath) {
