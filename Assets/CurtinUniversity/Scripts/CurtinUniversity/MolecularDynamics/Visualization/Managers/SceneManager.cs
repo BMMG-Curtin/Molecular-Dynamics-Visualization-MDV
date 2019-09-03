@@ -144,12 +144,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                         settingsFile.StructureFilePath = null;
                     }
                 }
+                else {
+                    settingsFile.StructureFilePath = null;
+                }
 
                 if (settingsFile.StructureFilePath == null) {
+
+                    loadTrajectory = false;
                     settingsFile.TrajectoryFilePath = null;
                 }
 
-                if (loadTrajectory && settingsFile.TrajectoryFilePath != null) {
+                if (loadTrajectory) {
 
                     if (string.IsNullOrEmpty(settingsFile.TrajectoryFilePath)) {
                         settingsFile.TrajectoryFilePath = null;

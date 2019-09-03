@@ -180,7 +180,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             confirmDialog.gameObject.SetActive(true);
-            confirmDialog.Initialise("Load camera and molecule positions from settings file also?", onConfirmLoadTransformsFromSettings, fullPath);
+            confirmDialog.Initialise("Load new camera position from settings file also?", onConfirmLoadTransformsFromSettings, fullPath);
         }
 
         private void onConfirmLoadTransformsFromSettings(bool confirmed, object data = null) {
@@ -192,7 +192,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             try {
-                UserInterfaceEvents.RaiseLoadMoleculeSettings(molecule.ID, (string)data, false, false, true, confirmed, confirmed, loadRenderSettings);
+                UserInterfaceEvents.RaiseLoadMoleculeSettings(molecule.ID, (string)data, false, true, true, true, confirmed, loadRenderSettings);
             }
             catch (InvalidCastException) {
                 // do nothing
