@@ -3,7 +3,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class SettingsFile {
 
-        public int MoleculeID { get; set; }
         public string StructureFilePath { get; set; }
         public string TrajectoryFilePath { get; set; }
         public MoleculeRenderSettings RenderSettings { get; set; }
@@ -13,7 +12,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public override string ToString() {
 
             return
-                "Molecule ID: " + MoleculeID + "\n" +
                 "StructureFilePath: " + StructureFilePath + "\n" +
                 "TrajectoryFilePath: " + TrajectoryFilePath + "\n" +
                 "RenderSettings:\n" + RenderSettings + "\n" +

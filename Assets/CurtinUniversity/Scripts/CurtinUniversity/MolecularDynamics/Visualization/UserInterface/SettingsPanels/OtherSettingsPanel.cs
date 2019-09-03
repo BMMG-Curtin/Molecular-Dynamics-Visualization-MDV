@@ -21,6 +21,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Toggle fillLightsToggle;
 
         [SerializeField]
+        private Toggle ambientLightsToggle;
+
+        [SerializeField]
         private Text lightIntensityText;
 
         [SerializeField]
@@ -46,6 +49,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private string playerPrefsShadowsKey = @"SceneShadows";
         private string playerPrefsMainLightKey = @"SceneMainLights";
         private string playerPrefsFillLightKey = @"SceneFillLights";
+        private string playerPrefsAmbientLightKey = @"SceneAmbientLight";
         private string playerPrefsLightIntensityKey = @"SceneLightIntensity";
         private string playerPrefsAutoRotateKey = @"AnimationAutoRotateSpeed";
         private string playerPrefsAutoMeshQualityKey = @"RenderAutoMeshQuality";
@@ -85,6 +89,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 generalSettings.FillLightsOn = PlayerPrefs.GetInt(playerPrefsFillLightKey) > 0 ? true : false;
             }
 
+            if (PlayerPrefs.HasKey(playerPrefsAmbientLightKey)) {
+                generalSettings.AmbientLightsOn = PlayerPrefs.GetInt(playerPrefsAmbientLightKey) > 0 ? true : false;
+            }
+
             if (PlayerPrefs.HasKey(playerPrefsShadowsKey)) {
                 generalSettings.ShowShadows = PlayerPrefs.GetInt(playerPrefsShadowsKey) > 0 ? true : false;
             }
@@ -113,6 +121,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             shadowsToggle.isOn = generalSettings.ShowShadows;
             mainLightsToggle.isOn = generalSettings.MainLightsOn;
             fillLightsToggle.isOn = generalSettings.FillLightsOn;
+            ambientLightsToggle.isOn = generalSettings.AmbientLightsOn;
 
             lightIntensityText.text = lightIntensity.ToString();
             generalSettings.LightIntensity = (float)(lightIntensity - Settings.MinLightIntensity) / (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity);
@@ -155,6 +164,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             PlayerPrefs.SetInt(playerPrefsFillLightKey, fillLightsToggle.isOn ? 1 : 0);
         }
 
+        public void OnAmbientLightsToggleChanged() {
+
+            generalSettings.AmbientLightsOn = ambientLightsToggle.isOn;
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsAmbientLightKey, ambientLightsToggle.isOn ? 1 : 0);
+        }
 
         public void IncreaseLightIntensity() {
             SetLightIntensity(lightIntensity + 1);
@@ -166,16 +181,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void SetLightIntensity(int intensity) {
 
-            if (lightIntensity < Settings.MinLightIntensity || lightIntensity > Settings.MaxLightIntensity) {
-                return;
+            int startLighIntensity = lightIntensity;
+            lightIntensity = Mathf.Clamp(intensity, Settings.MinLightIntensity, Settings.MaxLightIntensity);
+
+            if (lightIntensity != startLighIntensity) {
+
+                lightIntensityText.text = lightIntensity.ToString();
+                generalSettings.LightIntensity = (float)(lightIntensity - Settings.MinLightIntensity) / (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity);
+                UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+                PlayerPrefs.SetInt(playerPrefsLightIntensityKey, lightIntensity);
             }
-
-            lightIntensity = intensity;
-            lightIntensityText.text = lightIntensity.ToString();
-
-            generalSettings.LightIntensity = (float)(lightIntensity - Settings.MinLightIntensity) / (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity);
-            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
-            PlayerPrefs.SetInt(playerPrefsLightIntensityKey, lightIntensity);
         }
 
         public void InreaseAutoRotateSpeed() {
@@ -188,16 +203,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void SetAutoRotateSpeed(int speed) {
 
-            if (speed > Settings.MaxAutoRotateSpeed || speed < Settings.MinAutoRotateSpeed) {
-                return;
+            int startSpeed = autoRotateSpeed;
+            autoRotateSpeed = Mathf.Clamp(speed, Settings.MinAutoRotateSpeed, Settings.MaxAutoRotateSpeed);
+
+            if (autoRotateSpeed != startSpeed) {
+
+                autoRotateSpeedText.text = autoRotateSpeed.ToString();
+
+                generalSettings.AutoRotateSpeed = (float)(autoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed);
+                UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+                PlayerPrefs.SetInt(playerPrefsAutoRotateKey, autoRotateSpeed);
             }
-
-            autoRotateSpeed = speed;
-            autoRotateSpeedText.text = autoRotateSpeed.ToString();
-
-            generalSettings.AutoRotateSpeed = (float)(autoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed);
-            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
-            PlayerPrefs.SetInt(playerPrefsAutoRotateKey, autoRotateSpeed);
         }
 
         public void InreaseMouseSpeed() {
@@ -210,16 +226,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void SetMouseSpeed(int speed) {
 
-            if (speed > Settings.MaxMouseSpeed || speed < Settings.MinMouseSpeed) {
-                return;
+            int startSpeed = mouseSpeed;
+            mouseSpeed = Mathf.Clamp(speed, Settings.MinMouseSpeed, Settings.MaxMouseSpeed);
+
+            if (mouseSpeed != startSpeed) {
+
+                mouseSpeed = speed;
+
+                mouseCursor.GetComponent<MousePointer>().MouseSpeed = mouseSpeed * Settings.MouseSpeedMultiplier;
+                mouseSpeedText.text = mouseSpeed.ToString();
+
+                PlayerPrefs.SetInt(playerPrefsMouseSpeedKey, mouseSpeed);
             }
-
-            mouseSpeed = speed;
-
-            mouseCursor.GetComponent<MousePointer>().MouseSpeed = mouseSpeed * Settings.MouseSpeedMultiplier;
-            mouseSpeedText.text = mouseSpeed.ToString();
-
-            PlayerPrefs.SetInt(playerPrefsMouseSpeedKey, speed);
         }
 
         public void IncreaseMeshQuality() {

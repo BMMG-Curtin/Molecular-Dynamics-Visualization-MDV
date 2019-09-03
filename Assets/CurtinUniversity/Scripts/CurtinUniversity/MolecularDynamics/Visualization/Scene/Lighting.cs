@@ -11,29 +11,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public Light MainLight3;
         public Light FillLight1;
 
-        private SceneManager sceneManager;
-
         private LightShadows mainLight1Shadows;
         private LightShadows mainLight2Shadows;
         private LightShadows mainLight3Shadows;
-
-        private float minHeight;
-        private float height;
-
-        private float generalLightBrightness = 1f;
-
-        private float startAmbientIntensity;
-        private Color startAmbientLight;
 
         private float minMainLightIntensity = 0.1f;
         private float maxMainLightIntensity = 0.6f;
         private float minFillLightIntensity = 0.4f;
         private float maxFillLightIntensity = 1.0f;
 
-        void Awake() {
+        private bool ambientLightEnabled = true;
+        private Color ambientLightColor;
 
-            startAmbientLight = RenderSettings.ambientLight;
-            startAmbientIntensity = RenderSettings.ambientIntensity;
+        void Awake() {
 
             mainLight1Shadows = MainLight1.shadows;
             mainLight2Shadows = MainLight2.shadows;
@@ -68,9 +58,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             MainLight3.intensity = mainLightIntensity;
 
             FillLight1.intensity = fillLightIntensity;
+
+            ambientLightColor = new Color(intensity, intensity, intensity);
+
+            if (ambientLightEnabled) {
+                RenderSettings.ambientLight = ambientLightColor;
+            }
+            else {
+                RenderSettings.ambientLight = Color.black;
+            }
         }
 
-        public void EnableLighting(bool mainEnable, bool fillEnable) {
+        public void EnableLighting(bool mainEnable, bool fillEnable, bool ambientEnable) {
 
             MainLight1.gameObject.SetActive(mainEnable);
             MainLight2.gameObject.SetActive(mainEnable);
@@ -78,16 +77,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             FillLight1.gameObject.SetActive(fillEnable);
 
+            ambientLightEnabled = ambientEnable;
 
-            if (mainEnable || fillEnable) {
-
-                RenderSettings.ambientLight = startAmbientLight;
-                RenderSettings.ambientIntensity = startAmbientIntensity;
+            if (ambientLightEnabled) {
+                RenderSettings.ambientLight = ambientLightColor;
             }
             else {
-
-                RenderSettings.ambientLight = Color.white;
-                RenderSettings.ambientIntensity = 1f;
+                RenderSettings.ambientLight = Color.black;
             }
         }
     }

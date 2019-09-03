@@ -10,6 +10,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public bool ShowShadows { get; set; }
         public bool MainLightsOn { get; set; }
         public bool FillLightsOn { get; set; }
+        public bool AmbientLightsOn { get; set; }
 
         private float intensity;
         public float LightIntensity {
@@ -53,6 +54,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 ShowShadows = true,
                 MainLightsOn = true,
                 FillLightsOn = true,
+                AmbientLightsOn = false,
                 LightIntensity = Settings.DefaultLightIntensity,
                 AutoMeshQuality = true,
                 MeshQuality = Settings.DefaultMeshQuality,
