@@ -13,16 +13,24 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public GameObject MoleculeRender;
         public MoleculeBox MoleculeBox;
 
+        [SerializeField]
+        private MoleculeInputController moleculeInput;
+
         public PrimaryStructureRenderer PrimaryStructureRenderer;
         public SecondaryStructureRenderer SecondaryStructureRenderer;
 
         public PrimaryStructure PrimaryStructure { get; private set; }
 
+        public float AutoRotateSpeed {
+            set {
+                autoRotateSpeed = (Mathf.Clamp(value, 0, 1) * (maxAutoRotateSpeed - minAutoRotateSpeed)) + minAutoRotateSpeed;
+            }
+        }
+
         private SecondaryStructure secondaryStructure;
         private PrimaryStructureTrajectory primaryStructureTrajectory;
         private SecondaryStructureTrajectory secondaryStructureTrajectory;
         private BoundingBox boundingBox;
-        private Vector3 boundingBoxCentre; // cannot use original bounding box centre as z coords need to be flipped
 
         private bool buildSecondaryStructureTrajectory = true;
 
@@ -36,6 +44,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private MoleculeRenderSettings awaitingRenderSettings;
         private int awaitingMeshQuality;
         private int? awaitingFrameNumber;
+
+        private bool autoRotateEnabled = false;
+        private float autoRotateSpeed = 10f;
+        private float maxAutoRotateSpeed = 50f;
+        private float minAutoRotateSpeed = 2f;
 
         public void Initialise(PrimaryStructure primaryStructure, MoleculeRenderSettings renderSettings) {
 
@@ -64,6 +77,31 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             PrimaryStructureRenderer.Initialise(primaryStructure);
             SecondaryStructureRenderer.Initialise(primaryStructure);
+
+            moleculeInput.GetComponent<MoleculeInputController>().Initialise(SceneCamera.Instance.GetCamera(), boundingBox.Centre);
+            moleculeInput.enabled = false;
+
+            autoRotateEnabled = false;
+            AutoRotateSpeed = 0f;
+        }
+
+        private void Update() {
+
+            if (moleculeInput.enabled) {
+                if (Input.GetKeyDown(KeyCode.Space)) {
+                    autoRotateEnabled = !autoRotateEnabled;
+                }
+            }
+
+            if (autoRotateEnabled) {
+                transform.RotateAround(transform.position, Vector3.up, autoRotateSpeed * Time.deltaTime);
+            }
+
+            if (!rendering && awaitingRender) {
+
+                awaitingRender = false;
+                StartCoroutine(Render(awaitingRenderSettings, awaitingMeshQuality, awaitingFrameNumber));
+            }
         }
 
         public void SetTrajectory(PrimaryStructureTrajectory trajectory) {
@@ -72,21 +110,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             this.secondaryStructureTrajectory = new SecondaryStructureTrajectory(PrimaryStructure, trajectory, Settings.StrideExecutablePath, Settings.TmpFilePath);
         }
 
+        public void EnableInput(bool inputEnabled) {
+            moleculeInput.enabled = inputEnabled;
+        }
+
         public void Show() {
             MoleculeRender.SetActive(true);
         }
 
         public void Hide() {
             MoleculeRender.SetActive(false);
-        }
-
-        private void Update() {
-
-            if (!rendering && awaitingRender) {
-
-                awaitingRender = false;
-                StartCoroutine(Render(awaitingRenderSettings, awaitingMeshQuality, awaitingFrameNumber));
-            }
         }
 
         public IEnumerator Render(MoleculeRenderSettings renderSettings, int meshQuality, int? frameNumber = null) {

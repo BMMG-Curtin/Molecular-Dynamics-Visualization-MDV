@@ -8,7 +8,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public GameObject BoxEdgePrefab;
 
+        private BoundingBox box;
+
         public void Build(BoundingBox box) {
+
+            this.box = box;
 
             // remove any existing box
             foreach (Transform child in transform) {
@@ -71,6 +75,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             return edgeWidth;
+        }
+
+        public Vector3 Origin() {
+            return box.Origin;
         }
     }
 }

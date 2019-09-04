@@ -15,9 +15,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private GameObject MoleculePrefab;
 
-        [SerializeField]
-        private GameObject CameraMolecules;
-
         private Dictionary<int, Molecule> molecules;
         private HashSet<int> selectedMolecules;
         private HashSet<int> rotatingMolecules;
@@ -30,11 +27,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private int meshQuality;
         private bool autoMeshQuality;
 
-        private bool moleculeAutoRotate = false;
-
-        private float moleculeAutoRotateSpeed = 10f;
-        private float maxAutoRotateSpeed = 50f;
-        private float minAutoRotateSpeed = 2f;
+        private float moleculeAutoRotateSpeed = 0;
 
         private void Awake() {
 
@@ -47,47 +40,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             meshQuality = Settings.DefaultMeshQuality;
             autoMeshQuality = Settings.DefaultAutoMeshQuality;
-    }
-
-        private void Update() {
-
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.LeftShift)) {
-
-                foreach (int moleculeID in selectedMolecules) {
-
-                    //molecules[moleculeID].transform.SetParent(CameraMolecules.transform, true);
-                    //movingMolecules.Add(moleculeID);
-                }
-            }
-
-            if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.LeftShift)) {
-
-                //foreach (int moleculeID in movingMolecules) {
-                //    if (molecules.ContainsKey(moleculeID)) {
-                //        molecules[moleculeID].transform.SetParent(this.transform, true);
-                //    }
-                //}
-
-                //movingMolecules.Clear();
-            }
-
-            if(Input.GetKeyDown(KeyCode.Space)) {
-
-                foreach(int moleculeID in selectedMolecules) {
-                    if(rotatingMolecules.Contains(moleculeID)) {
-                        rotatingMolecules.Remove(moleculeID);
-                    }
-                    else {
-                        rotatingMolecules.Add(moleculeID);
-                    }
-                }
-            }
-
-            foreach (int moleculeID in rotatingMolecules) {
-                if (molecules.ContainsKey(moleculeID)) {
-                    molecules[moleculeID].transform.Rotate(Vector3.up, moleculeAutoRotateSpeed * Time.deltaTime);
-                }
-            }
         }
 
         public void LoadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
@@ -153,6 +105,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 Molecule molecule = moleculeGO.GetComponent<Molecule>();
                 molecule.Initialise(primaryStructure, settings);
+                molecule.AutoRotateSpeed = moleculeAutoRotateSpeed;
                 molecules.Add(moleculeID, molecule);
 
                 // check to see if the meshQuality needs to change given the new primary structure
@@ -256,13 +209,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void SetMoleculeSelected(int moleculeID, bool selected) {
 
             if (molecules.ContainsKey(moleculeID)) {
-
-                if (selected) {
-                    selectedMolecules.Add(moleculeID);
-                }
-                else if(selectedMolecules.Contains(moleculeID)) {
-                    selectedMolecules.Remove(moleculeID);
-                }
+                molecules[moleculeID].EnableInput(selected);
             }
         }
 
@@ -286,7 +233,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void SetAutoRotateSpeed(float speed) {
-            moleculeAutoRotateSpeed = (speed * (maxAutoRotateSpeed - minAutoRotateSpeed)) + minAutoRotateSpeed;
+
+            moleculeAutoRotateSpeed = speed;
+
+            foreach (Molecule molecule in molecules.Values) { 
+                molecule.AutoRotateSpeed = speed;
+            }
         }
 
         public void RemoveMolecule(int moleculeID) {

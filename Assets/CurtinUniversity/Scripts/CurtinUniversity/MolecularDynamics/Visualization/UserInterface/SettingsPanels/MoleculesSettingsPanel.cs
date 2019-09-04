@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -90,6 +91,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             updateSelectedMoleculeInterfaceSettings();
 
             trajectoryControls.transform.gameObject.SetActive(false);
+        }
+
+        public void Update() {
+            
+            if(enabled) {
+                if(Input.GetKeyDown(KeyCode.Tab)) {
+                    selectNextMolecule();
+                }
+            }
         }
 
         public void OnLoadMoleculeButton() {
@@ -389,6 +399,33 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             updateSelectedMoleculeInterfaceSettings();
+        }
+
+        private void selectNextMolecule() {
+
+            if(moleculeListItems.Count <= 1) {
+                return;
+            }
+
+            int? selectedAtStart= molecules.SelectedMoleculeID;
+            bool selectNext = false;
+
+            foreach (int moleculeID in moleculeListItems.Keys) {
+
+                if(selectNext) {
+                    setMoleculeSelected(moleculeID);
+                    return;
+                }
+
+                if(moleculeID == selectedAtStart) {
+                    selectNext = true;
+                }
+            }
+
+            // if selected molecule hasn't changed it's because the selected molecule is last in the list so select the first
+            if(selectNext && molecules.SelectedMoleculeID == selectedAtStart) {
+                setMoleculeSelected(moleculeListItems.Keys.ToList()[0]);
+            }
         }
 
         private void updateSelectedMoleculeInterfaceSettings() {

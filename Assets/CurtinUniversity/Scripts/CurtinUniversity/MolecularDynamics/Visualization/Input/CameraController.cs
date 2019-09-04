@@ -3,13 +3,12 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace CurtinUniversity.MolecularDynamics.Visualization.Camera {
+namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class CameraController : MonoBehaviour {
 
         public List<CanvasGroup> CanvasGroups;
 
-        // public float CameraSensitivity = 90;
         public float CameraSensitivityX = 90;
         public float CameraSensitivityY = 90;
         public float ClimbSpeed = 4;
@@ -25,20 +24,20 @@ namespace CurtinUniversity.MolecularDynamics.Visualization.Camera {
 
         private float rotationX = 120.0f;
         private float rotationY = 0.0f;
-        private bool flyEnabled { get; set; }
+        private bool movementEnabled;
 
         void Start() {
 
             rotationX = 0 - transform.localRotation.eulerAngles.x;
             rotationY = transform.localRotation.eulerAngles.y;
 
-            flyEnabled = false;
+            movementEnabled = false;
         }
 
         void Update() {
 
             if (Input.GetMouseButtonDown(1)) {
-                flyEnabled = true;
+                movementEnabled = true;
                 rotationX = transform.localRotation.eulerAngles.x;
                 if (rotationX > 270) {
                     rotationX -= 360;
@@ -47,10 +46,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization.Camera {
             }
 
             if (Input.GetMouseButtonUp(1)) {
-                flyEnabled = false;
+                movementEnabled = false;
             }
 
-            if (flyEnabled) {
+            if (movementEnabled) {
 
                 rotationY += Input.GetAxis("Mouse X") * CameraSensitivityX * Time.deltaTime;
                 rotationX -= Input.GetAxis("Mouse Y") * CameraSensitivityY * Time.deltaTime;
@@ -80,15 +79,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization.Camera {
                 }
                 if (Input.GetKey(KeyCode.Q)) {
                     transform.position = transformPosition(transform.position, 0, -1 * ClimbSpeed * Time.deltaTime, 0);
-                }
-            }
-        }
-
-        private void enableCanvasInput(bool enable) {
-            if (CanvasGroups != null) {
-                foreach (CanvasGroup canvas in CanvasGroups) {
-                    canvas.blocksRaycasts = enable;
-                    canvas.interactable = enable;
                 }
             }
         }
