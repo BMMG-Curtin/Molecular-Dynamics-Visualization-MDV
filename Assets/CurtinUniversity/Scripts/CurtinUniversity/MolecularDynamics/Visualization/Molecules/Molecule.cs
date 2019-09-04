@@ -78,9 +78,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             PrimaryStructureRenderer.Initialise(primaryStructure);
             SecondaryStructureRenderer.Initialise(primaryStructure);
 
-            moleculeInput.GetComponent<MoleculeInputController>().Initialise(SceneCamera.Instance.GetCamera(), boundingBox.Centre);
             moleculeInput.enabled = false;
-
             autoRotateEnabled = false;
             AutoRotateSpeed = 0f;
         }
@@ -112,6 +110,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void EnableInput(bool inputEnabled) {
             moleculeInput.enabled = inputEnabled;
+        }
+
+        public void SetSpaceNavigatorControlEnabled(bool enabled) {
+            if (enabled) {
+                moleculeInput.GetComponent<MoleculeInputController>().SetInputSource(MoleculeInputSource.SpaceNavigator);
+            }
+            else {
+                moleculeInput.GetComponent<MoleculeInputController>().SetInputSource(MoleculeInputSource.Mouse);
+            }
         }
 
         public void Show() {

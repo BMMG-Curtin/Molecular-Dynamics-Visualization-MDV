@@ -1,43 +1,56 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-using System.Collections.Generic;
+
+using SpaceNavigatorDriver;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    public enum CameraInputSource {
+        Mouse,
+        SpaceNavigator
+    }
+
     public class CameraController : MonoBehaviour {
 
-        public List<CanvasGroup> CanvasGroups;
+        private CameraInputSource cameraInputSource;
 
-        public float CameraSensitivityX = 90;
-        public float CameraSensitivityY = 90;
-        public float ClimbSpeed = 4;
-        public float NormalMoveSpeed = 10;
-        public float FastMoveFactor = 3;
-
-        public float MinimumXPosition = -100;
-        public float MaximumXPosition = 100;
-        public float MinimumYPosition = 1.5f;
-        public float MaximumYPosition = 10;
-        public float MinimumZPosition = -100;
-        public float MaximumZPosition = 100;
-
+        private float CameraSensitivityX = 90;
+        private float CameraSensitivityY = 90;
+        private float ClimbSpeed = 4;
+        private float NormalMoveSpeed = 10;
+        private float FastMoveFactor = 3;
         private float rotationX = 120.0f;
         private float rotationY = 0.0f;
-        private bool movementEnabled;
 
-        void Start() {
+        private void Awake() {
 
+            cameraInputSource = CameraInputSource.Mouse;
             rotationX = 0 - transform.localRotation.eulerAngles.x;
             rotationY = transform.localRotation.eulerAngles.y;
-
-            movementEnabled = false;
         }
 
-        void Update() {
+        private void Update() {
+
+            if (cameraInputSource == CameraInputSource.Mouse) {
+                handleMouseInput();
+            }
+
+            if (cameraInputSource == CameraInputSource.SpaceNavigator) {
+
+                // Don't move camera when moving molecules
+                // See moleculeInputController for input mappings
+                if(!InputManager.Instance.ShiftPressed && !InputManager.Instance.ControlPressed && !InputManager.Instance.AltPressed) {
+                    handleSpaceNavigator();
+                }
+            }
+        }
+
+        public void SetInputSource(CameraInputSource source) {
+            cameraInputSource = source;
+        }
+
+        private void handleMouseInput() { 
 
             if (Input.GetMouseButtonDown(1)) {
-                movementEnabled = true;
                 rotationX = transform.localRotation.eulerAngles.x;
                 if (rotationX > 270) {
                     rotationX -= 360;
@@ -45,11 +58,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 rotationY = transform.localRotation.eulerAngles.y;
             }
 
-            if (Input.GetMouseButtonUp(1)) {
-                movementEnabled = false;
-            }
+            if (Input.GetMouseButton(1)) {
 
-            if (movementEnabled) {
+                // handle camera rotation
 
                 rotationY += Input.GetAxis("Mouse X") * CameraSensitivityX * Time.deltaTime;
                 rotationX -= Input.GetAxis("Mouse Y") * CameraSensitivityY * Time.deltaTime;
@@ -57,9 +68,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 transform.localRotation = Quaternion.Euler(rotationX, rotationY, 0);
 
+                // handle movement
                 float moveSpeed = NormalMoveSpeed;
 
-                // this is only good for absolute values, not incremental values
+                // slow down diagonal movement
                 if (Input.GetAxis("Vertical") != 0 && Input.GetAxis("Horizontal") != 0) {
                     moveSpeed *= 0.70710678118f;
                 }
@@ -75,25 +87,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 transform.position = newPosition;
 
                 if (Input.GetKey(KeyCode.E)) {
-                    transform.position = transformPosition(transform.position, 0, ClimbSpeed * Time.deltaTime, 0);
+                    transform.Translate(new Vector3(0, ClimbSpeed * Time.deltaTime, 0));
                 }
                 if (Input.GetKey(KeyCode.Q)) {
-                    transform.position = transformPosition(transform.position, 0, -1 * ClimbSpeed * Time.deltaTime, 0);
+                    transform.Translate(new Vector3(0, -1 * ClimbSpeed * Time.deltaTime, 0));
                 }
             }
         }
 
-        private Vector3 transformPosition(Vector3 pos, float x, float y, float z) {
+        private void handleSpaceNavigator() {
 
-            pos.x += x;
-            pos.y += y;
-            pos.z += z;
+            Vector3 translation = SpaceNavigator.Translation * 0.5f;
+            Vector3 rotation = SpaceNavigator.Rotation.eulerAngles;
 
-            pos.x = Mathf.Clamp(pos.x, MinimumXPosition, MaximumXPosition);
-            pos.y = Mathf.Clamp(pos.y, MinimumYPosition, MaximumYPosition);
-            pos.z = Mathf.Clamp(pos.z, MinimumZPosition, MaximumZPosition);
-
-            return pos;
+            transform.Translate(translation, Space.Self);
+            transform.Rotate(Vector3.up, rotation.y, Space.Self);
         }
     }
 }

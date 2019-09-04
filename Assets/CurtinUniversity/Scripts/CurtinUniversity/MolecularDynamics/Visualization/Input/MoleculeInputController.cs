@@ -1,86 +1,113 @@
 ﻿using UnityEngine;
 
+using SpaceNavigatorDriver;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
+
+    public enum MoleculeInputSource {
+        Mouse,
+        SpaceNavigator
+    }
 
     public class MoleculeInputController : MonoBehaviour {
 
-        [SerializeField]
-        private float moveSensitivity = 4;
+        private MoleculeInputSource moleculeInputSource;
 
-        [SerializeField]
-        private float rotateSensitivity = 100;
-
-        public float MinimumXPosition = -100;
-        public float MaximumXPosition = 100;
-        public float MinimumYPosition = 1.5f;
-        public float MaximumYPosition = 10;
-        public float MinimumZPosition = -100;
-        public float MaximumZPosition = 100;
+        private float mouseMoveSensitivity = 4;
+        private float mouseRotateSensitivity = 100;
 
         private Camera sceneCamera;
-        private bool initialised = false;
+        private bool warned = false;
 
-        public void Initialise(Camera sceneCamera, Vector3 moleculeCentre) {
+        private void Awake() {
+            moleculeInputSource = MoleculeInputSource.Mouse;
+        }
 
-            this.sceneCamera = sceneCamera;
-            initialised = true;
+        private void Start() {
+            this.sceneCamera = SceneCamera.Instance.GetCamera();
         }
 
         private void Update() {
 
-            if (initialised) {
+            if (moleculeInputSource == MoleculeInputSource.Mouse) {
 
-                if (InputManager.Instance.ShiftPressed) {
-                    DoMove();
+                // don't move molecule if camera is moving
+                if (!Input.GetMouseButton(1)) {
+                    handleMouseInput();
                 }
+            }
 
-                if (InputManager.Instance.ControlPressed) {
-                    DoRotateForwardAxis();
-                    DoRotateHorizontalAxis();
-                }
-
-                if (InputManager.Instance.AltPressed) {
-                    DoRotateYAxis();
-                }
+            if (moleculeInputSource == MoleculeInputSource.SpaceNavigator) {
+                handleSpaceNavigator();
             }
         }
 
-        private void DoMove() {
+        public void SetInputSource(MoleculeInputSource source) {
+            moleculeInputSource = source;
+        }
+
+        private void handleMouseInput() {
+
+            if(sceneCamera == null) {
+                if(!warned) {
+                    Debug.Log("Scene camera is null in molecule input. Cancelling mouse movement");
+                    warned = true;
+                }
+                return;
+            }
 
             float horizontalAxis = Input.GetAxis("Mouse X");
             float verticalAxis = Input.GetAxis("Mouse Y");
 
-            Vector3 forward = sceneCamera.transform.forward;
-            Vector3 right = sceneCamera.transform.right;
-            Vector3 up = sceneCamera.transform.up;
-            //Vector3 up = Vector3.up;
+            // molecule movement in relation to camera
+            if (InputManager.Instance.ShiftPressed) {
 
-            forward.y = 0f;
-            right.y = 0f;
-            forward.Normalize();
-            right.Normalize();
+                Vector3 forward = sceneCamera.transform.forward;
+                Vector3 right = sceneCamera.transform.right;
+                Vector3 up = sceneCamera.transform.up;
 
-            //Vector3 desiredMoveDirection = forward * verticalAxis + right * horizontalAxis;
-            Vector3 desiredMoveDirection = up * verticalAxis + right * horizontalAxis;
-            transform.Translate(desiredMoveDirection * moveSensitivity * Time.deltaTime, Space.World);
+                forward.y = 0f;
+                right.y = 0f;
+                forward.Normalize();
+                right.Normalize();
+
+                Vector3 moveDirection;
+                if (InputManager.Instance.ControlPressed) {
+                    moveDirection = forward * verticalAxis + right * horizontalAxis;
+                }
+                else {
+                    moveDirection = up * verticalAxis + right * horizontalAxis;
+                }
+
+                transform.Translate(moveDirection * mouseMoveSensitivity * Time.deltaTime, Space.World);
+            }
+
+            // molecule rotation around camera forward and horizontal axis 
+            if (InputManager.Instance.ControlPressed && !InputManager.Instance.ShiftPressed) {
+
+                transform.RotateAround(transform.position, sceneCamera.transform.forward, horizontalAxis * Time.deltaTime * mouseRotateSensitivity);
+                transform.RotateAround(transform.position, sceneCamera.transform.right, verticalAxis * Time.deltaTime * mouseRotateSensitivity);
+            }
+
+            // molecule rotation around world vertical axis rotation
+            if (InputManager.Instance.AltPressed && !InputManager.Instance.ShiftPressed) {
+                transform.RotateAround(transform.position, Vector3.up, horizontalAxis * Time.deltaTime * mouseRotateSensitivity * -1);
+            }
         }
 
-        private void DoRotateForwardAxis() {
+        private void handleSpaceNavigator() {
 
-            float horizontalAxis = Input.GetAxis("Mouse X");
-            transform.RotateAround(transform.position, sceneCamera.transform.forward, horizontalAxis * Time.deltaTime * rotateSensitivity);
-        }
+            if (InputManager.Instance.ShiftPressed) {
 
-        private void DoRotateHorizontalAxis() {
+                Vector3 translation = SpaceNavigator.Translation * 0.5f;
+                transform.Translate(translation, Space.World);
+            }
 
-            float horizontalAxis = Input.GetAxis("Mouse Y");
-            transform.RotateAround(transform.position, sceneCamera.transform.right, horizontalAxis * Time.deltaTime * rotateSensitivity);
-        }
+            if(InputManager.Instance.ControlPressed) {
 
-        private void DoRotateYAxis() {
-
-            float horizontalAxis = Input.GetAxis("Mouse X") * -1;
-            transform.RotateAround(transform.position, Vector3.up, horizontalAxis * Time.deltaTime * rotateSensitivity);
+                Vector3 rotation = SpaceNavigator.Rotation.eulerAngles;
+                transform.Rotate(rotation, Space.World);
+            }
         }
     }
 }

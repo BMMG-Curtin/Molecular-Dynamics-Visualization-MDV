@@ -46,6 +46,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        public bool SpaceNavigatorCameraControlEnabled { get; set; }
+        public bool SpaceNavigatorMoleculeControlEnabled { get; set; }
+
         public static GeneralSettings Default() {
 
             return new GeneralSettings {
@@ -58,6 +61,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 LightIntensity = Settings.DefaultLightIntensity,
                 AutoMeshQuality = true,
                 MeshQuality = Settings.DefaultMeshQuality,
+                SpaceNavigatorCameraControlEnabled = false,
+                SpaceNavigatorMoleculeControlEnabled = false,
             };
         }
     }

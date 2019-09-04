@@ -24,10 +24,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private bool loadingFile;
 
-        private int meshQuality;
-        private bool autoMeshQuality;
+        GeneralSettings generalSettings;
 
-        private float moleculeAutoRotateSpeed = 0;
+        //private float moleculeAutoRotateSpeed = 0;
 
         private void Awake() {
 
@@ -38,8 +37,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             cachedFrameNumbers = new Dictionary<int, int?>();
             loadingFile = false;
 
-            meshQuality = Settings.DefaultMeshQuality;
-            autoMeshQuality = Settings.DefaultAutoMeshQuality;
+            generalSettings = GeneralSettings.Default();
         }
 
         public void LoadMolecule(int moleculeID, string filePath, MoleculeRenderSettings settings) {
@@ -70,7 +68,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             loadingFile = true;
             cacheRenderSettings(moleculeID, settings, null);
-            int oldAtomMeshQuality = this.meshQuality;
+            int oldAtomMeshQuality = generalSettings.MeshQuality;
 
             PrimaryStructure primaryStructure = null;
 
@@ -105,17 +103,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 Molecule molecule = moleculeGO.GetComponent<Molecule>();
                 molecule.Initialise(primaryStructure, settings);
-                molecule.AutoRotateSpeed = moleculeAutoRotateSpeed;
+                molecule.AutoRotateSpeed = generalSettings.AutoRotateSpeed;
+                molecule.SetSpaceNavigatorControlEnabled(generalSettings.SpaceNavigatorMoleculeControlEnabled);
                 molecules.Add(moleculeID, molecule);
 
                 // check to see if the meshQuality needs to change given the new primary structure
                 updateMeshQuality();
 
-                yield return StartCoroutine(molecule.Render(settings, meshQuality));
+                yield return StartCoroutine(molecule.Render(settings, generalSettings.MeshQuality));
                 MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure);
             }
 
-            if (oldAtomMeshQuality != meshQuality) {
+            if (oldAtomMeshQuality != generalSettings.MeshQuality) {
                 reRenderMolecules();
             }
 
@@ -175,20 +174,30 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             cacheRenderSettings(moleculeID, settings, frameNumber);
 
             if (molecules.ContainsKey(moleculeID)) {
-                StartCoroutine(molecules[moleculeID].Render(settings, meshQuality, frameNumber));
+                StartCoroutine(molecules[moleculeID].Render(settings, generalSettings.MeshQuality, frameNumber));
             }
         }
 
-        public void UpdateMeshQuality(bool autoMeshQuality, int newMeshQuality) {
+        public void UpdateGeneralSettings(GeneralSettings newSettings) {
 
-            int oldAtomMeshQuality = this.meshQuality;
-            this.meshQuality = newMeshQuality;
-            this.autoMeshQuality = autoMeshQuality;
+            // meshquality settings
+            int oldAtomMeshQuality = generalSettings.MeshQuality;
+            generalSettings = newSettings;
 
             updateMeshQuality(); // could change meshQuality, depending on autoMeshQuality value
 
-            if (oldAtomMeshQuality != meshQuality) {
+            if (oldAtomMeshQuality != generalSettings.MeshQuality) {
                 reRenderMolecules();
+            }
+
+            // autorotate speed
+            foreach (Molecule molecule in molecules.Values) {
+                molecule.AutoRotateSpeed = generalSettings.AutoRotateSpeed;
+            }
+
+            // space navigator control
+            foreach (Molecule molecule in molecules.Values) {
+                molecule.SetSpaceNavigatorControlEnabled(generalSettings.SpaceNavigatorMoleculeControlEnabled);
             }
         }
 
@@ -229,15 +238,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 molecules[moleculeID].transform.position = moleculeTransform.Position;
                 molecules[moleculeID].transform.rotation = moleculeTransform.Rotation;
                 molecules[moleculeID].transform.localScale = moleculeTransform.Scale;
-            }
-        }
-
-        public void SetAutoRotateSpeed(float speed) {
-
-            moleculeAutoRotateSpeed = speed;
-
-            foreach (Molecule molecule in molecules.Values) { 
-                molecule.AutoRotateSpeed = speed;
             }
         }
 
@@ -324,7 +324,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void updateMeshQuality() {
 
-            if (autoMeshQuality) {
+            if (generalSettings.AutoMeshQuality) {
 
                 int totalAtomCount = 0;
                 foreach (Molecule molecule in molecules.Values) {
@@ -332,10 +332,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
 
                 if (totalAtomCount > Settings.LowMeshQualityThreshold) {
-                    meshQuality = Settings.LowMeshQualityValue;
+                    generalSettings.MeshQuality = Settings.LowMeshQualityValue;
                 }
                 else {
-                    meshQuality = Settings.DefaultMeshQuality;
+                    generalSettings.MeshQuality = Settings.DefaultMeshQuality;
                 }
             }
         }
@@ -359,7 +359,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     frameNumber = cachedFrameNumbers[moleculeID];
                 }
 
-                StartCoroutine(molecules[moleculeID].Render(settings, meshQuality, frameNumber));
+                StartCoroutine(molecules[moleculeID].Render(settings, generalSettings.MeshQuality, frameNumber));
             }
         }
     }

@@ -42,9 +42,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private float mouseSpeedMultiplier = 3f;
 
         [SerializeField]
+        private Toggle spaceNavigatorCameraControlToggle;
+
+        [SerializeField]
+        private Toggle spaceNavigatorMoleculeControlToggle;
+
+        [SerializeField]
         private ConfirmDialog confirmDialog;
 
         private string playerPrefsMouseSpeedKey = @"MouseSpeed";
+        private string playerPrefsSpaceNavigatorCameraControlKey = @"SpaceNavigatorCameraControl";
+        private string playerPrefsSpaceNavigatorMoleculeControlKey = @"SpaceNavigatorMoleculeControl";
         private string playerPrefsGroundKey = @"SceneGround";
         private string playerPrefsShadowsKey = @"SceneShadows";
         private string playerPrefsMainLightKey = @"SceneMainLights";
@@ -117,6 +125,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 autoRotateSpeed = PlayerPrefs.GetInt(playerPrefsAutoRotateKey);
             }
 
+            if (PlayerPrefs.HasKey(playerPrefsSpaceNavigatorCameraControlKey)) {
+                generalSettings.SpaceNavigatorCameraControlEnabled = PlayerPrefs.GetInt(playerPrefsSpaceNavigatorCameraControlKey) > 0 ? true : false;
+            }
+
+            if (PlayerPrefs.HasKey(playerPrefsSpaceNavigatorMoleculeControlKey)) {
+                generalSettings.SpaceNavigatorMoleculeControlEnabled = PlayerPrefs.GetInt(playerPrefsSpaceNavigatorMoleculeControlKey) > 0 ? true : false;
+            }
+
             groundToggle.isOn = generalSettings.ShowGround;
             shadowsToggle.isOn = generalSettings.ShowShadows;
             mainLightsToggle.isOn = generalSettings.MainLightsOn;
@@ -125,6 +141,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             lightIntensityText.text = lightIntensity.ToString();
             generalSettings.LightIntensity = (float)(lightIntensity - Settings.MinLightIntensity) / (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity);
+
+            spaceNavigatorCameraControlToggle.isOn = generalSettings.SpaceNavigatorCameraControlEnabled;
+            spaceNavigatorMoleculeControlToggle.isOn = generalSettings.SpaceNavigatorMoleculeControlEnabled;
 
             autoMeshQualityToggle.isOn = generalSettings.AutoMeshQuality;
             generalSettings.MeshQuality = Mathf.Clamp(generalSettings.MeshQuality, 0, Settings.MeshQualityValues.Length - 1);
@@ -191,6 +210,20 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
                 PlayerPrefs.SetInt(playerPrefsLightIntensityKey, lightIntensity);
             }
+        }
+
+        public void OnSpaceNavigatorCameraControlChanged() {
+
+            generalSettings.SpaceNavigatorCameraControlEnabled = spaceNavigatorCameraControlToggle.isOn;
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsSpaceNavigatorCameraControlKey, spaceNavigatorCameraControlToggle.isOn ? 1 : 0);
+        }
+
+        public void OnSpaceNavigatorMoleculeControlChanged() {
+
+            generalSettings.SpaceNavigatorMoleculeControlEnabled = spaceNavigatorMoleculeControlToggle.isOn;
+            UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+            PlayerPrefs.SetInt(playerPrefsSpaceNavigatorMoleculeControlKey, spaceNavigatorMoleculeControlToggle.isOn ? 1 : 0);
         }
 
         public void InreaseAutoRotateSpeed() {
