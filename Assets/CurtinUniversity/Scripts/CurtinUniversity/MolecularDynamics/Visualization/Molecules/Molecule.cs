@@ -113,12 +113,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void SetSpaceNavigatorControlEnabled(bool enabled) {
-            if (enabled) {
-                moleculeInput.GetComponent<MoleculeInputController>().SetInputSource(MoleculeInputSource.SpaceNavigator);
-            }
-            else {
-                moleculeInput.GetComponent<MoleculeInputController>().SetInputSource(MoleculeInputSource.Mouse);
-            }
+            moleculeInput.GetComponent<MoleculeInputController>().EnableSpaceNavigatorInput(enabled);
         }
 
         public void Show() {

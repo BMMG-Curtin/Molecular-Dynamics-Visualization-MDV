@@ -4,14 +4,9 @@ using SpaceNavigatorDriver;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
-    public enum CameraInputSource {
-        Mouse,
-        SpaceNavigator
-    }
-
     public class CameraController : MonoBehaviour {
 
-        private CameraInputSource cameraInputSource;
+        private bool spaceNavigatorInputEnabled;
 
         private float CameraSensitivityX = 90;
         private float CameraSensitivityY = 90;
@@ -23,20 +18,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void Awake() {
 
-            cameraInputSource = CameraInputSource.Mouse;
+            spaceNavigatorInputEnabled = false;
             rotationX = 0 - transform.localRotation.eulerAngles.x;
             rotationY = transform.localRotation.eulerAngles.y;
         }
 
         private void Update() {
 
-            if (cameraInputSource == CameraInputSource.Mouse) {
-                handleMouseInput();
-            }
+            handleMouseInput();
 
-            if (cameraInputSource == CameraInputSource.SpaceNavigator) {
+            if (spaceNavigatorInputEnabled) {
 
-                // Don't move camera when moving molecules
+                // Don't move camera with space navigator when moving molecules
                 // See moleculeInputController for input mappings
                 if(!InputManager.Instance.ShiftPressed && !InputManager.Instance.ControlPressed && !InputManager.Instance.AltPressed) {
                     handleSpaceNavigator();
@@ -44,8 +37,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void SetInputSource(CameraInputSource source) {
-            cameraInputSource = source;
+        public void EnableSpaceNavigatorInput(bool enable) {
+            spaceNavigatorInputEnabled = enable;
         }
 
         private void handleMouseInput() { 

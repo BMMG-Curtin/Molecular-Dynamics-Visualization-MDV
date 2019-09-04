@@ -77,13 +77,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private void onGeneralSettingsUpdated(GeneralSettings settings) {
 
             scene.Settings = settings;
-            //molecules.UpdateMeshQuality(settings.AutoMeshQuality, settings.MeshQuality);
-            //molecules.SetAutoRotateSpeed(settings.AutoRotateSpeed);
-            //molecules.SetSpaceNavigatorControlEnabled(settings.SpaceNavigatorMoleculeControlEnabled);
             molecules.UpdateGeneralSettings(settings);
-
-            CameraInputSource inputSource = settings.SpaceNavigatorCameraControlEnabled ? CameraInputSource.SpaceNavigator : CameraInputSource.Mouse;
-            sceneCamera.SetInputSource(inputSource);
+            sceneCamera.EnableSpaceNavigatorInput(settings.SpaceNavigatorCameraControlEnabled);
         }
 
         private void saveSettingsFile(MoleculeSettings moleculeSettings, string saveFilePath) {
