@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 
 using UnityEngine;
@@ -46,13 +45,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             MoleculeEvents.OnMoleculeLoaded += userInterface.MoleculeLoaded;
             MoleculeEvents.OnTrajectoryLoaded += userInterface.MoleculeTrajectoryLoaded;
-            MoleculeEvents.OnRenderMessage += ShowConsolerMessage;
+            MoleculeEvents.OnRenderMessage += ShowConsoleMessage;
 
             userInterface.SetSceneSettings(GeneralSettings.Default());
-            loadDefaultModel();
+
+            StartCoroutine(loadDefaultModel());
         }
 
-        public void ShowConsolerMessage(string message, bool error) {
+        public void ShowConsoleMessage(string message, bool error) {
 
             if (error) {
                 userInterface.ShowConsoleError(message);
@@ -62,16 +62,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private void loadDefaultModel() {
+        private IEnumerator loadDefaultModel() {
 
-            if(!Settings.LoadMoleculeOnStart || Settings.LoadMoleculeFileName == null || Settings.LoadMoleculeFileName.Trim() == "") {
-                return;
+            if(!Settings.LoadMoleculeOnStart) {
+                yield break;
             }
 
-            string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + Settings.LoadMoleculeFileName;
+            if (!string.IsNullOrEmpty(Settings.LoadMoleculeFileName1)) {
+                string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + Settings.LoadMoleculeFileName1;
+                userInterface.LoadMolecule(filePath);
+            }
 
-            MoleculeRenderSettings settings = MoleculeRenderSettings.Default();
-            userInterface.LoadMolecule(filePath, settings);
+            yield return new WaitForSeconds(1f);
+
+            if (!string.IsNullOrEmpty(Settings.LoadMoleculeFileName2)) {
+                string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + Settings.LoadMoleculeFileName2;
+                userInterface.LoadMolecule(filePath);
+            }
         }
 
         private void onGeneralSettingsUpdated(GeneralSettings settings) {

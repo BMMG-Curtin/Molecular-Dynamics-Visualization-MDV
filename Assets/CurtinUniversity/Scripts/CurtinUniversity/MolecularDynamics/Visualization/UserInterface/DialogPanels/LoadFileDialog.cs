@@ -164,7 +164,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             string fullPath = currentFilePath + Path.DirectorySeparatorChar + fileName;
 
-            onSubmit(fileName, fullPath);
+            onSubmit(fullPath);
             gameObject.SetActive(false);
         }
 

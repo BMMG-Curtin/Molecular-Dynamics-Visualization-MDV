@@ -210,9 +210,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     }
                 }
 
-                float atomSize = getAtomScale(atom.Name, renderSettings, customRepresentation);
+                float atomSize = getAtomScale(atom.Element, renderSettings, customRepresentation);
                 Vector3 scale = new Vector3(atomSize, atomSize, atomSize);
-
 
                 Matrix4x4 atomTransform = Matrix4x4.TRS(position, atomOrientation, scale);
 
@@ -431,7 +430,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private float getAtomScale(string elementName, MoleculeRenderSettings settings, MolecularRepresentation? customRepresentation) {
+        private float getAtomScale(ChemicalElement elementName, MoleculeRenderSettings settings, MolecularRepresentation? customRepresentation) {
 
             // set atom size
             float atomSize = 1;
@@ -447,12 +446,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             if (atomRepresentation == MolecularRepresentation.VDW) {
-                if (!MolecularConstants.VDWRadius.TryGetValue(elementName, out representationScale)) {
+                if (!MolecularConstants.VDWRadius.TryGetValue(elementName.ToString(), out representationScale)) {
                     MolecularConstants.VDWRadius.TryGetValue("Other", out representationScale);
                 }
             }
             else if (atomRepresentation == MolecularRepresentation.CPK) {
-                if (!MolecularConstants.AtomicRadius.TryGetValue(elementName, out representationScale)) {
+                if (!MolecularConstants.AtomicRadius.TryGetValue(elementName.ToString(), out representationScale)) {
                     MolecularConstants.AtomicRadius.TryGetValue("Other", out representationScale);
                 }
                 representationScale *= Settings.CPKScaleFactor;

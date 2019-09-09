@@ -85,8 +85,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             applicationSettings.SetSceneSettings(settings);
         }
 
-        public void LoadMolecule(string filePath, MoleculeRenderSettings settings = null) {
-            moleculeSettingsPanel.LoadMolecule(filePath, settings);
+        public void LoadMolecule(string filePath) {
+            moleculeSettingsPanel.LoadMolecule(filePath);
         }
 
         public void MoleculeLoaded(int id, string name, PrimaryStructure primaryStructure) {

@@ -22,7 +22,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 string path = Application.streamingAssetsPath + "/Screenshots/" + "Screenshot_" + timeStamp + ".png";
                 ScreenCapture.CaptureScreenshot(path);
 
-                sceneManager.ShowConsolerMessage("Screenshot captured: " + path, false);
+                sceneManager.ShowConsoleMessage("Screenshot captured: " + path, false);
             }
         }
     }

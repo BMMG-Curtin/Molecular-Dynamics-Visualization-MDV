@@ -190,7 +190,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
             else {
 
-                onSubmit(fileName, fullPath);
+                onSubmit(fullPath);
                 gameObject.SetActive(false);
             }
         }
@@ -199,7 +199,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (confirmed) {
 
-                onSubmit(confirmFileName, confirmFilePath);
+                onSubmit(confirmFilePath);
                 gameObject.SetActive(false);
             }
         }

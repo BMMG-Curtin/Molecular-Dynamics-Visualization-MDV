@@ -111,19 +111,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             dialog.Initialise(validFileExtensions, onLoadMoleculeFileSubmitted);
         }
 
-        public void LoadMolecule(string filePath, MoleculeRenderSettings settings) {
+        public void LoadMolecule(string filePath) {
 
             if(filePath == null || filePath.Length == 0) {
                 return;
             }
 
-            MoleculeSettings molecule = molecules.Add(filePath);
-
-            if (settings != null) {
-                molecule.RenderSettings = (MoleculeRenderSettings)settings;
-            }
-
-            UserInterfaceEvents.RaiseLoadMolecule(molecule.ID, filePath, molecule.RenderSettings);
+            onLoadMoleculeFileSubmitted(filePath);
         }
 
         public void MoleculeLoaded(int id, string name, string description, int atomCount, int residueCount) {
@@ -147,7 +141,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 listItem.transform.SetParent(moleculeListContent.transform, false);
 
                 MoleculeSettingsPanelListItem item = listItem.GetComponent<MoleculeSettingsPanelListItem>();
-                item.Initialise(id, name, onMoleculeListItemClick, onMoleculeListItemDoubleClick);
+
+                string fileName = Path.GetFileName(settings.FilePath);
+                item.Initialise(id, fileName, onMoleculeListItemClick, onMoleculeListItemDoubleClick);
 
                 moleculeListItems.Add(id, item);
                 numberMoleculeListItems();
@@ -168,7 +164,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             dialog.Initialise(validFileExtensions, onLoadRenderSettingsFileSubmitted);
         }
 
-        private void onLoadRenderSettingsFileSubmitted(string fileName, string fullPath) { 
+        private void onLoadRenderSettingsFileSubmitted(string fullPath) { 
 
             MoleculeSettings molecule = molecules.GetSelected();
 
@@ -227,7 +223,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             dialog.Initialise(validFileExtensions, onSaveSettingsFileSubmitted);
         }
 
-        private void onSaveSettingsFileSubmitted(string fileName, string fullPath) { 
+        private void onSaveSettingsFileSubmitted(string fullPath) { 
 
             MoleculeSettings molecule = molecules.GetSelected();
 
@@ -333,13 +329,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             updateSelectedMoleculeInterfaceSettings();
         }
 
-        private void onLoadMoleculeFileSubmitted(string fileName, string filePath) {
+        private void onLoadMoleculeFileSubmitted(string filePath) {
 
-            console.ShowMessage("Selected file: " + fileName + ", [" + filePath + "]");
+            //console.ShowMessage("Selected file: [" + filePath + "]");
 
             MoleculeSettings molecule = molecules.Add(filePath);
 
-            if (fileName.EndsWith(Settings.SettingsFileExtension)) {
+            if (filePath.EndsWith(Settings.SettingsFileExtension)) {
                 UserInterfaceEvents.RaiseLoadMoleculeSettings(molecule.ID, filePath, true, true, true, true, true, loadRenderSettings);
             }
             else {
@@ -347,9 +343,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private void onLoadTrajectoryFileSubmitted(string fileName, string filePath) {
-
-            //console.ShowMessage("Selected file: " + fileName + ", [" + filePath + "]");
+        private void onLoadTrajectoryFileSubmitted(string filePath) {
 
             if (molecules.SelectedMoleculeID != null) {
                 UserInterfaceEvents.RaiseLoadTrajectory((int)molecules.SelectedMoleculeID, filePath);
