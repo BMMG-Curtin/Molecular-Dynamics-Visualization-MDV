@@ -74,6 +74,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static string StartMessage { get; private set; }
         public static int MinMouseSpeed { get; private set; }
         public static int MaxMouseSpeed { get; private set; }
+        public static int DefaultMouseSpeed { get; private set; }
         public static int MouseSpeedMultiplier { get; private set; }
 
         // molecule file settings
@@ -168,7 +169,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             StartMessage = "Welcome to Molecular Dynamics Visualization";
             MinMouseSpeed = 1;
             MaxMouseSpeed = 10;
-            MouseSpeedMultiplier = 3;
+            DefaultMouseSpeed = 5;
+            MouseSpeedMultiplier = 5;
 
             ValidExtensions = new[] { ".xyz", ".gro", ".pdb", ".xtc", ".dcd" };
             GromacsFileExtension = ".gro";

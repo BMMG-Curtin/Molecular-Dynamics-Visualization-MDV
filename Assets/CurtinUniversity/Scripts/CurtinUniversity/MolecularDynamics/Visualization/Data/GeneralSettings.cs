@@ -58,12 +58,28 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 MainLightsOn = true,
                 FillLightsOn = false,
                 AmbientLightsOn = true,
-                LightIntensity = Settings.DefaultLightIntensity,
+                LightIntensity = (float)(Settings.DefaultLightIntensity - Settings.MinLightIntensity) / (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity),
                 AutoMeshQuality = true,
                 MeshQuality = Settings.DefaultMeshQuality,
+                AutoRotateSpeed = (float)(Settings.DefaultAutoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed),
                 SpaceNavigatorCameraControlEnabled = false,
                 SpaceNavigatorMoleculeControlEnabled = false,
             };
+        }
+
+        public override string ToString() {
+
+            return
+                "ShowGround: " + ShowGround + "\n" +
+                "ShowShadows: " + ShowShadows + "\n" +
+                "MainLightsOn: " + MainLightsOn + "\n" +
+                "FillLightsOn: " + FillLightsOn + "\n" +
+                "AmbientLightsOn: " + AmbientLightsOn + "\n" +
+                "LightIntensity: " + LightIntensity + "\n" +
+                "AutoMeshQuality: " + AutoMeshQuality + "\n" +
+                "MeshQuality: " + MeshQuality + "\n" +
+                "SpaceNavigatorCameraControlEnabled: " + SpaceNavigatorCameraControlEnabled + "\n" +
+                "SpaceNavigatorMoleculeControlEnabled: " + SpaceNavigatorMoleculeControlEnabled;
         }
     }
 }

@@ -63,25 +63,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private string playerPrefsAutoMeshQualityKey = @"RenderAutoMeshQuality";
         private string playerPrefsMeshQualityKey = @"RenderMeshQuality";
 
-        private int lightIntensity = 1;
-        private int mouseSpeed = 1;
-        private int autoRotateSpeed = 1;
+        private int lightIntensity = 0;
+        private int mouseSpeed = 0;
+        private int autoRotateSpeed = 0;
 
         private GeneralSettings generalSettings;
 
         public void Awake() {
 
-            // Set UI specific settings here
-            
             if (PlayerPrefs.HasKey(playerPrefsMouseSpeedKey)) {
-
-                mouseSpeed = PlayerPrefs.GetInt(playerPrefsMouseSpeedKey);
-
-                if(mouseSpeed < 1) {
-                    mouseSpeed = 1;
-                }
-
-                SetMouseSpeed(mouseSpeed);
+                SetMouseSpeed(PlayerPrefs.GetInt(playerPrefsMouseSpeedKey));
+            }
+            else {
+                SetMouseSpeed(Settings.DefaultMouseSpeed);
             }
         }
 
@@ -110,7 +104,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             if (PlayerPrefs.HasKey(playerPrefsLightIntensityKey)) {
+
                 lightIntensity = PlayerPrefs.GetInt(playerPrefsLightIntensityKey);
+                generalSettings.LightIntensity = (float)(lightIntensity - Settings.MinLightIntensity) / (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity);
+            }
+            else {
+                lightIntensity = (int)((generalSettings.LightIntensity * (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity)) + Settings.MinLightIntensity);
             }
 
             if (PlayerPrefs.HasKey(playerPrefsAutoMeshQualityKey)) {
@@ -122,8 +121,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             if (PlayerPrefs.HasKey(playerPrefsAutoRotateKey)) {
+
                 autoRotateSpeed = PlayerPrefs.GetInt(playerPrefsAutoRotateKey);
+                generalSettings.AutoRotateSpeed = (float)(autoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed);
             }
+            autoRotateSpeed = (int)((generalSettings.AutoRotateSpeed * (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed)) + Settings.MinAutoRotateSpeed);
 
             if (PlayerPrefs.HasKey(playerPrefsSpaceNavigatorCameraControlKey)) {
                 generalSettings.SpaceNavigatorCameraControlEnabled = PlayerPrefs.GetInt(playerPrefsSpaceNavigatorCameraControlKey) > 0 ? true : false;
@@ -138,19 +140,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             mainLightsToggle.isOn = generalSettings.MainLightsOn;
             fillLightsToggle.isOn = generalSettings.FillLightsOn;
             ambientLightsToggle.isOn = generalSettings.AmbientLightsOn;
-
             lightIntensityText.text = lightIntensity.ToString();
-            generalSettings.LightIntensity = (float)(lightIntensity - Settings.MinLightIntensity) / (float)(Settings.MaxLightIntensity - Settings.MinLightIntensity);
 
+            autoRotateSpeedText.text = autoRotateSpeed.ToString();
             spaceNavigatorCameraControlToggle.isOn = generalSettings.SpaceNavigatorCameraControlEnabled;
             spaceNavigatorMoleculeControlToggle.isOn = generalSettings.SpaceNavigatorMoleculeControlEnabled;
 
             autoMeshQualityToggle.isOn = generalSettings.AutoMeshQuality;
             generalSettings.MeshQuality = Mathf.Clamp(generalSettings.MeshQuality, 0, Settings.MeshQualityValues.Length - 1);
             meshQualityText.text = generalSettings.AutoMeshQuality ? "Auto" : Settings.MeshQualityValues[generalSettings.MeshQuality];
-
-            autoRotateSpeedText.text = autoRotateSpeed.ToString();
-            generalSettings.AutoRotateSpeed = (float)(autoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed- Settings.MinAutoRotateSpeed);
 
             UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
         }
