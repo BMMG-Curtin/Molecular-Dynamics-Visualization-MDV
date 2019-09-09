@@ -40,6 +40,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private ResiduesSettingsPanel residuesSettingsPanel;
 
         [SerializeField]
+        private InteractionsSettingsPanel interactionsSettingsPanel;
+
+        [SerializeField]
         private bool toggleWholeInterface = false;
 
         public bool IsActive { get { return UserInterfaceCanvas.activeSelf; } }
@@ -173,7 +176,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             console.Silent = silent;
         }
 
-        public bool HasInputFocus() {
+        public void ShowInteractionsInformation(string message) {
+            interactionsSettingsPanel.ShowInformation(message);
+        }
+
+        public bool HasKeyboardInputFocus() {
 
 
 // this needs to be fixed

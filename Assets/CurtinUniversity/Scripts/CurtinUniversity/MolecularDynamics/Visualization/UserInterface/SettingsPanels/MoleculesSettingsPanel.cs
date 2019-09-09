@@ -73,10 +73,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         [SerializeField]
         private MoleculeList molecules;
-        private Dictionary<int, MoleculeSettingsPanelListItem> moleculeListItems;
 
         [SerializeField]
         private TrajectoryControls trajectoryControls;
+
+        private Dictionary<int, MoleculeSettingsPanelListItem> moleculeListItems;
 
         private HashSet<int> hiddenMolecules;
 

@@ -13,6 +13,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public class MoleculeManager : MonoBehaviour {
 
         [SerializeField]
+        private MoleculeInteractions moleculeInterations;
+
+        [SerializeField]
         private GameObject MoleculePrefab;
 
         private Dictionary<int, Molecule> molecules;
@@ -259,6 +262,27 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 updateMeshQuality();
             }
+        }
+
+        public void StartMonitoringInteractions(int molecule1ID, int molecule2ID) {
+
+            if(!molecules.ContainsKey(molecule1ID)) {
+
+                MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. Molecule " + molecule1ID + " not found", true);
+                return;
+            }
+
+            if (!molecules.ContainsKey(molecule2ID)) {
+
+                MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. Molecule " + molecule2ID + " not found", true);
+                return;
+            }
+
+            moleculeInterations.StartMonitoring(molecules[molecule1ID], molecules[molecule2ID]);
+        }
+
+        public void StopMonitoringInteractions() {
+            moleculeInterations.StopMonitoring();
         }
 
         private int loadTrajectoryAtomCount(string trajectoryFile) {

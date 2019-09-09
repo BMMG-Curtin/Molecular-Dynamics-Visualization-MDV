@@ -28,5 +28,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 OnRenderMessage(message, error);
             }
         }
+
+        public delegate void InteractionsInformation(string information);
+        public static event InteractionsInformation OnInteractionsInformation;
+        public static void RaiseInteractionsInformation(string information) {
+            if (OnInteractionsInformation != null) {
+                OnInteractionsInformation(information);
+            }
+        }
+
+        public delegate void InteractionsMessage(string message, bool error);
+        public static event InteractionsMessage OnInteractionsMessage;
+        public static void RaiseInteractionsMessage(string message, bool error) {
+            if (OnInteractionsMessage != null) {
+                OnInteractionsMessage(message, error);
+            }
+        }
     }
 }
