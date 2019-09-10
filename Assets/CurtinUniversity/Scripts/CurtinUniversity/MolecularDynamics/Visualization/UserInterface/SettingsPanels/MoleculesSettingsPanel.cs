@@ -72,6 +72,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TextMeshProUGUI moleculeResidueCountText;
 
         [SerializeField]
+        private InteractionsSettingsPanel interactionsPanel;
+
+        [SerializeField]
         private MoleculeList molecules;
 
         [SerializeField]
@@ -98,7 +101,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             
             if(enabled) {
                 if(Input.GetKeyDown(KeyCode.Tab)) {
-                    selectNextMolecule();
+                    setMoleculeSelected(molecules.NextMoleculeID());
                 }
             }
         }
@@ -287,6 +290,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 UserInterfaceEvents.RaiseHideMolecule(molecule.ID);
                 hiddenMolecules.Add(molecule.ID);
 
+                if (interactionsPanel.MonitoringEnabled) {
+
+                    interactionsPanel.StopInteractions();
+                    console.ShowError("Stopped monitoring molecular interactions, hiding molecule");
+                }
+
                 UserInterfaceEvents.RaiseOnMoleculeSelected(molecule.ID, false);
             }
 
@@ -299,42 +308,36 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
+            if (interactionsPanel.MonitoringEnabled) {
+
+                interactionsPanel.StopInteractions();
+                console.ShowError("Stopped monitoring molecular interactions, removed molecule");
+            }
+
             int moleculeID = (int)molecules.SelectedMoleculeID;
 
             UserInterfaceEvents.RaiseRemoveMolecule(moleculeID);
-
-            molecules.Remove(moleculeID);
 
             if(moleculeListItems.ContainsKey(moleculeID)) {
                 GameObject.Destroy(moleculeListItems[moleculeID].gameObject);
                 moleculeListItems.Remove(moleculeID);
             }
 
+            molecules.Remove(moleculeID, true);
+            setMoleculeSelected(molecules.SelectedMoleculeID);
             numberMoleculeListItems();
-
-            // set a new molecule as selected if one available
-            int? selected = molecules.SetFirstMoleculeSelected();
-            if(selected != null) {
-
-                foreach (KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
-
-                    if (item.Key == molecules.SelectedMoleculeID) {
-                        item.Value.SetHighlighted(true);
-                    }
-                    else {
-                        item.Value.SetHighlighted(false);
-                    }
-                }
-            }
-
             updateSelectedMoleculeInterfaceSettings();
         }
 
         private void onLoadMoleculeFileSubmitted(string filePath) {
 
-            //console.ShowMessage("Selected file: [" + filePath + "]");
-
             MoleculeSettings molecule = molecules.Add(filePath);
+
+            if (interactionsPanel.MonitoringEnabled) {
+
+                interactionsPanel.StopInteractions();
+                console.ShowError("Stopped monitoring molecular interactions, loading molecule");
+            }
 
             if (filePath.EndsWith(Settings.SettingsFileExtension)) {
                 UserInterfaceEvents.RaiseLoadMoleculeSettings(molecule.ID, filePath, true, true, true, true, true, loadRenderSettings);
@@ -347,6 +350,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private void onLoadTrajectoryFileSubmitted(string filePath) {
 
             if (molecules.SelectedMoleculeID != null) {
+
+                if (interactionsPanel.MonitoringEnabled) {
+
+                    interactionsPanel.StopInteractions();
+                    console.ShowError("Stopped monitoring molecular interactions, loading trajectory");
+                }
+
                 UserInterfaceEvents.RaiseLoadTrajectory((int)molecules.SelectedMoleculeID, filePath);
             }
         }
@@ -356,71 +366,47 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private void numberMoleculeListItems() {
 
             int displayID = 0;
-            foreach (Transform transform in moleculeListContent.transform) {
-                if (transform.gameObject.activeSelf) {
-                    transform.gameObject.GetComponent<MoleculeSettingsPanelListItem>().DisplayID = ++displayID;
-                }
+            foreach(MoleculeSettingsPanelListItem item in moleculeListItems.Values) { 
+                item.DisplayID = ++displayID;
             }
         }
 
         private void onMoleculeListItemClick(int moleculeID) {
-            setMoleculeSelected(moleculeID);
+            setMoleculeSelected((int)moleculeID);
         }
 
         private void onMoleculeListItemDoubleClick(int moleculeID) {
             // do nothing at present
         }
 
-        private void setMoleculeSelected(int moleculeID) {
+        private void setMoleculeSelected(int? moleculeID) {
 
             molecules.SelectedMoleculeID = moleculeID;
 
-            foreach(KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
+            foreach (KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
 
-                if(item.Key == molecules.SelectedMoleculeID) {
+                item.Value.SetHighlighted(false);
+                UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, false);
+            }
 
-                    item.Value.SetHighlighted(true);
+            if (moleculeID != null) {
 
-                    // if molecule is hidden then dont raise event. When molecule is unhidden then an event will be raised instead
-                    if (molecules.Get(moleculeID) != null && !molecules.Get(moleculeID).Hidden) {
-                        UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, true);
+                foreach (KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
+
+                    if (item.Key == molecules.SelectedMoleculeID) {
+
+                        item.Value.SetHighlighted(true);
+
+                        // if molecule is hidden then dont raise event. When molecule is unhidden then an event will be raised instead
+                        MoleculeSettings molecule = molecules.Get((int)moleculeID);
+                        if (molecule != null && !molecule.Hidden) {
+                            UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, true);
+                        }
                     }
-                }
-                else {
-
-                    item.Value.SetHighlighted(false);
-                    UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, false);
                 }
             }
 
             updateSelectedMoleculeInterfaceSettings();
-        }
-
-        private void selectNextMolecule() {
-
-            if(moleculeListItems.Count <= 1) {
-                return;
-            }
-
-            int? selectedAtStart= molecules.SelectedMoleculeID;
-            bool selectNext = false;
-
-            foreach (int moleculeID in moleculeListItems.Keys) {
-
-                if(selectNext) {
-                    setMoleculeSelected(moleculeID);
-                    return;
-                }
-
-                if(moleculeID == selectedAtStart) {
-                    selectNext = true;
-                }
-            }
-
-            // if selected molecule hasn't changed it's because the selected molecule is last in the list so select the first
-            if(selectNext && molecules.SelectedMoleculeID == selectedAtStart) {
-                setMoleculeSelected(moleculeListItems.Keys.ToList()[0]);
-            }
         }
 
         private void updateSelectedMoleculeInterfaceSettings() {

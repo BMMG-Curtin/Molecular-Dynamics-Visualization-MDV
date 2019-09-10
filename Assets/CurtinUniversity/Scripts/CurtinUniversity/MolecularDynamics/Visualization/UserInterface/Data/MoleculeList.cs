@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,12 +27,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private Dictionary<int, MoleculeSettings> molecules;
+        private SortedDictionary<int, MoleculeSettings> molecules;
 
         private int lastMoleculeID;
 
         private void Awake() {
-            molecules = new Dictionary<int, MoleculeSettings>();
+            molecules = new SortedDictionary<int, MoleculeSettings>();
             lastMoleculeID = 0;
             SelectedMoleculeID = null;
         }
@@ -63,14 +64,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             return null;
         }
 
-        public void Remove(int moleculeID) {
+        public void Remove(int moleculeID, bool selectNext = false) {
 
-            if(molecules.ContainsKey(moleculeID)) {
+            if (molecules.ContainsKey(moleculeID)) {
+
+                if (selectedMoleculeID != null && moleculeID == (int)selectedMoleculeID) {
+
+                    if (selectNext) {
+                        selectedMoleculeID = NextMoleculeID();
+                    }
+                    else {
+                        selectedMoleculeID = null;
+                    }
+                }
+
                 molecules.Remove(moleculeID);
-            }
-
-            if(selectedMoleculeID != null && moleculeID == (int)selectedMoleculeID) {
-                selectedMoleculeID = null;
             }
         }
 
@@ -100,6 +108,32 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             int id = molecules.Keys.ToArray()[0];
             selectedMoleculeID = id;
             return id;
+        }
+
+        public int? NextMoleculeID() {
+
+            if (molecules == null || molecules.Count == 0) {
+                return null;
+            }
+
+            if(selectedMoleculeID == null || molecules.Count == 1) {
+                return molecules.First().Key;
+            }
+
+            bool returnNext = false;
+
+            foreach (int moleculeID in molecules.Keys) {
+
+                if (returnNext) {
+                    return moleculeID;
+                }
+
+                if (moleculeID == selectedMoleculeID) {
+                    returnNext = true;
+                }
+            }
+
+            return molecules.First().Key;
         }
     }
 }

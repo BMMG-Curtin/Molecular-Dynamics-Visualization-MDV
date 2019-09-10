@@ -19,7 +19,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public PrimaryStructureRenderer PrimaryStructureRenderer;
         public SecondaryStructureRenderer SecondaryStructureRenderer;
 
+        public int ID { get; private set; }
         public PrimaryStructure PrimaryStructure { get; private set; }
+        public PrimaryStructureTrajectory PrimaryStructureTrajectory { get; private set; }
 
         public float AutoRotateSpeed {
             set {
@@ -28,15 +30,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         private SecondaryStructure secondaryStructure;
-        private PrimaryStructureTrajectory primaryStructureTrajectory;
         private SecondaryStructureTrajectory secondaryStructureTrajectory;
         private BoundingBox boundingBox;
 
         private bool buildSecondaryStructureTrajectory = true;
-
-        private Quaternion saveRotation;
-        private Vector3 savePosition;
-        private Vector3 saveScale;
 
         private bool rendering = false;
         private bool awaitingRender = false;
@@ -50,12 +47,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private float maxAutoRotateSpeed = 50f;
         private float minAutoRotateSpeed = 2f;
 
-        public void Initialise(PrimaryStructure primaryStructure, MoleculeRenderSettings renderSettings) {
+        public void Initialise(int id, PrimaryStructure primaryStructure, MoleculeRenderSettings renderSettings) {
 
             if(primaryStructure == null) {
                 return;
             }
 
+            this.ID = id;
             this.PrimaryStructure = primaryStructure;
 
             try {
@@ -104,7 +102,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void SetTrajectory(PrimaryStructureTrajectory trajectory) {
 
-            this.primaryStructureTrajectory = trajectory;
+            this.PrimaryStructureTrajectory = trajectory;
             this.secondaryStructureTrajectory = new SecondaryStructureTrajectory(PrimaryStructure, trajectory, Settings.StrideExecutablePath, Settings.TmpFilePath);
         }
 
@@ -127,6 +125,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public IEnumerator Render(MoleculeRenderSettings renderSettings, int meshQuality, int? frameNumber = null) {
 
             if(rendering) {
+
                 awaitingRenderSettings = renderSettings;
                 awaitingMeshQuality = meshQuality;
                 awaitingFrameNumber = frameNumber;
@@ -142,8 +141,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             // primary structure render
 
             PrimaryStructureFrame frame = null;
-            if (primaryStructureTrajectory != null && frameNumber != null) {
-                frame = primaryStructureTrajectory.GetFrame((int)frameNumber);
+            if (PrimaryStructureTrajectory != null && frameNumber != null) {
+                frame = PrimaryStructureTrajectory.GetFrame((int)frameNumber);
             }
 
             yield return StartCoroutine(PrimaryStructureRenderer.Render(renderSettings, frame, meshQuality));

@@ -57,6 +57,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             set {
+
                 displayID = value;
                 moleculeIDText.text = displayID.ToString();
             }

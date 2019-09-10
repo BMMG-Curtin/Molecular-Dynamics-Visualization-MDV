@@ -22,38 +22,36 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private TextMeshProUGUI Informationtext;
 
-        private bool monitoringEnabled = false;
+        public bool MonitoringEnabled { get; private set; }
 
         public void Awake() {
             Informationtext.text = "";
-        }
-
-        public void OnDisable() {
-
-            if (monitoringEnabled) {
-
-                monitoringEnabled = false;
-                StartStopButtonText.text = "Start Monitoring Molecules";
-                UserInterfaceEvents.RaiseStopMonitoringMoleculeInteractions();
-            }
+            MonitoringEnabled = false;
         }
 
         public void ShowInformation(string text) {
             Informationtext.text = text;
         }
 
+        public void StopInteractions() {
+            stopInteracations();
+        }
+
         public void OnStartStopButton() {
 
-            if(monitoringEnabled) {
-
-                monitoringEnabled = false;
-                StartStopButtonText.text = "Start Monitoring Molecules";
-                UserInterfaceEvents.RaiseStopMonitoringMoleculeInteractions();
-                return;
+            if (MonitoringEnabled) {
+                stopInteracations();
             }
+            else {
+                startInteractions();
+            }
+        }
+
+        private void startInteractions() {
 
             List<int> moleculeIDs = molecules.GetIDs();
-            if(moleculeIDs == null || moleculeIDs.Count != 2) {
+
+            if (moleculeIDs.Count != 2) {
 
                 if (moleculeIDs.Count > 2) {
                     console.ShowError("Can't monitor molecule interactions. Only two molecules can to be loaded");
@@ -65,9 +63,22 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
-            monitoringEnabled = true;
+            if (molecules.Get(moleculeIDs[0]).HasTrajectory || molecules.Get(moleculeIDs[1]).HasTrajectory) {
+
+                MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. Monitored molecules cannot have trajectories loaded.", true);
+                return;
+            }
+
+            MonitoringEnabled = true;
             StartStopButtonText.text = "Stop Monitoring Molecules";
             UserInterfaceEvents.RaiseStartMonitoringMoleculeInteractions(moleculeIDs[0], moleculeIDs[1]);
+        }
+
+        private void stopInteracations() {
+
+            MonitoringEnabled = false;
+            StartStopButtonText.text = "Start Monitoring Molecules";
+            UserInterfaceEvents.RaiseStopMonitoringMoleculeInteractions();
         }
     }
 }

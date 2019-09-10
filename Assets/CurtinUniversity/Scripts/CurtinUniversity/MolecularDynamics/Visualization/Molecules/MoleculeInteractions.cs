@@ -8,17 +8,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MoleculeInteractions : MonoBehaviour {
 
-        private Molecule molecule1;
-        private Molecule molecule2;
+        public Molecule Molecule1 { get; private set; }
+        public Molecule Molecule2 { get; private set; }
 
-        private bool monitoring;
+        public bool Active { get; private set; }
 
         private float reportInterval = 0.05f;
         private float lastReportTime = 0;
 
         private void Update() {
 
-            if(monitoring) {
+            if(Active) {
 
                 if(lastReportTime + reportInterval < Time.time) {
                     MoleculeEvents.RaiseInteractionsInformation(interactions());
@@ -31,8 +31,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             string output = "";
 
-            output += "Molecule1 position: " + gsetPosition(molecule1.transform) + "\n";
-            output += "Molecule2 position: " + gsetPosition(molecule2.transform) + "\n";
+            output += "Molecule1 position: " + gsetPosition(Molecule1.transform) + "\n";
+            output += "Molecule2 position: " + gsetPosition(Molecule2.transform) + "\n";
 
             return output;
         }
@@ -47,28 +47,32 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void StopMonitoring() {
 
-            molecule1 = null;
-            molecule2 = null;
-            monitoring = false;
+            Molecule1 = null;
+            Molecule2 = null;
+            Active = false;
         }
 
         public void StartMonitoring(Molecule molecule1, Molecule molecule2) {
 
-            if (molecule1 != null && molecule2 != null) {
-
-                this.molecule1 = molecule1;
-                this.molecule2 = molecule2;
-                monitoring = true;
+            if(molecule1 == null) {
+                MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. First molecule is null.", true);
+                return;
             }
-            else {
 
-                if (molecule1 == null) {
-                    MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. First molecule is null", true);
-                }
-                else {
-                    MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. Second molecule is null", true);
-                }
+            if (molecule2 == null) {
+                MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. Second molecule is null.", true);
+                return;
             }
+
+            if (molecule1.PrimaryStructureTrajectory != null || molecule2.PrimaryStructureTrajectory != null) {
+                MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. Monitored molecules cannot have trajectories loaded.", true);
+                return;
+            }
+
+            this.Molecule1 = molecule1;
+            this.Molecule2 = molecule2;
+            Active = true;
+            //MoleculeEvents.RaiseInteractionsMessage("Started monitoring molecular interactions", false);
         }
     }
 }

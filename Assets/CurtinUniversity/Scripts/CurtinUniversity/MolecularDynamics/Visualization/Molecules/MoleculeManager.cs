@@ -105,7 +105,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 moleculeGO.SetActive(true);
 
                 Molecule molecule = moleculeGO.GetComponent<Molecule>();
-                molecule.Initialise(primaryStructure, settings);
+                molecule.Initialise(moleculeID, primaryStructure, settings);
                 molecule.AutoRotateSpeed = generalSettings.AutoRotateSpeed;
                 molecule.SetSpaceNavigatorControlEnabled(generalSettings.SpaceNavigatorMoleculeControlEnabled);
                 molecules.Add(moleculeID, molecule);
@@ -258,6 +258,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 if (rotatingMolecules.Contains(moleculeID)) {
                     rotatingMolecules.Remove(moleculeID);
+                }
+
+                // check if the molecule was being monitored. If so, shut down monitoring
+                if(moleculeInterations.Active && (moleculeInterations.Molecule1.ID == moleculeID || moleculeInterations.Molecule2.ID == moleculeID)) {
+                    moleculeInterations.StopMonitoring();
                 }
 
                 updateMeshQuality();
