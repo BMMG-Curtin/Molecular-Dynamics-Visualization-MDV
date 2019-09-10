@@ -13,7 +13,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private bool monitoring;
 
-        private float reportInterval = 1f;
+        private float reportInterval = 0.05f;
         private float lastReportTime = 0;
 
         private void Update() {
@@ -21,11 +21,28 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if(monitoring) {
 
                 if(lastReportTime + reportInterval < Time.time) {
-
-                    MoleculeEvents.RaiseInteractionsInformation("Time: " + Time.time);
+                    MoleculeEvents.RaiseInteractionsInformation(interactions());
                     lastReportTime = Time.time;
                 }
             }
+        }
+
+        private string interactions() {
+
+            string output = "";
+
+            output += "Molecule1 position: " + gsetPosition(molecule1.transform) + "\n";
+            output += "Molecule2 position: " + gsetPosition(molecule2.transform) + "\n";
+
+            return output;
+        }
+
+        private string gsetPosition(Transform transform) {
+
+
+            return "x: " + transform.position.x.ToString("n3").PadRight(8) +
+                " y: " + transform.position.y.ToString("n3").PadRight(8) +
+                " z: " + transform.position.z.ToString("n3").PadRight(8);
         }
 
         public void StopMonitoring() {
