@@ -18,8 +18,10 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         private List<Chain> chains;          // global accessor to chains. Includes residues specific to the molecule. Indexed by input file order.
         private Dictionary<int, Residue> residues;      // global accessor for residues. Includes atoms specific to the residues. Indexed by input file order.
-        private Dictionary<int, Atom> atoms;            // Global accessor for all atoms associated with this model. Indexed by input file order.
-                                                        // Atom positions drawn from stucture file. Trajectory positions can be retrieved from trajectory frames by index number.
+        private List<Atom> atoms;            // Global accessor for all atoms associated with this model. Indexed by input file order.
+                                             // Atom positions drawn from stucture file. Trajectory positions can be retrieved from trajectory frames by index number.
+
+        private Dictionary<int, Atom> atomsByID;
 
         private HashSet<string> elementNames; // unique element names in this model
         private HashSet<string> residueNames; // unique residue names in this model
@@ -29,14 +31,19 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public PrimaryStructure() {
             chains = new List<Chain>();
             residues = new Dictionary<int, Residue>();
-            atoms = new Dictionary<int, Atom>();
+            atoms = new List<Atom>();
+            atomsByID = new Dictionary<int, Atom>();
         }
 
 
         // Atom Methods ///////////////////////////////////////////////////////
 
-        public Dictionary<int, Atom> Atoms() {
+        public List<Atom> Atoms() {
             return atoms;
+        }
+
+        public Dictionary<int, Atom> AtomsByID() {
+            return atomsByID;
         }
 
         public int AtomCount() {
@@ -52,7 +59,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public void AddAtom(int atomIndex, Atom atom) {
 
             try {
-                atoms.Add(atomIndex, atom);
+                atoms.Add(atom);
+                atomsByID.Add(atomIndex, atom);
             }
             catch (ArgumentException) {
                 // do nothing. Don't add new data that clashes with existing data.
@@ -61,22 +69,21 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         public bool ContainsAtom(int atomIndex) {
 
-            if (atoms.ContainsKey(atomIndex)) {
+            if(atomIndex >= 0 && atomIndex < atoms.Count) {
                 return true;
             }
 
             return false;
         }
 
+        public List<Atom> GetAtoms(ChemicalElement element) {
 
-        public Dictionary<int, Atom> GetAtoms(ChemicalElement element) {
+            List<Atom> elementAtoms = new List<Atom>();
 
-            Dictionary<int, Atom> atoms = new Dictionary<int, Atom>();
+            foreach (Atom atom in atoms) {
 
-            foreach (KeyValuePair<int, Atom> atom in Atoms()) {
-
-                if (atom.Value.Element == element) {
-                    atoms.Add(atom.Key, atom.Value);
+                if (atom.Element == element) {
+                    atoms.Add(atom);
                 }
             }
 
@@ -100,76 +107,76 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         public Dictionary<int, Atom> GetAtoms(bool standardAtoms = true, bool nonStandardAtoms = true, HashSet<string> includedElements = null, HashSet<string> includedResidueNames = null, HashSet<int> includedResidueIDs = null) {
 
-            Dictionary<int, Atom> atoms = new Dictionary<int, Atom>();
+            Dictionary<int, Atom> returnAtoms = new Dictionary<int, Atom>();
 
-            foreach (KeyValuePair<int, Atom> atom in Atoms()) {
+            foreach (Atom atom in atoms) {
 
-                if ((standardAtoms && atom.Value.ResidueType != StandardResidue.None) ||
-                    (nonStandardAtoms && atom.Value.ResidueType == StandardResidue.None)) {
+                if ((standardAtoms && atom.ResidueType != StandardResidue.None) ||
+                    (nonStandardAtoms && atom.ResidueType == StandardResidue.None)) {
 
-                    if (includedElements == null || includedElements.Contains(atom.Value.Element.ToString().ToUpper())) {
+                    if (includedElements == null || includedElements.Contains(atom.Element.ToString().ToUpper())) {
 
-                        if (includedResidueNames == null || (atom.Value.ResidueName != null && includedResidueNames.Contains(atom.Value.ResidueName.ToString().ToUpper()))) {
+                        if (includedResidueNames == null || (atom.ResidueName != null && includedResidueNames.Contains(atom.ResidueName.ToString().ToUpper()))) {
 
-                            if (includedResidueIDs == null || (includedResidueIDs.Contains(atom.Value.ResidueID))) {
+                            if (includedResidueIDs == null || (includedResidueIDs.Contains(atom.ResidueID))) {
 
-                                atoms.Add(atom.Key, atom.Value);
+                                returnAtoms.Add(atom.Index, atom);
                             }
                         }
                     }
                 }
             }
 
-            return atoms;
+            return returnAtoms;
         }
 
         public Dictionary<int, Atom> GetAtoms(bool standardAtoms = true, bool nonStandardAtoms = true, HashSet<string> includedElements = null, HashSet<int> includedResidues = null) {
 
-            Dictionary<int, Atom> atoms = new Dictionary<int, Atom>();
+            Dictionary<int, Atom> returnAtoms = new Dictionary<int, Atom>();
 
-            foreach (KeyValuePair<int, Atom> atom in Atoms()) {
+            foreach (Atom atom in atoms) {
 
-                if ((standardAtoms && atom.Value.ResidueType != StandardResidue.None) ||
-                    (nonStandardAtoms && atom.Value.ResidueType == StandardResidue.None)) {
+                if ((standardAtoms && atom.ResidueType != StandardResidue.None) ||
+                    (nonStandardAtoms && atom.ResidueType == StandardResidue.None)) {
 
-                    if (includedElements == null || includedElements.Contains(atom.Value.Element.ToString().ToUpper())) {
+                    if (includedElements == null || includedElements.Contains(atom.Element.ToString().ToUpper())) {
 
-                        if (includedResidues == null || (includedResidues.Contains(atom.Value.ResidueID))) {
+                        if (includedResidues == null || (includedResidues.Contains(atom.ResidueID))) {
 
-                            atoms.Add(atom.Key, atom.Value);
+                            returnAtoms.Add(atom.Index, atom);
                         }
                     }
                 }
             }
 
-            return atoms;
+            return returnAtoms;
         }
 
         public Dictionary<ChemicalElement, Dictionary<int, Atom>> GetAtomsByElement(bool standardAtoms = true, bool nonStandardAtoms = true, HashSet<string> includedElements = null, HashSet<string> includedResidues = null) {
 
-            Dictionary<ChemicalElement, Dictionary<int, Atom>> atoms = new Dictionary<ChemicalElement, Dictionary<int, Atom>>();
+            Dictionary<ChemicalElement, Dictionary<int, Atom>> returnAtoms = new Dictionary<ChemicalElement, Dictionary<int, Atom>>();
 
-            foreach (KeyValuePair<int, Atom> atom in Atoms()) {
+            foreach (Atom atom in atoms) {
 
-                if ((standardAtoms && atom.Value.ResidueType != StandardResidue.None) ||
-                    (nonStandardAtoms && atom.Value.ResidueType == StandardResidue.None)) {
+                if ((standardAtoms && atom.ResidueType != StandardResidue.None) ||
+                    (nonStandardAtoms && atom.ResidueType == StandardResidue.None)) {
 
-                    if (includedElements == null || includedElements.Contains(atom.Value.Element.ToString().ToUpper())) {
+                    if (includedElements == null || includedElements.Contains(atom.Element.ToString().ToUpper())) {
 
-                        if (includedResidues == null || (atom.Value.ResidueName != null && includedResidues.Contains(atom.Value.ResidueName.ToString().ToUpper()))) {
+                        if (includedResidues == null || (atom.ResidueName != null && includedResidues.Contains(atom.ResidueName.ToString().ToUpper()))) {
 
-                            if (!atoms.ContainsKey(atom.Value.Element)) {
+                            if (!returnAtoms.ContainsKey(atom.Element)) {
                                 Dictionary<int, Atom> elementAtoms = new Dictionary<int, Atom>();
-                                atoms.Add(atom.Value.Element, elementAtoms);
+                                returnAtoms.Add(atom.Element, elementAtoms);
                             }
 
-                            atoms[atom.Value.Element].Add(atom.Key, atom.Value);
+                            returnAtoms[atom.Element].Add(atom.Index, atom);
                         }
                     }
                 }
             }
 
-            return atoms;
+            return returnAtoms;
         }
 
         public Dictionary<ChemicalElement, Dictionary<int, Atom>> GetStandardResidueAtomsByElement() {
@@ -482,8 +489,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                 elementNames = new HashSet<string>();
 
-                foreach (KeyValuePair<int, Atom> atom in Atoms()) {
-                    elementNames.Add(atom.Value.Element.ToString().ToUpper());
+                foreach (Atom atom in Atoms()) {
+                    elementNames.Add(atom.Element.ToString().ToUpper());
                 }
 
                 return elementNames;
@@ -507,7 +514,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public Dictionary<int, Bond> GenerateBonds(int processorCores) {
 
             BondCalculator bondCalculator = new BondCalculator();
-            return bondCalculator.CalculateBonds(atoms, processorCores);
+            return bondCalculator.CalculateBonds(atomsByID, processorCores);
         }
     }
 }

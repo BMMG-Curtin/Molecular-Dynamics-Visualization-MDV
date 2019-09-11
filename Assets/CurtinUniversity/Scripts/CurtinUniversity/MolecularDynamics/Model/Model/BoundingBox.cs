@@ -59,34 +59,34 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             float maxz = 0;
 
             bool firstAtom = true;
-            foreach (KeyValuePair<int, Atom> atom in structure.Atoms()) {
+            foreach (Atom atom in structure.Atoms()) {
 
                 if (firstAtom) {
 
-                    minx = atom.Value.Position.x;
-                    maxx = atom.Value.Position.x;
-                    miny = atom.Value.Position.y;
-                    maxy = atom.Value.Position.y;
-                    minz = atom.Value.Position.z;
-                    maxz = atom.Value.Position.z;
+                    minx = atom.Position.x;
+                    maxx = atom.Position.x;
+                    miny = atom.Position.y;
+                    maxy = atom.Position.y;
+                    minz = atom.Position.z;
+                    maxz = atom.Position.z;
                     firstAtom = false;
                 }
                 else {
 
-                    if (atom.Value.Position.x < minx)
-                        minx = atom.Value.Position.x;
-                    if (atom.Value.Position.x > maxx)
-                        maxx = atom.Value.Position.x;
+                    if (atom.Position.x < minx)
+                        minx = atom.Position.x;
+                    if (atom.Position.x > maxx)
+                        maxx = atom.Position.x;
 
-                    if (atom.Value.Position.y < miny)
-                        miny = atom.Value.Position.y;
-                    if (atom.Value.Position.y > maxy)
-                        maxy = atom.Value.Position.y;
+                    if (atom.Position.y < miny)
+                        miny = atom.Position.y;
+                    if (atom.Position.y > maxy)
+                        maxy = atom.Position.y;
 
-                    if (atom.Value.Position.z < minz)
-                        minz = atom.Value.Position.z;
-                    if (atom.Value.Position.z > maxz)
-                        maxz = atom.Value.Position.z;
+                    if (atom.Position.z < minz)
+                        minz = atom.Position.z;
+                    if (atom.Position.z > maxz)
+                        maxz = atom.Position.z;
                 }
             }
 

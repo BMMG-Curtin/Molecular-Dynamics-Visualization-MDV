@@ -122,6 +122,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             MoleculeRender.SetActive(false);
         }
 
+        //public List<int> AtomPositions() {
+
+        //    PrimaryStructure.
+        //}
+
         public IEnumerator Render(MoleculeRenderSettings renderSettings, int meshQuality, int? frameNumber = null) {
 
             if(rendering) {

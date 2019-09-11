@@ -13,7 +13,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public class MoleculeManager : MonoBehaviour {
 
         [SerializeField]
-        private MoleculeInteractions moleculeInterations;
+        private MolecularInteractions moleculeInterations;
 
         [SerializeField]
         private GameObject MoleculePrefab;

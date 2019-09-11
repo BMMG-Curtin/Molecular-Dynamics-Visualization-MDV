@@ -27,8 +27,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             Console.WriteLine("Atom Count: " + model.Atoms().Count);
 
 
-            foreach (KeyValuePair<int, Atom> atom in model.Atoms()) {
-                Console.WriteLine("Atom " + atom.Key + ": " + atom.ToString());
+            foreach (Atom atom in model.Atoms()) {
+                Console.WriteLine("Atom " + atom.Index + ": " + atom.ToString());
             }
 
             Console.WriteLine("\n---------------------\n");
