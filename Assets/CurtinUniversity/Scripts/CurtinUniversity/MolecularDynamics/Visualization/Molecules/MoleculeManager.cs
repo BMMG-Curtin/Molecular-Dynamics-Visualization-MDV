@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Threading;
 
 using UnityEngine;
 
@@ -25,7 +26,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Dictionary<int, MoleculeRenderSettings> cachedRenderSettings;
         private Dictionary<int, int?> cachedFrameNumbers;
 
-        private bool loadingFile;
+        private bool loadingStructure;
+        private bool loadingTrajectory;
 
         GeneralSettings generalSettings;
 
@@ -38,7 +40,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             rotatingMolecules = new HashSet<int>();
             cachedRenderSettings = new Dictionary<int, MoleculeRenderSettings>();
             cachedFrameNumbers = new Dictionary<int, int?>();
-            loadingFile = false;
+            loadingStructure = false;
+            loadingTrajectory = false;
 
             generalSettings = GeneralSettings.Default();
         }
@@ -50,7 +53,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public IEnumerator LoadMolecule(int moleculeID, string structureFilePath, string trajectoryFilePath, MoleculeRenderSettings settings) {
 
             yield return StartCoroutine(LoadMoleculeStructure(moleculeID, structureFilePath, settings));
-            LoadMoleculeTrajectory(moleculeID, trajectoryFilePath);
+            yield return StartCoroutine(LoadMoleculeTrajectory(moleculeID, trajectoryFilePath));
         }
 
         public IEnumerator LoadMoleculeStructure(int moleculeID, string filePath, MoleculeRenderSettings settings) {
@@ -61,7 +64,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 yield break;
             }
 
-            if (loadingFile) {
+            if (loadingStructure) {
                 MoleculeEvents.RaiseRenderMessage("Can't Load Molecule: another molecule currently loading", true);
                 yield break;
             }
@@ -69,28 +72,42 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             MoleculeEvents.RaiseRenderMessage("Loading Structure File: " + filePath, false);
 
-            loadingFile = true;
+            loadingStructure = true;
             cacheRenderSettings(moleculeID, settings, null);
             int oldAtomMeshQuality = generalSettings.MeshQuality;
 
             PrimaryStructure primaryStructure = null;
+            string loadException = null;
 
-            try {
-                if (filePath.EndsWith(".gro")) {
-                    primaryStructure = GROStructureParser.GetStructure(filePath);
+            Thread thread = new Thread(() => {
+
+                try {
+                    if (filePath.EndsWith(".gro")) {
+                        primaryStructure = GROStructureParser.GetStructure(filePath);
+                    }
+                    else if (filePath.EndsWith(".xyz")) {
+                        primaryStructure = XYZStructureParser.GetStructure(filePath);
+                    }
+                    else if (filePath.EndsWith(".pdb")) {
+                        primaryStructure = PDBStructureParser.GetPrimaryStructure(filePath);
+                    }
                 }
-                else if (filePath.EndsWith(".xyz")) {
-                    primaryStructure = XYZStructureParser.GetStructure(filePath);
+                catch (FileParseException ex) {
+                    loadException = ex.Message;
                 }
-                else if (filePath.EndsWith(".pdb")) {
-                    primaryStructure = PDBStructureParser.GetPrimaryStructure(filePath);
-                }
+            });
+
+            thread.Start();
+
+            while (thread.IsAlive) {
+                yield return null;
             }
-            catch (FileParseException ex) {
 
-                Debug.Log("Error Loading Structure File: " + ex.Message);
-                MoleculeEvents.RaiseRenderMessage("Error Loading Structure File: " + ex.Message, true);
-                loadingFile = false;
+            if (loadException != null) {
+
+                Debug.Log("Error Loading Structure File: " + loadException);
+                MoleculeEvents.RaiseRenderMessage("Error Loading Structure File: " + loadException, true);
+                loadingStructure = false;
                 yield break;
             }
 
@@ -121,15 +138,24 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 reRenderMolecules();
             }
 
-            loadingFile = false;
+            loadingStructure = false;
         }
 
-        public void LoadMoleculeTrajectory(int moleculeID, string filePath) {
+        public void LoadTrajectory(int moleculeID, string filePath) {
+            StartCoroutine(LoadMoleculeTrajectory(moleculeID, filePath));
+        }
+
+        public IEnumerator LoadMoleculeTrajectory(int moleculeID, string filePath) {
 
             if (!molecules.ContainsKey(moleculeID)) {
 
                 MoleculeEvents.RaiseRenderMessage("Can't load molecule trajectory. No molecule found.", true);
-                return;
+                yield break;
+            }
+
+            if (loadingTrajectory) {
+                MoleculeEvents.RaiseRenderMessage("Can't Load Trajectory: another trajectory currently loading", true);
+                yield break;
             }
 
             PrimaryStructure primaryStructure = molecules[moleculeID].PrimaryStructure;
@@ -138,31 +164,48 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (atomCount != primaryStructure.AtomCount()) {
 
                 MoleculeEvents.RaiseRenderMessage("Trajectory atom count [" + atomCount + " doesn't match loaded structure atom count [" + primaryStructure.AtomCount() + "]", true);
-                return;
+                yield break;
             }
+
+            loadingTrajectory = true;
 
             PrimaryStructureTrajectory trajectory = null;
+            string loadException = null;
 
-            try {
+            Thread thread = new Thread(() => {
 
-                int startFrame = 0;
-                int frameFrequency = 1;
-                int frameCount = Settings.MaxTrajectoryFrames;
+                try {
 
-                if (filePath.EndsWith(".xtc")) {
-                    trajectory = XTCTrajectoryParser.GetTrajectory(filePath, startFrame, frameCount, frameFrequency);
+                    int startFrame = 0;
+                    int frameFrequency = 1;
+                    int frameCount = Settings.MaxTrajectoryFrames;
+
+                    if (filePath.EndsWith(".xtc")) {
+                        trajectory = XTCTrajectoryParser.GetTrajectory(filePath, startFrame, frameCount, frameFrequency);
+                    }
+                    else if (filePath.EndsWith(".dcd")) {
+                        trajectory = DCDTrajectoryParser.GetTrajectory(filePath, startFrame, frameCount, frameFrequency);
+                    }
+                    else if (filePath.EndsWith(".gro")) {
+                        trajectory = GROTrajectoryParser.GetTrajectory(filePath, startFrame, frameCount, frameFrequency);
+                    }
                 }
-                else if (filePath.EndsWith(".dcd")) {
-                    trajectory = DCDTrajectoryParser.GetTrajectory(filePath, startFrame, frameCount, frameFrequency);
+                catch (FileParseException ex) {
+                    loadException = ex.Message;
                 }
-                else if (filePath.EndsWith(".gro")) {
-                    trajectory = GROTrajectoryParser.GetTrajectory(filePath, startFrame, frameCount, frameFrequency);
-                }
+            });
+
+            thread.Start();
+
+            while (thread.IsAlive) {
+                yield return null;
             }
-            catch (FileParseException ex) {
 
-                MoleculeEvents.RaiseRenderMessage("Error Loading Trajectory File: " + ex.Message, true);
-                return;
+            if (loadException != null) {
+
+                MoleculeEvents.RaiseRenderMessage("Error Loading Trajectory File: " + loadException, true);
+                loadingTrajectory = false;
+                yield break;
             }
 
             if (trajectory != null) {
@@ -170,6 +213,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 molecules[moleculeID].SetTrajectory(trajectory);
                 MoleculeEvents.RaiseTrajectoryLoaded(moleculeID, filePath, trajectory.FrameCount());
             }
+
+            loadingTrajectory = false;
         }
 
         public void UpdateMoleculeRenderSettings(int moleculeID, MoleculeRenderSettings settings, int? frameNumber = null) {

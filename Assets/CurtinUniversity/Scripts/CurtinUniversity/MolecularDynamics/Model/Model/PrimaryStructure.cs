@@ -29,6 +29,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
 
         public PrimaryStructure() {
+
             chains = new List<Chain>();
             residues = new Dictionary<int, Residue>();
             atoms = new List<Atom>();

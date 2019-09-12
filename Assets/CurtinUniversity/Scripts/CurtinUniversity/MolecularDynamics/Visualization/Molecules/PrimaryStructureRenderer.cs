@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 using UnityEngine;
 
@@ -50,7 +51,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            bonds = primaryStructure.GenerateBonds(Settings.NumberOfProcessorCores);
+            Thread thread = new Thread(() => {
+                bonds = primaryStructure.GenerateBonds(Settings.NumberOfProcessorCores);
+            });
+
+            thread.Start();
+
+            while (thread.IsAlive) {
+                yield return null;
+            }
 
             watch.Stop();
             MoleculeEvents.RaiseRenderMessage("Bonds calculated [" + watch.ElapsedMilliseconds + "ms]", false);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 
 using UnityEngine;
 
@@ -122,11 +123,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             MoleculeRender.SetActive(false);
         }
 
-        //public List<int> AtomPositions() {
-
-        //    PrimaryStructure.
-        //}
-
         public IEnumerator Render(MoleculeRenderSettings renderSettings, int meshQuality, int? frameNumber = null) {
 
             if(rendering) {
@@ -157,11 +153,28 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             SecondaryStructure secondaryStructureToBuild = null;
 
             if (secondaryStructureTrajectory != null && frameNumber != null && buildSecondaryStructureTrajectory) {
-                try {
-                    secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
+
+                string loadException = null;
+
+                Thread thread = new Thread(() => {
+
+                    try {
+                        secondaryStructureToBuild = secondaryStructureTrajectory.GetStructure((int)frameNumber);
+                    }
+                    catch (FileParseException ex) {
+                        loadException = ex.Message;
+                    }
+                });
+
+                thread.Start();
+
+                while (thread.IsAlive) {
+                    yield return null;
                 }
-                catch (Exception ex) {
-                    MoleculeEvents.RaiseRenderMessage(ex.Message + " - Aborting trajectory secondary structure builds.", true);
+
+                if (loadException != null) {
+
+                    MoleculeEvents.RaiseRenderMessage(loadException + " - Aborting trajectory secondary structure builds.", true);
                     buildSecondaryStructureTrajectory = false;
                 }
             }

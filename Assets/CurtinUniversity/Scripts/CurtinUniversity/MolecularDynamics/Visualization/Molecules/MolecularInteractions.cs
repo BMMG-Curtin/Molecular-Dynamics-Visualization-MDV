@@ -14,24 +14,22 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public class MolecularInteractions : MonoBehaviour {
 
         [SerializeField]
-        private MolecularInteractionsRenderer renderer;
+        private MolecularInteractionsRenderer interactionsRenderer;
 
         public Molecule Molecule1 { get; private set; }
         public Molecule Molecule2 { get; private set; }
 
         public bool Active { get; private set; }
 
-        private float reportInterval = 0.1f;
+        private float reportInterval = 0f;
         private float lastReportTime = 0;
-
-        private bool processingInteractions = false;
 
         Vector3 molecule1Position;
         Vector3 molecule2Position;
         List<Vector3> molecule1AtomPositions;
         List<Vector3> molecule2AtomPositions;
 
-        List<AtomInteraction> interactions;
+        private bool processingInteractions = false;
         private float processingTime;
 
         private void Update() {
@@ -79,46 +77,46 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             processingInteractions = true;
 
-            // can't process Unity transforms in the thread
+            // can't access Unity transforms in the thread
             molecule1Position = Molecule1.MoleculeRender.transform.position;
             molecule2Position = Molecule2.MoleculeRender.transform.position;
             molecule1AtomPositions = getWorldPositions(Molecule1.PrimaryStructure.Atoms(), Molecule1.MoleculeRender.transform);
             molecule2AtomPositions = getWorldPositions(Molecule2.PrimaryStructure.Atoms(), Molecule2.MoleculeRender.transform);
 
-            Thread newThread = new Thread(processInteractionsThread);
-            newThread.Start();
+            List<AtomInteraction> interactions = null;
 
-            while(newThread.IsAlive) {
+            Thread thread = new Thread(() => {
+
+                InteractionsCalculator interactionsCalculator = new InteractionsCalculator();
+                interactions = interactionsCalculator.GetInteractions(
+                    Molecule1.PrimaryStructure.Atoms(),
+                    molecule1AtomPositions,
+                    Molecule2.PrimaryStructure.Atoms(),
+                    molecule2AtomPositions
+                );
+            });
+
+            thread.Start();
+
+            while(thread.IsAlive) {
                 yield return null;
             }
 
-            outputInteractionResults();
+            outputInteractionResults(interactions);
 
             processingInteractions = false;
         }
 
-        private void processInteractionsThread() {
+        private void outputInteractionResults(List<AtomInteraction> interactions) {
 
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
+            interactionsRenderer.ClearAtoms();
 
-            InteractionsCalculator interactionsCalculator = new InteractionsCalculator();
-            interactions = interactionsCalculator.GetInteractions(
-                Molecule1.PrimaryStructure.Atoms(), 
-                molecule1AtomPositions, 
-                Molecule2.PrimaryStructure.Atoms(), 
-                molecule2AtomPositions
-            );
-
-            watch.Stop();
-            processingTime = watch.ElapsedMilliseconds;
-        }
-
-        private void outputInteractionResults() {
+            if (interactions == null || interactions.Count <= 0) {
+                return;
+            }
 
             // renderer output
-            renderer.ClearAtoms();
-            renderer.ShowInteractingMolecule(molecule1Position, molecule1AtomPositions);
+            interactionsRenderer.ShowInteractingMolecule(molecule1Position, molecule1AtomPositions);
 
             // debug output to UI
 

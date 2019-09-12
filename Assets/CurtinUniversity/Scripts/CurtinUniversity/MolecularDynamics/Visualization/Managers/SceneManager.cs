@@ -32,7 +32,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             // setup UI and Molecule events
             UserInterfaceEvents.OnLoadMolecule += molecules.LoadMolecule;
-            UserInterfaceEvents.OnLoadTrajectory += molecules.LoadMoleculeTrajectory;
+            UserInterfaceEvents.OnLoadTrajectory += molecules.LoadTrajectory;
             UserInterfaceEvents.OnRemoveMolecule += molecules.RemoveMolecule;
             UserInterfaceEvents.OnMoleculeSelected += molecules.SetMoleculeSelected;
             UserInterfaceEvents.OnShowMolecule += molecules.ShowMolecule;
