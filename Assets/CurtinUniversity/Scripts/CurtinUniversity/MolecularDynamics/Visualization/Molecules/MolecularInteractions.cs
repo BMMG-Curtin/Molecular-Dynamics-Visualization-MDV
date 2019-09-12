@@ -30,17 +30,31 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         List<Vector3> molecule2AtomPositions;
 
         private bool processingInteractions = false;
+        private bool interactionsUpdated = false;
         private float processingTime;
+
+        private List<AtomInteraction> interactions;
 
         private void Update() {
 
-            if(Active && !processingInteractions) {
+            if(Active) {
 
-                if(lastReportTime + reportInterval < Time.time) {
+                if (!processingInteractions) {
 
-                    StartCoroutine(processInteractions());
-                    lastReportTime = Time.time;
+                    if (lastReportTime + reportInterval < Time.time) {
+
+                        StartCoroutine(processInteractions());
+                        lastReportTime = Time.time;
+                    }
                 }
+
+                if(interactionsUpdated) {
+
+                    outputInteractionResults(interactions);
+                    interactionsRenderer.SetInteractions(interactions);
+                }
+
+                interactionsRenderer.RenderInteractions(Molecule1.MoleculeRender.transform, Molecule2.MoleculeRender.transform);
             }
         }
 
@@ -71,6 +85,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Molecule1 = null;
             Molecule2 = null;
             Active = false;
+
+            interactionsRenderer.ClearInteractions();
         }
 
         private IEnumerator processInteractions() {
@@ -82,8 +98,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             molecule2Position = Molecule2.MoleculeRender.transform.position;
             molecule1AtomPositions = getWorldPositions(Molecule1.PrimaryStructure.Atoms(), Molecule1.MoleculeRender.transform);
             molecule2AtomPositions = getWorldPositions(Molecule2.PrimaryStructure.Atoms(), Molecule2.MoleculeRender.transform);
-
-            List<AtomInteraction> interactions = null;
 
             Thread thread = new Thread(() => {
 
@@ -102,23 +116,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 yield return null;
             }
 
-            outputInteractionResults(interactions);
-
+            interactionsUpdated = true;
             processingInteractions = false;
+        }
+
+
+        private void renderInteractions() {
+
+
         }
 
         private void outputInteractionResults(List<AtomInteraction> interactions) {
 
-            interactionsRenderer.ClearAtoms();
+            // output to UI
 
             if (interactions == null || interactions.Count <= 0) {
                 return;
             }
-
-            // renderer output
-            interactionsRenderer.ShowInteractingMolecule(molecule1Position, molecule1AtomPositions);
-
-            // debug output to UI
 
             string output = "";
 

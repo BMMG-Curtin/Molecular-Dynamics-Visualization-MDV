@@ -7,11 +7,20 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
     public struct AtomInteraction {
 
-        public int Atom1;
-        public int Atom2;
+        public Atom Atom1;
+        public Atom Atom2;
         public float InteractionForce;
 
+        public override int GetHashCode() {
+
+            int hashcode = 23;
+            hashcode = (hashcode * 37) + Atom1.Index;
+            hashcode = (hashcode * 37) + Atom2.Index;
+            return hashcode;
+        }
+
         public override string ToString() {
+
             return
                 "Atom1: " + Atom1 +
                 "Atom2: " + Atom2 +
@@ -68,8 +77,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     float interactionForce = ((0.5f * MaximumBondLengths.MaximumLengthAllElements) - distance) / (0.5f * MaximumBondLengths.MaximumLengthAllElements);
 
                     AtomInteraction interaction = new AtomInteraction() {
-                        Atom1 = atom.Index,
-                        Atom2 = interactingAtom.Index,
+                        Atom1 = atom,
+                        Atom2 = interactingAtom,
                         InteractionForce = interactionForce
                     };
 
