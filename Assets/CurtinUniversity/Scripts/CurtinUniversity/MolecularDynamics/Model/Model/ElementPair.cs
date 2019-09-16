@@ -4,10 +4,10 @@ namespace CurtinUniversity.MolecularDynamics.Model {
     // equals and hash are element order independent
     public struct ElementPair {
 
-        public ChemicalElement Element1 { get; private set; }
-        public ChemicalElement Element2 { get; private set; }
+        public Element Element1 { get; private set; }
+        public Element Element2 { get; private set; }
 
-        public ElementPair(ChemicalElement element1, ChemicalElement element2) {
+        public ElementPair(Element element1, Element element2) {
             Element1 = element1;
             Element2 = element2;
         }

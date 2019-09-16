@@ -103,7 +103,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                                 int atomID = int.Parse(record.Substring(6, 5).Trim());
                                 string atomName = record.Substring(12, 4).Trim();
-                                ChemicalElement element = ElementHelper.Parse(record.Substring(76, 2).Trim());
+                                Element element = ElementHelper.Parse(record.Substring(76, 2).Trim());
 
                                 // PDB coordinates are in angstroms. Convert to nanometres.
                                 Vector3 position = new Vector3();

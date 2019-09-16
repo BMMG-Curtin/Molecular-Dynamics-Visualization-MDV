@@ -13,4 +13,5 @@ LowMeshQualityThreshold: 30000
 
 // Used for threading information. 
 // Getting this correct will increase thread performance such as bond calculation speed
-NumberOfProcessorCores: 4 
+// NumberOfProcessorCores: 4 
+NumberOfProcessorCores: 1

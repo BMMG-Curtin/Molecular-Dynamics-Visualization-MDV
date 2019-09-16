@@ -45,6 +45,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             UserInterfaceEvents.OnStartMonitoringMoleculeInteractions += molecules.StartMonitoringInteractions;
             UserInterfaceEvents.OnStopMonitoringMoleculeInteractions += molecules.StopMonitoringInteractions;
+            UserInterfaceEvents.OnUpdateMolecularInteractionSettings += molecules.UpdateMolecularInteractionSettings;
 
             MoleculeEvents.OnMoleculeLoaded += userInterface.MoleculeLoaded;
             MoleculeEvents.OnTrajectoryLoaded += userInterface.MoleculeTrajectoryLoaded;

@@ -314,7 +314,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void StartMonitoringInteractions(int molecule1ID, int molecule2ID) {
+        public void StartMonitoringInteractions(int molecule1ID, int molecule2ID, MolecularInteractionSettings settings) {
 
             if(!molecules.ContainsKey(molecule1ID)) {
 
@@ -328,11 +328,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
-            moleculeInterations.StartMonitoring(molecules[molecule1ID], molecules[molecule2ID]);
+            moleculeInterations.StartMonitoring(molecules[molecule1ID], molecules[molecule2ID], settings);
         }
 
         public void StopMonitoringInteractions() {
             moleculeInterations.StopMonitoring();
+        }
+
+        public void UpdateMolecularInteractionSettings(MolecularInteractionSettings settings) {
+            moleculeInterations.UpdateMolecularInteractionSettings(settings);
         }
 
         private int loadTrajectoryAtomCount(string trajectoryFile) {

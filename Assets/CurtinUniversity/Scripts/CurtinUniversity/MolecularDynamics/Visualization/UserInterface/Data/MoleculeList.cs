@@ -98,7 +98,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             return null;
         }
 
-        public int? SetFirstMoleculeSelected() {
+        public int? SelectFirst() {
 
             if(molecules == null || molecules.Count == 0) {
                 selectedMoleculeID = null;
@@ -108,6 +108,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             int id = molecules.Keys.ToArray()[0];
             selectedMoleculeID = id;
             return id;
+        }
+
+        public int? SelectNext() {
+
+            selectedMoleculeID = NextMoleculeID();
+            return selectedMoleculeID;
         }
 
         public int? NextMoleculeID() {

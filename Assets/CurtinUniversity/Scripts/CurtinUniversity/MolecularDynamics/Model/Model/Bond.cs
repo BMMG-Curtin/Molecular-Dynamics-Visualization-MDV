@@ -7,8 +7,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
     /// </summary>
     public class Bond {
 
-        public int Atom1Index { get; }
-        public int Atom2Index { get; }
+        public int Atom1Index { get; private set; }
+        public int Atom2Index { get; private set; }
 
         public Bond(int atom1Number, int atom2number) {
 

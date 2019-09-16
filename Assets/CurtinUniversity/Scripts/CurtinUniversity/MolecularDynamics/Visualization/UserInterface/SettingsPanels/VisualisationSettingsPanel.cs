@@ -46,20 +46,27 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void OnEnable() {
+            UpdateSelectedMolecule();
+        }
 
-            selectedMolecule = molecules.GetSelected();
+        public void UpdateSelectedMolecule() {
 
-            if (selectedMolecule != null) {
+            if (isActiveAndEnabled) {
 
-                selectedMoleculeText.text = "Modifying settings for molecule  - " + selectedMolecule.Name;
-                EnableSettings(true);
-                LoadSettings();
-            }
-            else {
+                selectedMolecule = molecules.GetSelected();
 
-                selectedMoleculeText.text = "< no molecule selected >";
-                EnableSettings(false);
-                ClearSettings();
+                if (selectedMolecule != null) {
+
+                    selectedMoleculeText.text = "Modifying settings for molecule  - " + selectedMolecule.FileName;
+                    EnableSettings(true);
+                    LoadSettings();
+                }
+                else {
+
+                    selectedMoleculeText.text = "< no molecule selected >";
+                    EnableSettings(false);
+                    ClearSettings();
+                }
             }
         }
 

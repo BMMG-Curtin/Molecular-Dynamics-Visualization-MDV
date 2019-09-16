@@ -219,7 +219,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     }
                 }
 
-                float atomSize = getAtomScale(atom.Element, renderSettings, customRepresentation);
+                float atomSize = getAtomScale(atom, renderSettings, customRepresentation);
                 Vector3 scale = new Vector3(atomSize, atomSize, atomSize);
 
                 Matrix4x4 atomTransform = Matrix4x4.TRS(position, atomOrientation, scale);
@@ -439,11 +439,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private float getAtomScale(ChemicalElement elementName, MoleculeRenderSettings settings, MolecularRepresentation? customRepresentation) {
-
-            // set atom size
-            float atomSize = 1;
-            float representationScale = 1;
+        private float getAtomScale(Atom atom, MoleculeRenderSettings settings, MolecularRepresentation? customRepresentation) {
 
             MolecularRepresentation atomRepresentation;
 
@@ -454,24 +450,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 atomRepresentation = settings.Representation;
             }
 
+            float atomRadius;
             if (atomRepresentation == MolecularRepresentation.VDW) {
-                if (!MolecularConstants.VDWRadius.TryGetValue(elementName.ToString(), out representationScale)) {
-                    MolecularConstants.VDWRadius.TryGetValue("Other", out representationScale);
-                }
+                atomRadius = atom.VDWRadius;
             }
-            else if (atomRepresentation == MolecularRepresentation.CPK) {
-                if (!MolecularConstants.AtomicRadius.TryGetValue(elementName.ToString(), out representationScale)) {
-                    MolecularConstants.AtomicRadius.TryGetValue("Other", out representationScale);
-                }
-                representationScale *= Settings.CPKScaleFactor;
-            }
-            else {  // default all atoms to single standard atomic size
-                MolecularConstants.AtomicRadius.TryGetValue("Other", out representationScale);
+            else { // default to CPK
+                atomRadius = atom.AtomicRadius;
             }
 
-            atomSize = settings.AtomScale * representationScale * 2; // need to double radius to set scale (diameter) of prefab
-
-            return atomSize;
+            return settings.AtomScale * atomRadius; 
         }
     }
 }

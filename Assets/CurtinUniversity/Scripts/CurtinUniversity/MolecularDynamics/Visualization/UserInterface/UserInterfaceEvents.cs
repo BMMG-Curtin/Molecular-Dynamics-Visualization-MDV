@@ -83,11 +83,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public delegate void StartMonitoringMoleculeInteractions(int molecule1ID, int molecule2ID);
+        public delegate void StartMonitoringMoleculeInteractions(int molecule1ID, int molecule2ID, MolecularInteractionSettings settings);
         public static event StartMonitoringMoleculeInteractions OnStartMonitoringMoleculeInteractions;
-        public static void RaiseStartMonitoringMoleculeInteractions(int molecule1ID, int molecule2ID) {
+        public static void RaiseStartMonitoringMoleculeInteractions(int molecule1ID, int molecule2ID, MolecularInteractionSettings settings) {
             if(OnStartMonitoringMoleculeInteractions != null) {
-                OnStartMonitoringMoleculeInteractions(molecule1ID, molecule2ID);
+                OnStartMonitoringMoleculeInteractions(molecule1ID, molecule2ID, settings);
             }
         }
 
@@ -96,6 +96,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static void RaiseStopMonitoringMoleculeInteractions() {
             if (OnStopMonitoringMoleculeInteractions != null) {
                 OnStopMonitoringMoleculeInteractions();
+            }
+        }
+
+        public delegate void UpdateMolecularInteractionSettings(MolecularInteractionSettings settings);
+        public static event UpdateMolecularInteractionSettings OnUpdateMolecularInteractionSettings;
+        public static void RaiseMolecularInteractionSettingsUpdated(MolecularInteractionSettings settings) {
+            if (OnUpdateMolecularInteractionSettings != null) {
+                OnUpdateMolecularInteractionSettings(settings);
             }
         }
     }

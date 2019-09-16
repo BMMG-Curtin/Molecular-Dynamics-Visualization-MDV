@@ -148,7 +148,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                         // Residue type changes used to capture chain information. May not be 100% accurate but not parsing topology files so options are limited.
                         // Also checking to see if last two atoms before end of amino acid were Oxygen, signifying a chain terminator
                         if((lastResidue == null || residue.ResidueType != lastResidue.ResidueType) ||
-                            (lastResidue.ResidueType == StandardResidue.AminoAcid && model.Atoms()[i - 1].Element == ChemicalElement.O && model.Atoms()[i - 2].Element == ChemicalElement.O)) {
+                            (lastResidue.ResidueType == StandardResidue.AminoAcid && model.Atoms()[i - 1].Element == Element.O && model.Atoms()[i - 2].Element == Element.O)) {
 
                             if (chain != null) {
                                 model.AddChain(chain);
@@ -162,7 +162,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     int atomIndex = i;
                     int atomID = int.Parse((atomLine.Substring(15, 5)).Trim());
                     string atomName = atomLine.Substring(10, 5).Trim();
-                    ChemicalElement element = ElementHelper.Parse(atomName);
+                    Element element = ElementHelper.Parse(atomName);
 
                     Vector3 position = new Vector3();
                     position.x = float.Parse(atomLine.Substring(20, 8));

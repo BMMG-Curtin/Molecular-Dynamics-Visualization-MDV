@@ -33,10 +33,10 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
             Console.WriteLine("\n---------------------\n");
 
-            Dictionary<ChemicalElement, Dictionary<int, Atom>> atomSet = model.GetAtomsByElement();
+            Dictionary<Element, Dictionary<int, Atom>> atomSet = model.GetAtomsByElement();
 
-            foreach (KeyValuePair<ChemicalElement, Dictionary<int, Atom>> set in atomSet) {
-                ChemicalElement element = set.Key;
+            foreach (KeyValuePair<Element, Dictionary<int, Atom>> set in atomSet) {
+                Element element = set.Key;
 
                 Console.WriteLine("Element: " + element.ToString());
                 Dictionary<int, Atom> atoms = set.Value;

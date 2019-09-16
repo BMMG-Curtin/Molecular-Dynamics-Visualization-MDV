@@ -24,18 +24,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private float reportInterval = 0f;
         private float lastReportTime = 0;
 
-        Vector3 molecule1Position;
-        Vector3 molecule2Position;
-        List<Vector3> molecule1AtomPositions;
-        List<Vector3> molecule2AtomPositions;
-
         private bool processingInteractions = false;
         private bool interactionsUpdated = false;
         private float processingTime;
 
         private List<AtomInteraction> interactions;
+        private List<AtomInteraction> closestInteractions;
+        private MolecularInteractionSettings settings;
 
-        private void Update() {
+        private void LateUpdate() {
 
             if(Active) {
 
@@ -50,15 +47,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 if(interactionsUpdated) {
 
-                    outputInteractionResults(interactions);
-                    interactionsRenderer.SetInteractions(interactions);
+                    if (settings.RenderClosestInteractionsOnly) {
+
+                        outputInteractionResults(closestInteractions);
+                        interactionsRenderer.SetInteractions(closestInteractions);
+                    }
+                    else {
+
+                        outputInteractionResults(interactions);
+                        interactionsRenderer.SetInteractions(interactions);
+                    }
                 }
 
                 interactionsRenderer.RenderInteractions(Molecule1.MoleculeRender.transform, Molecule2.MoleculeRender.transform);
             }
         }
 
-        public void StartMonitoring(Molecule molecule1, Molecule molecule2) {
+        public void StartMonitoring(Molecule molecule1, Molecule molecule2, MolecularInteractionSettings settings) {
 
             if(molecule1 == null) {
                 MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. First molecule is null.", true);
@@ -77,6 +82,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             this.Molecule1 = molecule1;
             this.Molecule2 = molecule2;
+            this.settings = settings;
+
             Active = true;
         }
 
@@ -86,7 +93,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Molecule2 = null;
             Active = false;
 
+            interactions = null;
+            closestInteractions = null;
+            interactionsUpdated = false;
+
             interactionsRenderer.ClearInteractions();
+        }
+
+        public void UpdateMolecularInteractionSettings(MolecularInteractionSettings settings) {
+            this.settings = settings;
         }
 
         private IEnumerator processInteractions() {
@@ -94,20 +109,30 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             processingInteractions = true;
 
             // can't access Unity transforms in the thread
-            molecule1Position = Molecule1.MoleculeRender.transform.position;
-            molecule2Position = Molecule2.MoleculeRender.transform.position;
-            molecule1AtomPositions = getWorldPositions(Molecule1.PrimaryStructure.Atoms(), Molecule1.MoleculeRender.transform);
-            molecule2AtomPositions = getWorldPositions(Molecule2.PrimaryStructure.Atoms(), Molecule2.MoleculeRender.transform);
+            List<Vector3> molecule1AtomPositions = getWorldPositions(Molecule1.PrimaryStructure.Atoms(), Molecule1.MoleculeRender.transform);
+            List<Vector3> molecule2AtomPositions = getWorldPositions(Molecule2.PrimaryStructure.Atoms(), Molecule2.MoleculeRender.transform);
 
             Thread thread = new Thread(() => {
 
                 InteractionsCalculator interactionsCalculator = new InteractionsCalculator();
-                interactions = interactionsCalculator.GetInteractions(
+                List<AtomInteraction> newInteractions = interactionsCalculator.GetAllInteractions(
                     Molecule1.PrimaryStructure.Atoms(),
                     molecule1AtomPositions,
                     Molecule2.PrimaryStructure.Atoms(),
                     molecule2AtomPositions
                 );
+
+                List<AtomInteraction> newClosestInteractions = null;
+                if (settings.CalculateClosestInteractionsOnly || settings.RenderClosestInteractionsOnly) {
+                    newClosestInteractions = interactionsCalculator.GetClosestInteractions(newInteractions);
+                }
+
+                if(Active) {
+
+                    interactions = newInteractions;
+                    closestInteractions = newClosestInteractions;
+                    interactionsUpdated = true;
+                }
             });
 
             thread.Start();
@@ -116,14 +141,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 yield return null;
             }
 
-            interactionsUpdated = true;
             processingInteractions = false;
-        }
-
-
-        private void renderInteractions() {
-
-
         }
 
         private void outputInteractionResults(List<AtomInteraction> interactions) {
@@ -135,21 +153,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             string output = "";
-
-            output += "Molecule1 position: " + printPosition(molecule1Position) + "\n";
-            output += "Molecule2 position: " + printPosition(molecule2Position) + "\n";
-            output += "Processing time: " + processingTime + "\n";
+            output += "Interactions calculation time: " + processingTime + "\n";
 
             if (interactions == null || interactions.Count <= 0) {
                 output += "No molecular interactions found";
             }
             else {
-
                 output += interactions.Count + " molecular interactions found: \n\n";
-
-                //foreach (AtomInteraction interaction in interactions) {
-                //    output += interaction.ToString() + "\n";
-                //}
             }
 
             MoleculeEvents.RaiseInteractionsInformation(output);
@@ -161,21 +171,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             foreach(Atom atom in atoms) {
 
                 Vector3 atomPosition = atom.Position;
-                atomPosition.z *= -1; // flip z for Unity 
+                atomPosition.z *= -1; // flip z for left handed coordinate system 
                 Vector3 transformedPosition = moleculeTransform.TransformPoint(atomPosition);
                 positions.Add(transformedPosition);
-
-                //UnityEngine.Debug.Log("molecule: " + moleculeTransform.position + ", atom: " + atom.Position  + ", transformed: " + transformedPosition);
             }
 
             return positions;
-        }
-
-        private string printPosition(Vector3 position) {
-
-            return "x: " + position.x.ToString("n3").PadRight(8) +
-                " y: " + position.y.ToString("n3").PadRight(8) +
-                " z: " + position.z.ToString("n3").PadRight(8);
         }
     }
 }

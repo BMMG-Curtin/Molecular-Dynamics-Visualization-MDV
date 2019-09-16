@@ -31,6 +31,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private OtherSettingsPanel applicationSettings;
 
         [SerializeField]
+        private VisualisationSettingsPanel visualisationSettingsPanel;
+
+        [SerializeField]
         private MoleculesSettingsPanel moleculeSettingsPanel;
 
         [SerializeField]
@@ -44,6 +47,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         [SerializeField]
         private bool toggleWholeInterface = false;
+
+        [SerializeField]
+        private MoleculeList molecules;
 
         public bool IsActive { get { return UserInterfaceCanvas.activeSelf; } }
 
@@ -80,6 +86,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     }
                     console.BannerFPS = (frameCount / reportFrequency).ToString();
                     timer = frameCount = 0;
+                }
+            }
+
+            if (enabled) {
+
+                if (Input.GetKeyDown(KeyCode.Tab)) {
+
+                    molecules.SelectNext();
+                    moleculeSettingsPanel.SetMoleculeSelected(molecules.SelectedMoleculeID);
+                    visualisationSettingsPanel.UpdateSelectedMolecule();
+                    elementsSettingsPanel.UpdateSelectedMolecule();
+                    residuesSettingsPanel.UpdateSelectedMolecule();
                 }
             }
         }

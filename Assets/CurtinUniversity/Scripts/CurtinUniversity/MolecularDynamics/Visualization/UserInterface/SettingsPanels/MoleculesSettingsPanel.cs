@@ -97,13 +97,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             trajectoryControls.transform.gameObject.SetActive(false);
         }
 
-        public void Update() {
-            
-            if(enabled) {
-                if(Input.GetKeyDown(KeyCode.Tab)) {
-                    setMoleculeSelected(molecules.NextMoleculeID());
-                }
-            }
+        public void OnEnable() {
+            SetMoleculeSelected(molecules.SelectedMoleculeID);
         }
 
         public void OnLoadMoleculeButton() {
@@ -146,14 +141,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 MoleculeSettingsPanelListItem item = listItem.GetComponent<MoleculeSettingsPanelListItem>();
 
-                string fileName = Path.GetFileName(settings.FilePath);
-                item.Initialise(id, fileName, onMoleculeListItemClick, onMoleculeListItemDoubleClick);
+                item.Initialise(id, settings.FileName, onMoleculeListItemClick, onMoleculeListItemDoubleClick);
 
                 moleculeListItems.Add(id, item);
                 numberMoleculeListItems();
 
                 if(molecules.GetSelected() == null) {
-                    setMoleculeSelected(id);
+                    SetMoleculeSelected(id);
                 }
 
                 updateSelectedMoleculeInterfaceSettings();
@@ -166,6 +160,36 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             LoadFileDialog dialog = loadFileDialog.GetComponent<LoadFileDialog>();
             List<string> validFileExtensions = new List<string>() { Settings.SettingsFileExtension };
             dialog.Initialise(validFileExtensions, onLoadRenderSettingsFileSubmitted);
+        }
+
+        public void SetMoleculeSelected(int? moleculeID) {
+
+            molecules.SelectedMoleculeID = moleculeID;
+
+            foreach (KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
+
+                item.Value.SetHighlighted(false);
+                UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, false);
+            }
+
+            if (moleculeID != null) {
+
+                foreach (KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
+
+                    if (item.Key == molecules.SelectedMoleculeID) {
+
+                        item.Value.SetHighlighted(true);
+
+                        // if molecule is hidden then dont raise event. When molecule is unhidden then an event will be raised instead
+                        MoleculeSettings molecule = molecules.Get((int)moleculeID);
+                        if (molecule != null && !molecule.Hidden) {
+                            UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, true);
+                        }
+                    }
+                }
+            }
+
+            updateSelectedMoleculeInterfaceSettings();
         }
 
         private void onLoadRenderSettingsFileSubmitted(string fullPath) { 
@@ -324,7 +348,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             molecules.Remove(moleculeID, true);
-            setMoleculeSelected(molecules.SelectedMoleculeID);
+            SetMoleculeSelected(molecules.SelectedMoleculeID);
             numberMoleculeListItems();
             updateSelectedMoleculeInterfaceSettings();
         }
@@ -372,41 +396,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         private void onMoleculeListItemClick(int moleculeID) {
-            setMoleculeSelected((int)moleculeID);
+            SetMoleculeSelected((int)moleculeID);
         }
 
         private void onMoleculeListItemDoubleClick(int moleculeID) {
             // do nothing at present
-        }
-
-        private void setMoleculeSelected(int? moleculeID) {
-
-            molecules.SelectedMoleculeID = moleculeID;
-
-            foreach (KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
-
-                item.Value.SetHighlighted(false);
-                UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, false);
-            }
-
-            if (moleculeID != null) {
-
-                foreach (KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
-
-                    if (item.Key == molecules.SelectedMoleculeID) {
-
-                        item.Value.SetHighlighted(true);
-
-                        // if molecule is hidden then dont raise event. When molecule is unhidden then an event will be raised instead
-                        MoleculeSettings molecule = molecules.Get((int)moleculeID);
-                        if (molecule != null && !molecule.Hidden) {
-                            UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, true);
-                        }
-                    }
-                }
-            }
-
-            updateSelectedMoleculeInterfaceSettings();
         }
 
         private void updateSelectedMoleculeInterfaceSettings() {

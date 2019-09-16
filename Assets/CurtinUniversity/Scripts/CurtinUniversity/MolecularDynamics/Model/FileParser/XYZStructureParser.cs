@@ -31,7 +31,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                     int atomID = int.Parse(i.ToString());
                     string name = m.Groups[1].Value.Trim();
-                    ChemicalElement element = ElementHelper.Parse(name);
+                    Element element = ElementHelper.Parse(name);
 
                     Vector3 position = new Vector3();
                     position.x = float.Parse(m.Groups[2].Value) / 10f;

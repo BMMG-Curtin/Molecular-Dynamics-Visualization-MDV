@@ -77,7 +77,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return false;
         }
 
-        public List<Atom> GetAtoms(ChemicalElement element) {
+        public List<Atom> GetAtoms(Element element) {
 
             List<Atom> elementAtoms = new List<Atom>();
 
@@ -153,9 +153,9 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return returnAtoms;
         }
 
-        public Dictionary<ChemicalElement, Dictionary<int, Atom>> GetAtomsByElement(bool standardAtoms = true, bool nonStandardAtoms = true, HashSet<string> includedElements = null, HashSet<string> includedResidues = null) {
+        public Dictionary<Element, Dictionary<int, Atom>> GetAtomsByElement(bool standardAtoms = true, bool nonStandardAtoms = true, HashSet<string> includedElements = null, HashSet<string> includedResidues = null) {
 
-            Dictionary<ChemicalElement, Dictionary<int, Atom>> returnAtoms = new Dictionary<ChemicalElement, Dictionary<int, Atom>>();
+            Dictionary<Element, Dictionary<int, Atom>> returnAtoms = new Dictionary<Element, Dictionary<int, Atom>>();
 
             foreach (Atom atom in atoms) {
 
@@ -180,9 +180,9 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return returnAtoms;
         }
 
-        public Dictionary<ChemicalElement, Dictionary<int, Atom>> GetStandardResidueAtomsByElement() {
+        public Dictionary<Element, Dictionary<int, Atom>> GetStandardResidueAtomsByElement() {
 
-            Dictionary<ChemicalElement, Dictionary<int, Atom>> atoms = new Dictionary<ChemicalElement, Dictionary<int, Atom>>();
+            Dictionary<Element, Dictionary<int, Atom>> atoms = new Dictionary<Element, Dictionary<int, Atom>>();
 
             foreach (KeyValuePair<int, Residue> residue in Residues()) {
 
@@ -222,9 +222,9 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return atoms;
         }
 
-        public Dictionary<ChemicalElement, Dictionary<int, Atom>> GetNonStandardResidueAtomsByElement() {
+        public Dictionary<Element, Dictionary<int, Atom>> GetNonStandardResidueAtomsByElement() {
 
-            Dictionary<ChemicalElement, Dictionary<int, Atom>> atoms = new Dictionary<ChemicalElement, Dictionary<int, Atom>>();
+            Dictionary<Element, Dictionary<int, Atom>> atoms = new Dictionary<Element, Dictionary<int, Atom>>();
 
             foreach (KeyValuePair<int, Residue> residue in Residues()) {
 

@@ -60,7 +60,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                         foreach (Atom atom in residue.Atoms.Values) {
 
-                            if(omitHydrogen && atom.Element == ChemicalElement.H) {
+                            if(omitHydrogen && atom.Element == Element.H) {
                                 continue;
                             }
 

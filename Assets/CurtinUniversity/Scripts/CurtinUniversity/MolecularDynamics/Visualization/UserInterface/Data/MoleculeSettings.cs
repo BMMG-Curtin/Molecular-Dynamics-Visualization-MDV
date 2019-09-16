@@ -1,10 +1,29 @@
-﻿
+﻿using System;
+using System.IO;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MoleculeSettings {
 
         public int ID;
-        public string FilePath;
+
+        private string filePath;
+        public string FilePath {
+            get {
+                return filePath;
+            }
+            set {
+
+                filePath = value;
+
+                try {
+                    FileName = Path.GetFileName(value);
+                }
+                catch(Exception) {}
+            }
+        }
+        public string FileName { get; private set; }
+
         public bool Loaded;
         public bool Hidden;
         public bool PendingRerender;

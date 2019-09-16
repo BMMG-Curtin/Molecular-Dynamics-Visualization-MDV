@@ -15,15 +15,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private GameObject interactionLineParent;
 
+        [SerializeField]
+        private Gradient positiveGradient;
+
+        [SerializeField]
+        private Gradient negativeGradient;
 
         private Transform molecule1;
         private Transform molecule2;
 
         private List<AtomInteraction> interactions;
-
         private Dictionary<int, LineRenderer> interactionLines;
 
         private void Awake() {
+
+            interactions = new List<AtomInteraction>();
             interactionLines = new Dictionary<int, LineRenderer>();
         }
 
@@ -33,13 +39,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ClearInteractions() {
 
-            this.interactions = null;
+            interactions = new List<AtomInteraction>();
             interactionLines = new Dictionary<int, LineRenderer>();
 
             foreach (Transform transform in interactionLineParent.transform) {
                 GameObject.Destroy(transform.gameObject);
             }
-
         }
 
         public void RenderInteractions(Transform molecule1, Transform molecule2) {
@@ -80,6 +85,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 lineRenderer.SetPositions(positions);
                 lineRenderer.startWidth = 0.005f;
                 lineRenderer.endWidth = 0.005f;
+
+                Color lineColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1);
+                lineRenderer.material.color = lineColor;
+
                 lineRenderer.gameObject.SetActive(true);
                 newInteractions.Add(key);
             }

@@ -52,22 +52,29 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         private void OnEnable() {
+            UpdateSelectedMolecule();
+        }
 
-            selectedMolecule = molecules.GetSelected();
+        public void UpdateSelectedMolecule() {
 
-            if (selectedMolecule != null) {
+            if(isActiveAndEnabled) {
 
-                selectedMoleculeText.text = "Modifying settings for molecule  - " + selectedMolecule.Name;
+                selectedMolecule = molecules.GetSelected();
 
-                if (primaryStructures.ContainsKey(selectedMolecule.ID)) {
+                if (selectedMolecule != null) {
 
-                    PrimaryStructure primaryStructure = primaryStructures[selectedMolecule.ID];
-                    initialiseResidueRenderSettings(primaryStructure);
-                    showResidueNamesPanel(selectedMolecule.RenderSettings, primaryStructure);
+                    selectedMoleculeText.text = "Modifying settings for molecule  - " + selectedMolecule.FileName;
+
+                    if (primaryStructures.ContainsKey(selectedMolecule.ID)) {
+
+                        PrimaryStructure primaryStructure = primaryStructures[selectedMolecule.ID];
+                        initialiseResidueRenderSettings(primaryStructure);
+                        showResidueNamesPanel(selectedMolecule.RenderSettings, primaryStructure);
+                    }
                 }
-            }
-            else {
-                selectedMoleculeText.text = "< no molecule selected >";
+                else {
+                    selectedMoleculeText.text = "< no molecule selected >";
+                }
             }
         }
 

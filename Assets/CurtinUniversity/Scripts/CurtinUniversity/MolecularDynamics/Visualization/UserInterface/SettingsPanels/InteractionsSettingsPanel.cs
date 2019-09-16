@@ -11,10 +11,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public class InteractionsSettingsPanel : MonoBehaviour {
 
         [SerializeField]
-        private MoleculeList molecules;
+        private Toggle renderClosestInteractionsToggle;
 
         [SerializeField]
-        private MessageConsole console;
+        private Toggle calculateClosestInteractionsToggle;
 
         [SerializeField]
         private TextMeshProUGUI StartStopButtonText;
@@ -22,11 +22,40 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private TextMeshProUGUI Informationtext;
 
+        [SerializeField]
+        private MoleculeList molecules;
+
+        [SerializeField]
+        private MessageConsole console;
+
+        private MolecularInteractionSettings interactionSetttings;
+
         public bool MonitoringEnabled { get; private set; }
 
         public void Awake() {
+
             Informationtext.text = "";
             MonitoringEnabled = false;
+
+            interactionSetttings = MolecularInteractionSettings.Default();
+        }
+
+        private void initialiseSettingsPanel() {
+
+            renderClosestInteractionsToggle.isOn = interactionSetttings.RenderClosestInteractionsOnly;
+            calculateClosestInteractionsToggle.isOn = interactionSetttings.CalculateClosestInteractionsOnly;
+        }
+
+        public void OnRenderClosestInteractionsToggle() {
+
+            interactionSetttings.RenderClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSetttings);
+        }
+
+        public void OnCalculateClosestInteractionsToggle() {
+
+            interactionSetttings.CalculateClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSetttings);
         }
 
         public void ShowInformation(string text) {
@@ -71,7 +100,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             MonitoringEnabled = true;
             StartStopButtonText.text = "Stop Monitoring Molecules";
-            UserInterfaceEvents.RaiseStartMonitoringMoleculeInteractions(moleculeIDs[0], moleculeIDs[1]);
+            UserInterfaceEvents.RaiseStartMonitoringMoleculeInteractions(moleculeIDs[0], moleculeIDs[1], interactionSetttings);
         }
 
         private void stopInteracations() {

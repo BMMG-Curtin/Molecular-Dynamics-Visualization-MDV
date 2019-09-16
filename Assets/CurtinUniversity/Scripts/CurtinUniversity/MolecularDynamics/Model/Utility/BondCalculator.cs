@@ -25,7 +25,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         // Iterative tree search will find duplicate bonds if the atoms at the search position aren't removed. 
         // Tree removal is more expensive than keeping a seperate collection and checking if found bond already in collection
         // HashSet<long> addedBonds = new HashSet<long>();
-        private HashSet<string> addedBonds;
+        private HashSet<int> addedBonds;
         private int bondID = 0;
 
         private readonly object bondAddLock = new object();
@@ -52,7 +52,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
             bonds = new Dictionary<int, Bond>();
             tree = new KdTree<float, int>(3, new FloatMath());
-            addedBonds = new HashSet<string>();
+            addedBonds = new HashSet<int>();
             bondID = 0;
 
             UnityEngine.Debug.Log("Generating Atom Tree");
@@ -122,7 +122,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                         continue;
                     }
 
-                    string bondKey = getBondKey(atom.Index, bondAtomNode.Value);
+                    int bondKey = getBondHash(atom.Index, bondAtomNode.Value);
 
                     // check it hasn't been added previously (i.e. bond in reverse). 
                     if (!addedBonds.Contains(bondKey)) {
@@ -136,7 +136,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                         if (!maxBondLengths.TryGetValue(new ElementPair(atom.Element, bondAtom.Element), out maxBondLength)) {
 
                             // if lookup fails use defaults 
-                            if (atom.Element == ChemicalElement.H || bondAtom.Element == ChemicalElement.H) {
+                            if (atom.Element == Element.H || bondAtom.Element == Element.H) {
                                 maxBondLength = MaximumLengthHydrogen;
                             }
                             else {
@@ -169,14 +169,20 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
         }
 
-        private string getBondKey(int atomID1, int atomID2) {
+        private int getBondHash(int atom1, int atom2) {
 
-            if (atomID1 < atomID2) {
-                return atomID1 + "|" + atomID2;
+            int hashcode = 23;
+
+            if (atom1 < atom2) {
+                hashcode = (hashcode * 37) + atom1;
+                hashcode = (hashcode * 37) + atom2;
             }
             else {
-                return atomID2 + "|" + atomID1;
+                hashcode = (hashcode * 37) + atom2;
+                hashcode = (hashcode * 37) + atom1;
             }
+
+            return hashcode;
         }
     }
 }

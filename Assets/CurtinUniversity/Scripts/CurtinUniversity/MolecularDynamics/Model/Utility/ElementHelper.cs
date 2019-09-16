@@ -4,16 +4,16 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
     public static class ElementHelper {
 
-        public static ChemicalElement Parse(string element) {
+        public static Element Parse(string element) {
 
-            foreach (string elementID in Enum.GetNames(typeof(ChemicalElement))) {
+            foreach (string elementID in Enum.GetNames(typeof(Element))) {
 
                 if (element.StartsWith(elementID)) {
-                    return (ChemicalElement)Enum.Parse(typeof(ChemicalElement), elementID);
+                    return (Element)Enum.Parse(typeof(Element), elementID);
                 }
             }
 
-            return ChemicalElement.None;
+            return Element.Other;
         }
     }
 }
