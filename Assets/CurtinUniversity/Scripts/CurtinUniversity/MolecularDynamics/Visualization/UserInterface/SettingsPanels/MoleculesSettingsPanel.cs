@@ -434,6 +434,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 removeMoleculeButton.interactable = false;
                 removeMoleculeButton.gameObject.SetActive(false);
                 moleculeInfoPanel.SetActive(false);
+
+                trajectoryControls.transform.gameObject.SetActive(false);
             }
             else {
 

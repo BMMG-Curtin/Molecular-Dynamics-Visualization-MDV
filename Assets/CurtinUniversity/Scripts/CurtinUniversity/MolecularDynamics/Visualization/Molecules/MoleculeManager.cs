@@ -123,6 +123,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 Molecule molecule = moleculeGO.GetComponent<Molecule>();
                 molecule.Initialise(moleculeID, primaryStructure, settings);
                 molecule.AutoRotateSpeed = generalSettings.AutoRotateSpeed;
+                molecule.SetInputSensitivity(generalSettings.MoleculeInputSensitivity);
                 molecule.SetSpaceNavigatorControlEnabled(generalSettings.SpaceNavigatorMoleculeControlEnabled);
                 molecules.Add(moleculeID, molecule);
 
@@ -241,12 +242,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             // autorotate speed
             foreach (Molecule molecule in molecules.Values) {
-                molecule.AutoRotateSpeed = generalSettings.AutoRotateSpeed;
-            }
 
-            // space navigator control
-            foreach (Molecule molecule in molecules.Values) {
+                molecule.AutoRotateSpeed = generalSettings.AutoRotateSpeed;
                 molecule.SetSpaceNavigatorControlEnabled(generalSettings.SpaceNavigatorMoleculeControlEnabled);
+                molecule.SetInputSensitivity(generalSettings.MoleculeInputSensitivity);
             }
         }
 

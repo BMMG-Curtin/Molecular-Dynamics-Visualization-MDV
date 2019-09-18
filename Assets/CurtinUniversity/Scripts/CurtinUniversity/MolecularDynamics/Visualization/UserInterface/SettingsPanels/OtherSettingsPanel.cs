@@ -39,7 +39,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Text mouseSpeedText;
 
         [SerializeField]
-        private float mouseSpeedMultiplier = 3f;
+        private Text moleculeMovementSpeedText;
 
         [SerializeField]
         private Toggle spaceNavigatorCameraControlToggle;
@@ -53,6 +53,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private string playerPrefsMouseSpeedKey = @"MouseSpeed";
         private string playerPrefsSpaceNavigatorCameraControlKey = @"SpaceNavigatorCameraControl";
         private string playerPrefsSpaceNavigatorMoleculeControlKey = @"SpaceNavigatorMoleculeControl";
+        private string playerPrefsMoleculeMovementSpeedKey = @"InputMoleculeMovementSpeed";
         private string playerPrefsGroundKey = @"SceneGround";
         private string playerPrefsShadowsKey = @"SceneShadows";
         private string playerPrefsMainLightKey = @"SceneMainLights";
@@ -65,6 +66,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private int lightIntensity = 0;
         private int mouseSpeed = 0;
+        private int moleculeMovementSpeed = 0;
         private int autoRotateSpeed = 0;
 
         private GeneralSettings generalSettings;
@@ -125,7 +127,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 autoRotateSpeed = PlayerPrefs.GetInt(playerPrefsAutoRotateKey);
                 generalSettings.AutoRotateSpeed = (float)(autoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed);
             }
-            autoRotateSpeed = (int)((generalSettings.AutoRotateSpeed * (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed)) + Settings.MinAutoRotateSpeed);
+            else {
+                autoRotateSpeed = (int)((generalSettings.AutoRotateSpeed * (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed)) + Settings.MinAutoRotateSpeed);
+            }
 
             if (PlayerPrefs.HasKey(playerPrefsSpaceNavigatorCameraControlKey)) {
                 generalSettings.SpaceNavigatorCameraControlEnabled = PlayerPrefs.GetInt(playerPrefsSpaceNavigatorCameraControlKey) > 0 ? true : false;
@@ -133,6 +137,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (PlayerPrefs.HasKey(playerPrefsSpaceNavigatorMoleculeControlKey)) {
                 generalSettings.SpaceNavigatorMoleculeControlEnabled = PlayerPrefs.GetInt(playerPrefsSpaceNavigatorMoleculeControlKey) > 0 ? true : false;
+            }
+
+            if (PlayerPrefs.HasKey(playerPrefsMoleculeMovementSpeedKey)) {
+
+                moleculeMovementSpeed = PlayerPrefs.GetInt(playerPrefsMoleculeMovementSpeedKey);
+                generalSettings.MoleculeInputSensitivity = (float)(moleculeMovementSpeed - Settings.MinMoleculeMovementSpeed) / (float)(Settings.MaxMoleculeMovementSpeed - Settings.MinMoleculeMovementSpeed);
+            }
+            else {
+                moleculeMovementSpeed = (int)((generalSettings.MoleculeInputSensitivity * (float)(Settings.MaxMoleculeMovementSpeed - Settings.MinMoleculeMovementSpeed)) + Settings.MinMoleculeMovementSpeed);
             }
 
             groundToggle.isOn = generalSettings.ShowGround;
@@ -143,6 +156,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             lightIntensityText.text = lightIntensity.ToString();
 
             autoRotateSpeedText.text = autoRotateSpeed.ToString();
+            moleculeMovementSpeedText.text = moleculeMovementSpeed.ToString();
             spaceNavigatorCameraControlToggle.isOn = generalSettings.SpaceNavigatorCameraControlEnabled;
             spaceNavigatorMoleculeControlToggle.isOn = generalSettings.SpaceNavigatorMoleculeControlEnabled;
 
@@ -268,6 +282,29 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 mouseSpeedText.text = mouseSpeed.ToString();
 
                 PlayerPrefs.SetInt(playerPrefsMouseSpeedKey, mouseSpeed);
+            }
+        }
+
+        public void InreaseMoleculeMovementSpeed() {
+            SetMoleculeMovementSpeed(moleculeMovementSpeed + 1);
+        }
+
+        public void DecreaseMoleculeMovementSpeed() {
+            SetMoleculeMovementSpeed(moleculeMovementSpeed - 1);
+        }
+
+        public void SetMoleculeMovementSpeed(int speed) {
+
+            int startSpeed = moleculeMovementSpeed;
+            moleculeMovementSpeed = Mathf.Clamp(speed, Settings.MinMoleculeMovementSpeed, Settings.MaxMoleculeMovementSpeed);
+
+            if (moleculeMovementSpeed != startSpeed) {
+
+                moleculeMovementSpeedText.text = moleculeMovementSpeed.ToString();
+
+                generalSettings.MoleculeInputSensitivity = (float)(moleculeMovementSpeed- Settings.MinMoleculeMovementSpeed) / (float)(Settings.MaxMoleculeMovementSpeed - Settings.MinMoleculeMovementSpeed);
+                UserInterfaceEvents.RaiseGeneralSettingsUpdated(generalSettings);
+                PlayerPrefs.SetInt(playerPrefsMoleculeMovementSpeedKey, moleculeMovementSpeed);
             }
         }
 

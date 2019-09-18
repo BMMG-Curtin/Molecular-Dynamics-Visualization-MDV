@@ -6,8 +6,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MoleculeInputController : MonoBehaviour {
 
-        private float mouseMoveSensitivity = 4;
-        private float mouseRotateSensitivity = 100;
+        private float inputSensitivity;
+        public float InputSensitivity {
+            get {
+                return inputSensitivity;
+            }
+            set {
+                inputSensitivity = Mathf.Clamp(value, 0.1f, 1);
+            }
+        }
+
+        private float baseMouseMoveSpeed = 10;
+        private float baseMouseRotateSpeed = 1000;
 
         private bool spaceNavigatorInputEnabled;
 
@@ -16,6 +26,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void Awake() {
             spaceNavigatorInputEnabled = false;
+            inputSensitivity = 0.5f;
         }
 
         private void Start() {
@@ -70,19 +81,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     moveDirection = up * verticalAxis + right * horizontalAxis;
                 }
 
-                transform.Translate(moveDirection * mouseMoveSensitivity * Time.deltaTime, Space.World);
+                transform.Translate(moveDirection * baseMouseMoveSpeed * inputSensitivity * Time.deltaTime, Space.World);
             }
 
             // molecule rotation around camera forward and horizontal axis 
             if (InputManager.Instance.ControlPressed && !InputManager.Instance.ShiftPressed) {
 
-                transform.RotateAround(transform.position, sceneCamera.transform.forward, horizontalAxis * Time.deltaTime * mouseRotateSensitivity);
-                transform.RotateAround(transform.position, sceneCamera.transform.right, verticalAxis * Time.deltaTime * mouseRotateSensitivity);
+                transform.RotateAround(transform.position, sceneCamera.transform.forward, horizontalAxis * Time.deltaTime * baseMouseRotateSpeed * inputSensitivity);
+                transform.RotateAround(transform.position, sceneCamera.transform.right, verticalAxis * Time.deltaTime * baseMouseRotateSpeed * inputSensitivity);
             }
 
             // molecule rotation around world vertical axis rotation
             if (InputManager.Instance.AltPressed && !InputManager.Instance.ShiftPressed) {
-                transform.RotateAround(transform.position, Vector3.up, horizontalAxis * Time.deltaTime * mouseRotateSensitivity * -1);
+                transform.RotateAround(transform.position, Vector3.up, horizontalAxis * Time.deltaTime * baseMouseRotateSpeed * -1 * inputSensitivity);
             }
         }
 

@@ -88,12 +88,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public static string StrideExecutablePath { get; private set; }
         public static string TmpFilePath { get; private set; }
 
+        // molecule input settings
+        public static int MinMoleculeMovementSpeed { get; private set; }
+        public static int MaxMoleculeMovementSpeed { get; private set; }
+        public static int DefaultMoleculeMovementSpeed { get; private set; }
+
         // lighting setttings
         public static int DefaultLightIntensity { get; private set; }
         public static int MaxLightIntensity { get; private set; }
         public static int MinLightIntensity { get; private set; }
 
-        // animnation setttings
+        // animation setttings
         public static int DefaultAutoRotateSpeed { get; private set; }
         public static int MaxAutoRotateSpeed { get; private set; }
         public static int MinAutoRotateSpeed { get; private set; }
@@ -174,6 +179,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             MaxMouseSpeed = 10;
             DefaultMouseSpeed = 5;
             MouseSpeedMultiplier = 5;
+
+            MinMoleculeMovementSpeed = 1;
+            MaxMoleculeMovementSpeed = 10;
+            DefaultMoleculeMovementSpeed = 5;
 
             ValidExtensions = new[] { ".xyz", ".gro", ".pdb", ".xtc", ".dcd" };
             GromacsFileExtension = ".gro";

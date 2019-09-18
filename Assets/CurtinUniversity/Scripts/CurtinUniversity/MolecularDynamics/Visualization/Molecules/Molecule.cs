@@ -115,6 +115,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             moleculeInput.GetComponent<MoleculeInputController>().EnableSpaceNavigatorInput(enabled);
         }
 
+        public void SetInputSensitivity(float sensitivity) {
+            moleculeInput.InputSensitivity = sensitivity;
+        }
+
         public BoundingBox GetBoundingBox() {
             return boundingBox.Clone();
         }

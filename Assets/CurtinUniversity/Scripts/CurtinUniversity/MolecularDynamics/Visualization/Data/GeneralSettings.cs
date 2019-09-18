@@ -32,6 +32,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        private float moleculeMovementSpeed;
+        public float MoleculeInputSensitivity {
+            get {
+                return moleculeMovementSpeed;
+            }
+            set {
+                moleculeMovementSpeed = Mathf.Clamp(value, 0f, 1f);
+            }
+        }
+
         public bool AutoMeshQuality { get; set; }
 
         private int meshQuality;
@@ -62,6 +72,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 AutoMeshQuality = true,
                 MeshQuality = Settings.DefaultMeshQuality,
                 AutoRotateSpeed = (float)(Settings.DefaultAutoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed),
+                MoleculeInputSensitivity = (float)(Settings.DefaultMoleculeMovementSpeed - Settings.MinMoleculeMovementSpeed) / (float)(Settings.MaxMoleculeMovementSpeed - Settings.MinMoleculeMovementSpeed),
                 SpaceNavigatorCameraControlEnabled = false,
                 SpaceNavigatorMoleculeControlEnabled = false,
             };
