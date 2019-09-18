@@ -172,6 +172,21 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return output;
         }
 
+        public BoundingBox Clone() {
+
+            return new BoundingBox() {
+
+                Origin = this.Origin,
+                Vector1 = this.Vector1,
+                Vector2 = this.Vector2,
+                Vector3 = this.Vector3,
+                Width = this.Width,
+                Height = this.Height,
+                Depth = this.Depth,
+                Centre = this.Centre
+            };
+        }
+
         /// <summary>
         /// Create box based on max and min positions on x,y,z planes
         /// </summary>

@@ -20,11 +20,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject MoleculePrefab;
 
         private Dictionary<int, Molecule> molecules;
-        private HashSet<int> selectedMolecules;
-        private HashSet<int> rotatingMolecules;
 
         private Dictionary<int, MoleculeRenderSettings> cachedRenderSettings;
         private Dictionary<int, int?> cachedFrameNumbers;
+
+        private Dictionary<int, SerializableTransform> defaultMoleculeTransforms;
 
         private bool loadingStructure;
         private bool loadingTrajectory;
@@ -36,10 +36,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private void Awake() {
 
             molecules = new Dictionary<int, Molecule>();
-            selectedMolecules = new HashSet<int>();
-            rotatingMolecules = new HashSet<int>();
             cachedRenderSettings = new Dictionary<int, MoleculeRenderSettings>();
             cachedFrameNumbers = new Dictionary<int, int?>();
+            defaultMoleculeTransforms = new Dictionary<int, SerializableTransform>();
             loadingStructure = false;
             loadingTrajectory = false;
 
@@ -137,6 +136,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (oldAtomMeshQuality != generalSettings.MeshQuality) {
                 reRenderMolecules();
             }
+
+            SaveCurrentMoleculeTransformAsDefault(moleculeID);
 
             loadingStructure = false;
         }
@@ -289,6 +290,35 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+
+        public void SaveCurrentMoleculeTransformAsDefault(int moleculeID) {
+
+            if (defaultMoleculeTransforms.ContainsKey(moleculeID)) {
+                defaultMoleculeTransforms[moleculeID] = GetMoleculeTransform(moleculeID);
+            }
+            else {
+                defaultMoleculeTransforms.Add(moleculeID, GetMoleculeTransform(moleculeID));
+            }
+        }
+
+        public void LoadDefaultMoleculeTransform(int moleculeID) {
+
+            if(!defaultMoleculeTransforms.ContainsKey(moleculeID)) {
+                return;
+            }
+
+            SetMoleculeTransform(moleculeID, defaultMoleculeTransforms[moleculeID]);
+        }
+
+        public BoundingBox GetMoleculeBoundingBox(int moleculeID) {
+
+            if (!molecules.ContainsKey(moleculeID)) {
+                return null;
+            }
+
+            return molecules[moleculeID].GetBoundingBox();
+        }
+
         public void RemoveMolecule(int moleculeID) {
 
             if (molecules.ContainsKey(moleculeID)) {
@@ -297,12 +327,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 molecules.Remove(moleculeID);
 
-                if (selectedMolecules.Contains(moleculeID)) {
-                    selectedMolecules.Remove(moleculeID);
-                }
-
-                if (rotatingMolecules.Contains(moleculeID)) {
-                    rotatingMolecules.Remove(moleculeID);
+                if(defaultMoleculeTransforms.ContainsKey(moleculeID)) {
+                    defaultMoleculeTransforms.Remove(moleculeID);
                 }
 
                 // check if the molecule was being monitored. If so, shut down monitoring

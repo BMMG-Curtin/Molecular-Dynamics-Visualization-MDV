@@ -115,6 +115,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             moleculeInput.GetComponent<MoleculeInputController>().EnableSpaceNavigatorInput(enabled);
         }
 
+        public BoundingBox GetBoundingBox() {
+            return boundingBox.Clone();
+        }
+
         public void Show() {
             MoleculeRender.SetActive(true);
         }

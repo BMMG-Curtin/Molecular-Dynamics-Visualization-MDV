@@ -48,6 +48,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TextMeshProUGUI loadTrajectoryButtonText;
 
         [SerializeField]
+        private Button resetMoleculePositionButton;
+
+        [SerializeField]
         private Button showHideMoleculeButton;
 
         [SerializeField]
@@ -169,7 +172,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             foreach (KeyValuePair<int, MoleculeSettingsPanelListItem> item in moleculeListItems) {
 
                 item.Value.SetHighlighted(false);
-                UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, false);
+                UserInterfaceEvents.RaiseMoleculeSelected(item.Key, false);
             }
 
             if (moleculeID != null) {
@@ -183,7 +186,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                         // if molecule is hidden then dont raise event. When molecule is unhidden then an event will be raised instead
                         MoleculeSettings molecule = molecules.Get((int)moleculeID);
                         if (molecule != null && !molecule.Hidden) {
-                            UserInterfaceEvents.RaiseOnMoleculeSelected(item.Key, true);
+                            UserInterfaceEvents.RaiseMoleculeSelected(item.Key, true);
                         }
                     }
                 }
@@ -288,6 +291,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        public void OnResetPositionButton() {
+
+            MoleculeSettings molecule = molecules.GetSelected();
+
+            if (molecule == null) {
+                return;
+            }
+
+            UserInterfaceEvents.RaiseResetMoleculeTransform(molecule.ID);
+        }
+
         public void OnShowHideMoleculeButton() {
 
             MoleculeSettings molecule = molecules.GetSelected();
@@ -304,7 +318,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     UserInterfaceEvents.RaiseMoleculeRenderSettingsUpdated(molecule.ID, molecule.RenderSettings, molecule.CurrentTrajectoryFrameNumber);
                 }
 
-                UserInterfaceEvents.RaiseOnMoleculeSelected(molecule.ID, true);
+                UserInterfaceEvents.RaiseMoleculeSelected(molecule.ID, true);
                 hiddenMolecules.Remove(molecule.ID);
             }
             else {
@@ -320,7 +334,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     console.ShowError("Stopped monitoring molecular interactions, hiding molecule");
                 }
 
-                UserInterfaceEvents.RaiseOnMoleculeSelected(molecule.ID, false);
+                UserInterfaceEvents.RaiseMoleculeSelected(molecule.ID, false);
             }
 
             updateSelectedMoleculeInterfaceSettings();
@@ -400,7 +414,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         private void onMoleculeListItemDoubleClick(int moleculeID) {
-            // do nothing at present
+            UserInterfaceEvents.RaiseMoveCameraToMolecule(moleculeID);
         }
 
         private void updateSelectedMoleculeInterfaceSettings() {
@@ -413,6 +427,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 saveSettingsButton.gameObject.SetActive(false);
                 loadTrajectoryButton.interactable = false;
                 loadTrajectoryButton.gameObject.SetActive(false);
+                resetMoleculePositionButton.interactable = false;
+                resetMoleculePositionButton.gameObject.SetActive(false);
                 showHideMoleculeButton.interactable = false;
                 showHideMoleculeButton.gameObject.SetActive(false);
                 removeMoleculeButton.interactable = false;
@@ -429,6 +445,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 saveSettingsButton.gameObject.SetActive(true);
                 loadTrajectoryButton.interactable = true;
                 loadTrajectoryButton.gameObject.SetActive(true);
+                resetMoleculePositionButton.interactable = true;
+                resetMoleculePositionButton.gameObject.SetActive(true);
                 showHideMoleculeButton.interactable = true;
                 showHideMoleculeButton.gameObject.SetActive(true);
                 removeMoleculeButton.interactable = true;

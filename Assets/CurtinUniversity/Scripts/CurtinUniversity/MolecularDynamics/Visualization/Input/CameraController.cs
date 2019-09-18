@@ -41,6 +41,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             spaceNavigatorInputEnabled = enable;
         }
 
+        public void MoveTo(Vector3 position, Vector3 lookAt) {
+
+            transform.position = position;
+            transform.LookAt(lookAt);
+        }
+
         private void handleMouseInput() { 
 
             if (Input.GetMouseButtonDown(1)) {

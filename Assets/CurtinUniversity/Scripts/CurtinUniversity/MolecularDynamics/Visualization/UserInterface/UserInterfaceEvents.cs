@@ -43,6 +43,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        public delegate void ResetMoleculeTransform(int moleculeID);
+        public static event ResetMoleculeTransform OnResetMoleculeTransform;
+        public static void RaiseResetMoleculeTransform(int moleculeID) {
+            if (OnResetMoleculeTransform != null) {
+                OnResetMoleculeTransform(moleculeID);
+            }
+        }
+
         public delegate void ShowMolecule(int moleculeID);
         public static event ShowMolecule OnShowMolecule;
         public static void RaiseShowMolecule(int moleculeID) {
@@ -61,9 +69,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public delegate void MoleculeSelected(int moleculeID, bool selected);
         public static event MoleculeSelected OnMoleculeSelected;
-        public static void RaiseOnMoleculeSelected(int moleculeID, bool selected) {
+        public static void RaiseMoleculeSelected(int moleculeID, bool selected) {
             if (OnMoleculeSelected != null) {
                 OnMoleculeSelected(moleculeID, selected);
+            }
+        }
+
+        public delegate void MoveCameraToMolecule(int moleculeID);
+        public static event MoveCameraToMolecule OnMoveCameraToMolecule;
+        public static void RaiseMoveCameraToMolecule(int moleculeID) {
+            if (OnMoveCameraToMolecule != null) {
+                OnMoveCameraToMolecule(moleculeID);
             }
         }
 
