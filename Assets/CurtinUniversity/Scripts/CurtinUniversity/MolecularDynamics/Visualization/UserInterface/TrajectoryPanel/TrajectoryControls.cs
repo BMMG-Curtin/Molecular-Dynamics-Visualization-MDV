@@ -3,6 +3,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class TrajectoryControls : MonoBehaviour {
@@ -11,10 +13,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private MoleculeList molecules;
 
         [SerializeField]
-        private InputField FrameNumber;
+        private TMP_InputField frameNumber;
 
         [SerializeField]
-        private Text TotalFrames;
+        private TextMeshProUGUI totalFrames;
+
+        [SerializeField]
+        private TextMeshProUGUI animationSpeedText;
+
 
         private int animationSpeed;
 
@@ -25,7 +31,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private int lastFrameNumber;
 
         private void Start() {
-            animationSpeed = Settings.MaxFrameAnimationSpeed;
+            animationSpeed = Settings.DefaultFrameAnimationSpeed;
             setAnimationSpeed(animationSpeed);
         }
 
@@ -54,18 +60,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 int? frameNumber = selectedMolecule.CurrentTrajectoryFrameNumber;
 
                 if (frameNumber == null) {
-                    FrameNumber.text = "-";
+                    this.frameNumber.text = "-";
                 }
                 else {
-                    FrameNumber.text = (frameNumber + 1).ToString(); // trajectory indexes start at zero but display starts at 1
+                    this.frameNumber.text = (frameNumber + 1).ToString(); // trajectory indexes start at zero but display starts at 1
                 }
 
-                TotalFrames.text = selectedMolecule.TrajectoryFrameCount.ToString();
+                totalFrames.text = selectedMolecule.TrajectoryFrameCount.ToString();
             }
             else {
 
-                FrameNumber.text = "-";
-                TotalFrames.text = "-";
+                frameNumber.text = "-";
+                totalFrames.text = "-";
             }
         }
 
@@ -121,7 +127,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 Debug.Log("Storing last frame number");
                 try {
-                    lastFrameNumber = int.Parse(FrameNumber.text);
+                    lastFrameNumber = int.Parse(frameNumber.text);
                 }
                 catch (Exception) {
                     lastFrameNumber = 1;
@@ -136,11 +142,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             try {
 
-                int frameNumber = int.Parse(FrameNumber.text);
+                int frameNumber = int.Parse(this.frameNumber.text);
 
                 MoleculeSettings molecule = molecules.GetSelected();
                 frameNumber = Mathf.Clamp(frameNumber, 1, molecule.TrajectoryFrameCount);
-                FrameNumber.text = frameNumber.ToString();
+                this.frameNumber.text = frameNumber.ToString();
 
                 if (frameNumber != lastFrameNumber) {
 
@@ -150,29 +156,32 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
             catch (Exception) {
-                FrameNumber.text = lastFrameNumber.ToString();
+                frameNumber.text = lastFrameNumber.ToString();
             }
         }
 
         public void OnIncreaseFrameSpeedButton() {
 
             if (validMoleculeSelected()) {
-                setAnimationSpeed(++animationSpeed);
+                setAnimationSpeed(animationSpeed + 1);
             }
         }
 
         public void OnDecreaseFrameSpeedButton() {
 
             if (validMoleculeSelected()) {
-                setAnimationSpeed(--animationSpeed);
+                setAnimationSpeed(animationSpeed - 1);
             }
         }
 
-        private void setAnimationSpeed(int animationSpeed) {
+        private void setAnimationSpeed(int newSpeed) {
 
-            animationSpeed = Mathf.Clamp(animationSpeed, Settings.MinFrameAnimationSpeed, Settings.MaxFrameAnimationSpeed);
+            animationSpeed = Mathf.Clamp(newSpeed, Settings.MinFrameAnimationSpeed, Settings.MaxFrameAnimationSpeed);
+
             float normalisedAnimationSpeed = (float)(animationSpeed - Settings.MinFrameAnimationSpeed) / (float)(Settings.MaxFrameAnimationSpeed - Settings.MinFrameAnimationSpeed);
             secondsBetweenFrames = Settings.MinSecondsBetweenFrames + ((1f - normalisedAnimationSpeed) * (Settings.MaxSecondsBetweenFrames - Settings.MinSecondsBetweenFrames));
+
+            animationSpeedText.text = "x" + animationSpeed;
         }
 
         private void stepForwardAnimation() {

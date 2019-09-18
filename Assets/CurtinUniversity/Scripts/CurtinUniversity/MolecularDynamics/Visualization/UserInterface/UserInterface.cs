@@ -98,6 +98,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     visualisationSettingsPanel.UpdateSelectedMolecule();
                     elementsSettingsPanel.UpdateSelectedMolecule();
                     residuesSettingsPanel.UpdateSelectedMolecule();
+                    interactionsSettingsPanel.UpdateSelectedMolecule();
                 }
             }
         }
@@ -196,22 +197,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ShowInteractionsInformation(string message) {
             interactionsSettingsPanel.ShowInformation(message);
-        }
-
-        public bool HasKeyboardInputFocus() {
-
-
-// this needs to be fixed
-
-            //// file inputs
-            //if (FileBrowser.startFrameInput.isFocused || FileBrowser.frameCountInput.isFocused || FileBrowser.frameFrequencyInput.isFocused)
-            //    return true;
-
-            //// trajectory input
-            //if (TrajectoryControls.FrameNumber.isFocused)
-            //    return true;
-
-            return false;
         }
     }
 }

@@ -63,6 +63,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         // trajectory settings
         public static int MinFrameAnimationSpeed { get; private set; }
         public static int MaxFrameAnimationSpeed { get; private set; }
+        public static int DefaultFrameAnimationSpeed { get; private set; }
         public static float MinSecondsBetweenFrames { get; private set; }
         public static float MaxSecondsBetweenFrames { get; private set; }
         public static int MaxTrajectoryFrames { get; private set; }
@@ -163,8 +164,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             MinFrameAnimationSpeed = 1;
             MaxFrameAnimationSpeed = 5;
-            MinSecondsBetweenFrames = 0.1f;
-            MaxSecondsBetweenFrames = 0.5f;
+            DefaultFrameAnimationSpeed = 3;
+            MinSecondsBetweenFrames = 0.025f;
+            MaxSecondsBetweenFrames = 0.25f;
             MaxTrajectoryFrames = 9999;
 
             StartMessage = "Welcome to Molecular Dynamics Visualization";

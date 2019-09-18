@@ -11,6 +11,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public class InteractionsSettingsPanel : MonoBehaviour {
 
         [SerializeField]
+        private TextMeshProUGUI selectedMoleculeText;
+
+        [SerializeField]
         private Toggle renderClosestInteractionsToggle;
 
         [SerializeField]
@@ -18,6 +21,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         [SerializeField]
         private TextMeshProUGUI StartStopButtonText;
+
+        [SerializeField]
+        private Button ResetPositionsButton;
 
         [SerializeField]
         private TextMeshProUGUI Informationtext;
@@ -28,7 +34,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private MessageConsole console;
 
-        private MolecularInteractionSettings interactionSetttings;
+        private MolecularInteractionSettings interactionSettings;
+
+        private MoleculeSettings selectedMolecule;
 
         public bool MonitoringEnabled { get; private set; }
 
@@ -36,26 +44,43 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             Informationtext.text = "";
             MonitoringEnabled = false;
+            ResetPositionsButton.interactable = false;
 
-            interactionSetttings = MolecularInteractionSettings.Default();
+            interactionSettings = MolecularInteractionSettings.Default();
+
+            renderClosestInteractionsToggle.isOn = interactionSettings.RenderClosestInteractionsOnly;
+            calculateClosestInteractionsToggle.isOn = interactionSettings.CalculateClosestInteractionsOnly;
         }
 
-        private void initialiseSettingsPanel() {
+        private void OnEnable() {
+            UpdateSelectedMolecule();
+        }
 
-            renderClosestInteractionsToggle.isOn = interactionSetttings.RenderClosestInteractionsOnly;
-            calculateClosestInteractionsToggle.isOn = interactionSetttings.CalculateClosestInteractionsOnly;
+        public void UpdateSelectedMolecule() {
+
+            if (isActiveAndEnabled) {
+
+                selectedMolecule = molecules.GetSelected();
+
+                if (selectedMolecule != null) {
+                    selectedMoleculeText.text = "Selected molecule - " + selectedMolecule.FileName;
+                }
+                else {
+                    selectedMoleculeText.text = "< no molecule selected >";
+                }
+            }
         }
 
         public void OnRenderClosestInteractionsToggle() {
 
-            interactionSetttings.RenderClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
-            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSetttings);
+            interactionSettings.RenderClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 
         public void OnCalculateClosestInteractionsToggle() {
 
-            interactionSetttings.CalculateClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
-            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSetttings);
+            interactionSettings.CalculateClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 
         public void ShowInformation(string text) {
@@ -73,6 +98,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
             else {
                 startInteractions();
+            }
+        }
+
+        public void OnResetMoleculePositions() {
+
+            foreach(int moleculeID in molecules.GetIDs()) {
+                UserInterfaceEvents.RaiseResetMoleculeTransform(moleculeID);
             }
         }
 
@@ -100,7 +132,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             MonitoringEnabled = true;
             StartStopButtonText.text = "Stop Monitoring Molecules";
-            UserInterfaceEvents.RaiseStartMonitoringMoleculeInteractions(moleculeIDs[0], moleculeIDs[1], interactionSetttings);
+            UserInterfaceEvents.RaiseStartMonitoringMoleculeInteractions(moleculeIDs[0], moleculeIDs[1], interactionSettings);
+
+            ResetPositionsButton.interactable = true;
         }
 
         private void stopInteracations() {
@@ -108,6 +142,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             MonitoringEnabled = false;
             StartStopButtonText.text = "Start Monitoring Molecules";
             UserInterfaceEvents.RaiseStopMonitoringMoleculeInteractions();
+
+            ResetPositionsButton.interactable = false;
         }
     }
 }
