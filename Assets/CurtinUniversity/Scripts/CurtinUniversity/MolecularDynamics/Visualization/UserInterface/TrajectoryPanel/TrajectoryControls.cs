@@ -21,7 +21,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private TextMeshProUGUI animationSpeedText;
 
-
         private int animationSpeed;
 
         private bool animating = false;

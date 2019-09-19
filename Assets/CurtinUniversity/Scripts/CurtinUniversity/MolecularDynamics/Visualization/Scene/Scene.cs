@@ -5,8 +5,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class Scene : MonoBehaviour {
 
-        public GameObject Ground;
-        public Lighting Lighting;
+        [SerializeField]
+        private GameObject Ground;
+
+        [SerializeField]
+        private Lighting Lighting;
 
         private GeneralSettings settings;
 

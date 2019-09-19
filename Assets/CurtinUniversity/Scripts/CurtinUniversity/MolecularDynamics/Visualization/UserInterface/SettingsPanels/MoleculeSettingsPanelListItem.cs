@@ -29,7 +29,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private int moleculeID;
         private int displayID;
-        private string displayName;
 
         private OnMoleculeSettingsPanelListItemClick onClick;
         private OnMoleculeSettingsPanelListItemDoubleClick onDoubleClick;
@@ -40,7 +39,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void Initialise(int moleculeID, string name, OnMoleculeSettingsPanelListItemClick onClick, OnMoleculeSettingsPanelListItemDoubleClick onDoubleClick) {
 
             this.moleculeID = moleculeID;
-            this.displayName = name;
             this.onClick = onClick;
             this.onDoubleClick = onDoubleClick;
 

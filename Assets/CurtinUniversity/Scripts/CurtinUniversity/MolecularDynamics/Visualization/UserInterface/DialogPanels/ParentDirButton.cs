@@ -11,7 +11,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class ParentDirButton : MonoBehaviour {
 
-        OnFileBrowserParentDirectoryButtonClick onClick;
+        private OnFileBrowserParentDirectoryButtonClick onClick;
 
         public void Initialise(OnFileBrowserParentDirectoryButtonClick onClick) {
             this.onClick = onClick;

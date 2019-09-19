@@ -6,10 +6,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class Lighting : MonoBehaviour {
 
-        public Light MainLight1;
-        public Light MainLight2;
-        public Light MainLight3;
-        public Light FillLight1;
+        [SerializeField]
+        private Light MainLight1;
+
+        [SerializeField]
+        private Light MainLight2;
+
+        [SerializeField]
+        private Light MainLight3;
+
+        [SerializeField]
+        private Light FillLight1;
 
         private LightShadows mainLight1Shadows;
         private LightShadows mainLight2Shadows;

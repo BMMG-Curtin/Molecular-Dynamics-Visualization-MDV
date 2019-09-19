@@ -8,7 +8,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private static SceneCamera _instance;
         public static SceneCamera Instance { get { return _instance; } }
 
-        private Camera camera;
+        private Camera sceneCamera;
 
         private void Awake() {
 
@@ -19,11 +19,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 _instance = this;
             }
 
-            camera = GetComponent<Camera>();
+            sceneCamera = GetComponent<Camera>();
         }
 
         public Camera GetCamera() {
-            return camera;
+            return sceneCamera;
         }
     }
 }

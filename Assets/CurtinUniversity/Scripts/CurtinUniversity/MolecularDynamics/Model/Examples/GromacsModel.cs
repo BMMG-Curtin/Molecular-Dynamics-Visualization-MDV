@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using UnityEngine;
+
 namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class GromacsModel {
@@ -67,21 +69,21 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
             int count = 0;
 
-            //foreach (KeyValuePair<int, Bond> bond in bonds) {
+            foreach (KeyValuePair<int, Bond> bond in bonds) {
 
-            //    Atom atom1 = model.Atoms()[bond.Value.Atom1Index];
-            //    Atom atom2 = model.Atoms()[bond.Value.Atom2Index];
+                Atom atom1 = model.Atoms()[bond.Value.Atom1Index];
+                Atom atom2 = model.Atoms()[bond.Value.Atom2Index];
 
-            //    if ((atom1.Element == ChemicalElement.O && atom2.Element == ChemicalElement.H) ||
-            //        (atom2.Element == ChemicalElement.O && atom1.Element == ChemicalElement.H)) {
+                if ((atom1.Element == Element.O && atom2.Element == Element.H) ||
+                    (atom2.Element == Element.O && atom1.Element == Element.H)) {
 
-            //        Console.WriteLine("O-H bond found. Distance: " + Vector3.Distance(atom1.Position, atom2.Position));
-            //        count++;
-            //        if (count > 5) {
-            //            break;
-            //        }
-            //    }
-            //}
+                    Console.WriteLine("O-H bond found. Distance: " + Vector3.Distance(atom1.Position, atom2.Position));
+                    count++;
+                    if (count > 5) {
+                        break;
+                    }
+                }
+            }
 
             Console.WriteLine("Getting frame count from trajectory file");
 

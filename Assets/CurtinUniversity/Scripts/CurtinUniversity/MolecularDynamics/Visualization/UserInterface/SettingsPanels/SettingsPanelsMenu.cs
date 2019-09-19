@@ -6,19 +6,41 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class SettingsPanelsMenu : MonoBehaviour {
 
-        public GameObject MoleculesPanel;
-        public GameObject VisualisationPanel;
-        public GameObject ElementsPanel;
-        public GameObject ResiduesPanel;
-        public GameObject InteractionsPanel;
-        public GameObject OtherPanel;
+        [SerializeField]
+        private GameObject MoleculesPanel;
 
-        public GameObject MoleculesPanelButton;
-        public GameObject VisualisationPanelButton;
-        public GameObject ElementsPanelButton;
-        public GameObject ResiduesPanelButton;
-        public GameObject InteractionsPanelButton;
-        public GameObject OtherPanelButton;
+        [SerializeField]
+        private GameObject VisualisationPanel;
+
+        [SerializeField]
+        private GameObject ElementsPanel;
+
+        [SerializeField]
+        private GameObject ResiduesPanel;
+
+        [SerializeField]
+        private GameObject InteractionsPanel;
+
+        [SerializeField]
+        private GameObject OtherPanel;
+
+        [SerializeField]
+        private GameObject MoleculesPanelButton;
+
+        [SerializeField]
+        private GameObject VisualisationPanelButton;
+
+        [SerializeField]
+        private GameObject ElementsPanelButton;
+
+        [SerializeField]
+        private GameObject ResiduesPanelButton;
+
+        [SerializeField]
+        private GameObject InteractionsPanelButton;
+
+        [SerializeField]
+        private GameObject OtherPanelButton;
 
         private Color enabledColor = new Color(96f / 255f, 39f / 255f, 13f / 255f, 100f);
         private Color disabledColor = new Color(30f / 255f, 15f / 255f, 15f / 255f, 100f);

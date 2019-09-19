@@ -11,18 +11,25 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class Molecule : MonoBehaviour {
 
-        public GameObject MoleculeRender;
-        public MoleculeBox MoleculeBox;
+        [SerializeField]
+        private GameObject moleculeRender;
+
+        [SerializeField]
+        private MoleculeBox moleculeBox;
 
         [SerializeField]
         private MoleculeInputController moleculeInput;
 
-        public PrimaryStructureRenderer PrimaryStructureRenderer;
-        public SecondaryStructureRenderer SecondaryStructureRenderer;
+        [SerializeField]
+        public PrimaryStructureRenderer primaryStructureRenderer;
+
+        [SerializeField]
+        public SecondaryStructureRenderer secondaryStructureRenderer;
 
         public int ID { get; private set; }
         public PrimaryStructure PrimaryStructure { get; private set; }
         public PrimaryStructureTrajectory PrimaryStructureTrajectory { get; private set; }
+        public GameObject MoleculeRender { get; private set; }
 
         public float AutoRotateSpeed {
             set {
@@ -48,6 +55,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private float maxAutoRotateSpeed = 50f;
         private float minAutoRotateSpeed = 2f;
 
+        private void Awake() {
+            MoleculeRender = moleculeRender;
+        }
+
         public void Initialise(int id, PrimaryStructure primaryStructure, MoleculeRenderSettings renderSettings) {
 
             if(primaryStructure == null) {
@@ -65,17 +76,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 buildSecondaryStructureTrajectory = false;
             }
 
-            MoleculeBox.gameObject.SetActive(renderSettings.ShowSimulationBox);
+            moleculeBox.gameObject.SetActive(renderSettings.ShowSimulationBox);
             boundingBox = new BoundingBox(primaryStructure); //.OriginalBoundingBox;
-            MoleculeRender.transform.position = new Vector3(-1 * boundingBox.Centre.x, -1 * boundingBox.Centre.y, boundingBox.Centre.z);
+            moleculeRender.transform.position = new Vector3(-1 * boundingBox.Centre.x, -1 * boundingBox.Centre.y, boundingBox.Centre.z);
             transform.position = new Vector3(transform.position.x, (boundingBox.Height / 2f) + 0.5f, transform.position.z);
 
             if (renderSettings.ShowSimulationBox) {
-                MoleculeBox.Build(boundingBox);
+                moleculeBox.Build(boundingBox);
             }
 
-            PrimaryStructureRenderer.Initialise(primaryStructure);
-            SecondaryStructureRenderer.Initialise(primaryStructure);
+            primaryStructureRenderer.Initialise(primaryStructure);
+            secondaryStructureRenderer.Initialise(primaryStructure);
 
             moleculeInput.enabled = false;
             autoRotateEnabled = false;
@@ -124,11 +135,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void Show() {
-            MoleculeRender.SetActive(true);
+            moleculeRender.SetActive(true);
         }
 
         public void Hide() {
-            MoleculeRender.SetActive(false);
+            moleculeRender.SetActive(false);
         }
 
         public IEnumerator Render(MoleculeRenderSettings renderSettings, int meshQuality, int? frameNumber = null) {
@@ -154,7 +165,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 frame = PrimaryStructureTrajectory.GetFrame((int)frameNumber);
             }
 
-            yield return StartCoroutine(PrimaryStructureRenderer.Render(renderSettings, frame, meshQuality));
+            yield return StartCoroutine(primaryStructureRenderer.Render(renderSettings, frame, meshQuality));
 
             // secondary structure render
 
@@ -190,23 +201,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 secondaryStructureToBuild = secondaryStructure;
             }
 
-            yield return SecondaryStructureRenderer.Render(renderSettings, frame, secondaryStructureToBuild);
+            yield return secondaryStructureRenderer.Render(renderSettings, frame, secondaryStructureToBuild);
 
             // simulation box render
 
             if (renderSettings.ShowSimulationBox) {
 
-                MoleculeBox.gameObject.SetActive(true);
+                moleculeBox.gameObject.SetActive(true);
                 BoundingBox box = boundingBox;
 
                 if (renderSettings.CalculateBoxEveryFrame && frame != null) {
                     box = new BoundingBox(frame);
                 }
 
-                MoleculeBox.Build(box);
+                moleculeBox.Build(box);
             }
             else {
-                MoleculeBox.gameObject.SetActive(false);
+                moleculeBox.gameObject.SetActive(false);
             }
 
             //Cleanup.ForeceGC();

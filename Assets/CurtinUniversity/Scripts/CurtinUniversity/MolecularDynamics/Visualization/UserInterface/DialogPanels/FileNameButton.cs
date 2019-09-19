@@ -7,7 +7,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class FileNameButton : MonoBehaviour {
 
-        public TextMeshProUGUI ButtonText;
+        [SerializeField]
+        private TextMeshProUGUI ButtonText;
 
         private OnFileBrowserButtonClick onClick;
         private OnFileBrowserButtonDoubleClick onDoubleClick;

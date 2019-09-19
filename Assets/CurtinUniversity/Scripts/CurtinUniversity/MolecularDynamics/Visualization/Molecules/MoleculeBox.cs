@@ -6,7 +6,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MoleculeBox : MonoBehaviour {
 
-        public GameObject BoxEdgePrefab;
+        [SerializeField]
+        private GameObject boxEdgePrefab;
 
         private BoundingBox box;
 
@@ -57,7 +58,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             Vector3 position = ((startPoint - endPoint) / 2.0f) + endPoint;
 
-            GameObject boxEdge = (GameObject)Instantiate(BoxEdgePrefab, position, Quaternion.identity);
+            GameObject boxEdge = (GameObject)Instantiate(boxEdgePrefab, position, Quaternion.identity);
             boxEdge.transform.localScale = new Vector3(edgeWidth, (endPoint - startPoint).magnitude + edgeWidth, edgeWidth);
             boxEdge.transform.rotation = Quaternion.FromToRotation(Vector3.up, startPoint - endPoint);
 

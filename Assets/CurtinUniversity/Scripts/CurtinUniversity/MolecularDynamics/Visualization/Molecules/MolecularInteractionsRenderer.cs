@@ -28,9 +28,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Dictionary<int, LineRenderer> interactionLines;
 
         private void Awake() {
-
-            interactions = new List<AtomInteraction>();
-            interactionLines = new Dictionary<int, LineRenderer>();
+            ClearInteractions();
         }
 
         public void SetInteractions(List<AtomInteraction> interactions) {

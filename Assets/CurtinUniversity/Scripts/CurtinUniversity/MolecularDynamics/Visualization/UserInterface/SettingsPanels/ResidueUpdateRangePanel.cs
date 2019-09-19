@@ -33,8 +33,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private ConfirmDialog confirmDialog;
 
         private MoleculeRenderSettings moleculeRenderSettings;
-        private PrimaryStructure primaryStructure;
-        private SaveCustomResidueSettingsDelegate saveCustomResidueSettings;
         private ResidueRenderSettingsUpdated settingsUpdatedCallback;
         private UpdatedResidueIDsDelegate residueIDsUpdated;
         private OpenUpdateAllResiduesPanel openUpdateAllPanel;
@@ -54,11 +52,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             ValidatedText.text = "";
         }
 
-        public void Initialise(MoleculeRenderSettings moleculeRenderSettings, PrimaryStructure primaryStructure, SaveCustomResidueSettingsDelegate saveCustomResidueSettings, ResidueRenderSettingsUpdated settingsUpdatedCallback, UpdatedResidueIDsDelegate residueIDsUpdated, OpenUpdateAllResiduesPanel openUpdateAllPanel, ClosedResidueSettingsPanel onClose) {
+        public void Initialise(MoleculeRenderSettings moleculeRenderSettings, ResidueRenderSettingsUpdated settingsUpdatedCallback, UpdatedResidueIDsDelegate residueIDsUpdated, OpenUpdateAllResiduesPanel openUpdateAllPanel, ClosedResidueSettingsPanel onClose) {
 
             this.moleculeRenderSettings = moleculeRenderSettings;
-            this.primaryStructure = primaryStructure;
-            this.saveCustomResidueSettings = saveCustomResidueSettings;
             this.settingsUpdatedCallback = settingsUpdatedCallback;
             this.residueIDsUpdated = residueIDsUpdated;
             this.openUpdateAllPanel = openUpdateAllPanel;

@@ -51,7 +51,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private string playerPrefsCurrentFilePathKey = @"CurrentFilePath";
 
         // used for saving between confirmation dialog
-        private string confirmFileName;
         private string confirmFilePath;
 
         public void Initialise(List<string> validFileExtensions, OnFileBrowserSaveFileSubmit onSubmit) {
@@ -64,7 +63,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             currentFilePath = "";
             CurrentDirectoryText.text = currentFilePath;
 
-            confirmFileName = "";
             confirmFilePath = "";
 
             bool setPath = false;
@@ -182,7 +180,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if(File.Exists(fullPath)) {
 
-                confirmFileName = fileName;
                 confirmFilePath = fullPath;
 
                 ConfirmDialog.gameObject.SetActive(true);

@@ -153,13 +153,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             string output = "";
-            output += "Interactions calculation time: " + processingTime + "\n";
 
             if (interactions == null || interactions.Count <= 0) {
                 output += "No molecular interactions found";
             }
             else {
-                output += interactions.Count + " molecular interactions found: \n\n";
+                output += interactions.Count + " molecular interactions found";
             }
 
             MoleculeEvents.RaiseInteractionsInformation(output);

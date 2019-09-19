@@ -10,23 +10,27 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class SecondaryStructureRenderer : MonoBehaviour {
 
-        public GameObject SecondaryStructurePrefab;
-        public GameObject ResiduePlanePrefab;
-        public GameObject TestCubePrefab;
-        public GameObject StructureParent;
+        [SerializeField]
+        private GameObject SecondaryStructurePrefab;
 
-        public List<Color32> DebugColors;
-        public Color32 ErrorColor;
+        [SerializeField]
+        private GameObject ResiduePlanePrefab;
 
+        [SerializeField]
+        private GameObject TestCubePrefab;
 
-        public bool BuildingModel { get { return buildingModel; } }
+        [SerializeField]
+        private GameObject StructureParent;
+
+        [SerializeField]
+        private List<Color32> DebugColors;
+
+        [SerializeField]
+        private Color32 ErrorColor;
 
         private PrimaryStructure primaryStructure;
-        //private SecondaryStructure defaultSecondaryStructure;
-        //private Dictionary<string, Mesh> structureCache;
 
         private bool initialised = false;
-        private bool buildingModel = false;
 
         public void Initialise(PrimaryStructure primaryStructure) {
 
@@ -43,8 +47,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
             watch.Start();
-
-            buildingModel = true;
 
             yield return null;
 
@@ -73,7 +75,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 Destroy(oldObject);
             }
 
-            buildingModel = false;
             watch.Stop();
         }
 

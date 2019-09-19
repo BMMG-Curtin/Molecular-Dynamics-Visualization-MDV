@@ -15,15 +15,29 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class LoadFileDialog : MonoBehaviour {
 
-        public GameObject FileNameButtonPrefab;
-        public GameObject DirNameButtonPrefab;
-        public GameObject ParentDirButtonPrefab;
-        public GameObject DriveNameButtonPrefab;
+        [SerializeField]
+        private GameObject FileNameButtonPrefab;
 
-        public GameObject DirectoryContent;
-        public ScrollRect ScrollView;
-        public TextMeshProUGUI CurrentDirectoryText;
-        public TextMeshProUGUI SelectedFileNameText;
+        [SerializeField]
+        private GameObject DirNameButtonPrefab;
+
+        [SerializeField]
+        private GameObject ParentDirButtonPrefab;
+
+        [SerializeField]
+        private GameObject DriveNameButtonPrefab;
+
+        [SerializeField]
+        private GameObject DirectoryContent;
+
+        [SerializeField]
+        private ScrollRect ScrollView;
+
+        [SerializeField]
+        private TextMeshProUGUI CurrentDirectoryText;
+
+        [SerializeField]
+        private TextMeshProUGUI SelectedFileNameText;
 
         private string currentFilePath;
         private OnFileBrowserOpenFileSubmit onSubmit;

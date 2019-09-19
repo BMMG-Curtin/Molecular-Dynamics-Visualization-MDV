@@ -14,31 +14,59 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private TextMeshProUGUI selectedMoleculeText;
 
+        [SerializeField]
+        private Toggle EnablePrimaryStructureToggle;
+
+        [SerializeField]
+        private Toggle ShowAtomsToggle;
+
+        [SerializeField]
+        private Toggle ShowBondsToggle;
+
+        [SerializeField]
+        private Toggle ShowStandardResiduesToggle;
+
+        [SerializeField]
+        private Toggle ShowNonStandardResiduesToggle;
+
+        [SerializeField]
+        private Toggle ShowMainChainsToggle;
+
+        [SerializeField]
+        private Toggle EnableSecondaryStructureToggle;
+
+        [SerializeField]
+        private Toggle ShowHelicesToggle;
+
+        [SerializeField]
+        private Toggle ShowSheetsToggle;
+
+        [SerializeField]
+        private Toggle ShowTurnsToggle;
+
+        [SerializeField]
+        private Toggle SmoothNodesToggle;
+
+        [SerializeField]
+        private Toggle ShowCPKToggle;
+
+        [SerializeField]
+        private Toggle ShowVDWToggle;
+
+        [SerializeField]
+        private Toggle EnableSimlationBoxToggle;
+
+        [SerializeField]
+        private Toggle CalculateBoxEveryFrameToggle;
+
+        [SerializeField]
+        private Text AtomScale;
+
+        [SerializeField]
+        private Text BondScale;
+
         private MoleculeSettings selectedMolecule;
-
-        public Toggle EnablePrimaryStructureToggle;
-        public Toggle ShowAtomsToggle;
-        public Toggle ShowBondsToggle;
-        public Toggle ShowStandardResiduesToggle;
-        public Toggle ShowNonStandardResiduesToggle;
-        public Toggle ShowMainChainsToggle;
-
-        public Toggle EnableSecondaryStructureToggle;
-        public Toggle ShowHelicesToggle;
-        public Toggle ShowSheetsToggle;
-        public Toggle ShowTurnsToggle;
-        public Toggle SmoothNodesToggle;
-
-        public Toggle ShowCPKToggle;
-        public Toggle ShowVDWToggle;
-
-        public Toggle EnableSimlationBoxToggle;
-        public Toggle CalculateBoxEveryFrameToggle;
-
-        public Text AtomScale;
-        public Text BondScale;
         private float scaleIncrementAmount = 0.1f;
-
         public bool SettingsChanged { get; set; }
 
         private void Awake() {

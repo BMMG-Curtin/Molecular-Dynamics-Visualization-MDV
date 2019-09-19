@@ -84,7 +84,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             foreach (Atom atom in atoms) {
 
                 if (atom.Element == element) {
-                    atoms.Add(atom);
+                    elementAtoms.Add(atom);
                 }
             }
 

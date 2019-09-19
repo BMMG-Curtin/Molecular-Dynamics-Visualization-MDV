@@ -15,22 +15,29 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     [RequireComponent(typeof(MeshBuilder))]
     public class PrimaryStructureRenderer : MonoBehaviour {
 
-        public GameObject AtomParent;
-        public GameObject BondParent;
-        public GameObject ChainParent;
+        [SerializeField]
+        private GameObject AtomParent;
 
-        public Color32[] ChainColors;
+        [SerializeField]
+        private GameObject BondParent;
 
-        // unity prefabs
-        public GameObject[] AtomPrefabs = new GameObject[3];
-        public GameObject[] BondPrefabs = new GameObject[3];
-        public GameObject ChainPrefab;
+        [SerializeField]
+        private GameObject ChainParent;
+
+        [SerializeField]
+        private Color32[] ChainColors;
+
+        [SerializeField]
+        private GameObject[] AtomPrefabs = new GameObject[3];
+
+        [SerializeField]
+        private GameObject[] BondPrefabs = new GameObject[3];
+
+        [SerializeField]
+        private GameObject ChainPrefab;
 
         private MeshBuilder meshBuilder;
-        private GameObject modelAtomsObject;
-        private GameObject modelBondsObject;
 
-        // model data store
         private PrimaryStructure primaryStructure;
         private PrimaryStructureTrajectory modelTrajectory;
         private Dictionary<int, Bond> bonds;

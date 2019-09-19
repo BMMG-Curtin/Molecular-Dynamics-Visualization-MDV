@@ -100,7 +100,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void OnUpdateResidueRangeButton() {
-            residueUpdateRangePanel.Initialise(moleculeRenderSettings, primaryStructure, saveCustomResidueSettings, settingsUpdatedCallback, updateCustomResidueNameStatus, openUpdateAllResiduesPanel, onCloseResidueIDsPanel);
+            residueUpdateRangePanel.Initialise(moleculeRenderSettings, settingsUpdatedCallback, updateCustomResidueNameStatus, openUpdateAllResiduesPanel, onCloseResidueIDsPanel);
         }
 
         public void OnResetAllResiduesButton() {

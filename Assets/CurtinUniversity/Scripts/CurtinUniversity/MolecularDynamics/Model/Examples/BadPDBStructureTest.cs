@@ -24,7 +24,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
             stopWatch.Reset();
             stopWatch.Start();
-            SecondaryStructure secondaryStructure = SecondaryStructure.CreateFromPrimaryStructure(primaryStructure, strideExePath, tmpFilePath);
+            SecondaryStructure.CreateFromPrimaryStructure(primaryStructure, strideExePath, tmpFilePath);
             Console.WriteLine("Main Secondary Structure Parsing Complete [" + stopWatch.ElapsedMilliseconds + " ms]");
 
 

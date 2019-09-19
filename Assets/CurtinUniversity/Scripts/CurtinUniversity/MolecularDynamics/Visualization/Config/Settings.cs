@@ -219,6 +219,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 NumberOfProcessorCores = Config.GetInt("NumberOfProcessorCores");
 
             Debug.Log("Processor Cores: " + NumberOfProcessorCores);
+
+
         }
     }
 }

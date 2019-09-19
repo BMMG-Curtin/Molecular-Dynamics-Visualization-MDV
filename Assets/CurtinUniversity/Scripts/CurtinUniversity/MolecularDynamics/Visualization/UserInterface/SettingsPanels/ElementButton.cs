@@ -14,7 +14,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Color disabledColour;
         private ColorBlock colors;
 
-        SetElementDelegate elementCallback;
+        private SetElementDelegate elementCallback;
 
         private void Awake() {
 
