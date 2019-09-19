@@ -69,7 +69,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 Atom atom = molecule1Atoms[i];
                 Vector3 atomPosition = molecule1AtomPositions[i];
 
-                KdTreeNode<float, int>[] interactingAtoms = molecule2AtomTree.RadialSearch(new float[] { atomPosition.x, atomPosition.y, atomPosition.z }, MaximumBondLengths.MaximumLengthAllElements, maxInteractionsPerAtom);
+                KdTreeNode<float, int>[] interactingAtoms = molecule2AtomTree.RadialSearch(new float[] { atomPosition.x, atomPosition.y, atomPosition.z }, BondSettings.MaximumLengthAllElements, maxInteractionsPerAtom);
 
                 foreach(KdTreeNode<float, int> node in interactingAtoms) {
 
@@ -84,7 +84,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     float distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 
                     // interaction force is -1 to +1 
-                    float interactionForce = ((0.5f * MaximumBondLengths.MaximumLengthAllElements) - distance) / (0.5f * MaximumBondLengths.MaximumLengthAllElements);
+                    float interactionForce = ((0.5f * BondSettings.MaximumLengthAllElements) - distance) / (0.5f * BondSettings.MaximumLengthAllElements);
 
                     AtomInteraction interaction = new AtomInteraction() {
                         Atom1 = atom,

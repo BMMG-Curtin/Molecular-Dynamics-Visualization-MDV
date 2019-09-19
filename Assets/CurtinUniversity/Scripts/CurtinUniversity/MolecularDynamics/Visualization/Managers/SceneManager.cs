@@ -79,15 +79,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 yield break;
             }
 
-            if (!string.IsNullOrEmpty(Settings.LoadMoleculeFileName1)) {
-                string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + Settings.LoadMoleculeFileName1;
-                userInterface.LoadMolecule(filePath);
-            }
-
-            yield return new WaitForSeconds(1f);
-
-            if (!string.IsNullOrEmpty(Settings.LoadMoleculeFileName2)) {
-                string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + Settings.LoadMoleculeFileName2;
+            if (!string.IsNullOrEmpty(Settings.LoadMoleculeFileName)) {
+                string filePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + Settings.LoadMoleculeFileName;
                 userInterface.LoadMolecule(filePath);
             }
         }

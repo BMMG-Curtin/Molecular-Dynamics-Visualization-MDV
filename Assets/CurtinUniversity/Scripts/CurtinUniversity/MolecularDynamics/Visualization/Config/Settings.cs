@@ -7,7 +7,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         // molecule loaded on start - adjustable in config file, see below
         public static bool LoadMoleculeOnStart { get; private set; }
-        public static string LoadMoleculeFileName1 { get; private set; }
+        public static string LoadMoleculeFileName { get; private set; }
         public static string LoadMoleculeFileName2 { get; private set; }
 
         // Colors for residue highlighting. 
@@ -119,7 +119,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private static void loadDefaults() {
 
             LoadMoleculeOnStart = false;
-            LoadMoleculeFileName1 = "";
+            LoadMoleculeFileName = "";
             LoadMoleculeFileName2 = "";
 
             ResidueColour1 = new Color32(255, 0, 0, 255);	  // red1
@@ -208,10 +208,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             // Start Molecule
             if (Config.KeyExists("LoadMoleculeOnStart"))
                 LoadMoleculeOnStart = Config.GetBool("LoadMoleculeOnStart");
-            if (Config.KeyExists("LoadMoleculeFileName1"))
-                LoadMoleculeFileName1 = Config.GetString("LoadMoleculeFileName1");
-            if (Config.KeyExists("LoadMoleculeFileName2"))
-                LoadMoleculeFileName2 = Config.GetString("LoadMoleculeFileName2");
+            if (Config.KeyExists("LoadMoleculeFileName"))
+                LoadMoleculeFileName = Config.GetString("LoadMoleculeFileName");
 
             // Mesh Quality Settings
             if (Config.KeyExists("LowMeshQualityThreshold"))

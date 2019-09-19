@@ -8,14 +8,6 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class BondCalculator {
 
-        // default value for hydrogen simple calculations, 
-        // can be overriden in dictionary below
-        private const float MaximumLengthHydrogen = 0.11f;
-
-        // this will limit the tree search to improve performance. 
-        // Need to experiment with higher values to see performance impact
-        private const int MaxBondsPerAtom = 5;
-
         private Dictionary<int, Atom> atoms;
         private Dictionary<ElementPair, float> maxBondLengths;
 
@@ -24,8 +16,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         // Iterative tree search will find duplicate bonds if the atoms at the search position aren't removed. 
         // Tree removal is more expensive than keeping a seperate collection and checking if found bond already in collection
-        // HashSet<long> addedBonds = new HashSet<long>();
-        private HashSet<int> addedBonds;
+        private HashSet<string> addedBonds;
         private int bondID = 0;
 
         private readonly object bondAddLock = new object();
@@ -40,8 +31,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         // http://proteopedia.org/wiki/index.php/Atomic_coordinate_file
         // 
         public Dictionary<int, Bond> CalculateBonds(Dictionary<int, Atom> atoms, int processorCores) {
-
-            return CalculateBonds(atoms, MaximumBondLengths.Lengths, processorCores);
+            return CalculateBonds(atoms, BondSettings.Lengths, processorCores);
         }
 
         // same as above method but allows for custom max bond lengths
@@ -52,7 +42,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
             bonds = new Dictionary<int, Bond>();
             tree = new KdTree<float, int>(3, new FloatMath());
-            addedBonds = new HashSet<int>();
+            addedBonds = new HashSet<string>();
             bondID = 0;
 
             UnityEngine.Debug.Log("Generating Atom Tree");
@@ -112,7 +102,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                 Atom atom = atoms[atomIndex];
 
-                KdTreeNode<float, int>[] bondAtoms = tree.RadialSearch(new float[] { atom.Position.x, atom.Position.y, atom.Position.z }, MaximumBondLengths.MaximumLengthAllElements, MaxBondsPerAtom);
+                KdTreeNode<float, int>[] bondAtoms = tree.RadialSearch(new float[] { atom.Position.x, atom.Position.y, atom.Position.z }, BondSettings.MaximumLengthAllElements, BondSettings.MaxBondsPerAtom);
 
                 foreach (KdTreeNode<float, int> bondAtomNode in bondAtoms) {
 
@@ -122,7 +112,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                         continue;
                     }
 
-                    int bondKey = getBondHash(atom.Index, bondAtomNode.Value);
+                    string bondKey = getBondKey(atom.Index, bondAtomNode.Value);
 
                     // check it hasn't been added previously (i.e. bond in reverse). 
                     if (!addedBonds.Contains(bondKey)) {
@@ -137,16 +127,16 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                             // if lookup fails use defaults 
                             if (atom.Element == Element.H || bondAtom.Element == Element.H) {
-                                maxBondLength = MaximumLengthHydrogen;
+                                maxBondLength = BondSettings.MaximumLengthHydrogen;
                             }
                             else {
-                                maxBondLength = MaximumBondLengths.MaximumLengthAllElements;
+                                maxBondLength = BondSettings.MaximumLengthAllElements;
                             }
                         }
 
                         // if the maxBondLength is lower than the search radius in the KDTree search
                         // then calculate the bond length between the atoms and check it doesn't exceed maxBondLength
-                        if (maxBondLength < MaximumBondLengths.MaximumLengthAllElements) {
+                        if (maxBondLength < BondSettings.MaximumLengthAllElements) {
                             if (atomDistance(atom, bondAtom) > maxBondLength) {
                                 continue;
                             }
@@ -155,6 +145,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                         lock (bondAddLock) {
                             bonds.Add(++bondID, new Bond(atomIndex, bondAtomNode.Value));
                             addedBonds.Add(bondKey);
+                            //addBond(atom.Index, bondAtomNode.Value);
                         }
                     }
                 }
@@ -169,20 +160,18 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
         }
 
-        private int getBondHash(int atom1, int atom2) {
+        private string getBondKey(int atom1, int atom2) {
 
-            int hashcode = 23;
+            string hash;
 
             if (atom1 < atom2) {
-                hashcode = (hashcode * 37) + atom1;
-                hashcode = (hashcode * 37) + atom2;
+                hash = atom1 + "|" + atom2;
             }
             else {
-                hashcode = (hashcode * 37) + atom2;
-                hashcode = (hashcode * 37) + atom1;
+                hash = atom2 + "|" + atom1;
             }
 
-            return hashcode;
+            return hash;
         }
     }
 }
