@@ -16,9 +16,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MessageConsole : MonoBehaviour {
         
-        public Text BannerMessage;
-        public Text ConsoleContent;
-        public ScrollRect ScrollRect;
+        [SerializeField]
+        private Text BannerMessage;
+
+        [SerializeField]
+        private Text ConsoleContent;
+
+        [SerializeField]
+        private ScrollRect ScrollRect;
 
         public bool Silent { get; set; }
         public bool ShowBanner { get; set; }
@@ -35,7 +40,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private int maxConsoleMessages = 50;
 
-        struct ConsoleMessage {
+        private struct ConsoleMessage {
             public string message;
             public ConsoleMessageType type;
         }
