@@ -45,7 +45,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private IEnumerator calculateBonds() {
 
-            MoleculeEvents.RaiseRenderMessage("Calculating bonds, please wait", false);
+            MoleculeEvents.RaiseRenderMessage("Calculating bonds. Please wait", false);
             yield return null;
 
             Stopwatch watch = new Stopwatch();

@@ -169,6 +169,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 yield break;
             }
 
+            MoleculeEvents.RaiseRenderMessage("Loading trajectory. Please wait", false);
+
             loadingTrajectory = true;
 
             PrimaryStructureTrajectory trajectory = null;
