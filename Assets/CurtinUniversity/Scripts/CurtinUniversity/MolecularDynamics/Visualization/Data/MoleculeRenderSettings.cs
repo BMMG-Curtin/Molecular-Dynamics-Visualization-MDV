@@ -109,6 +109,50 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             };
         }
 
+        public MoleculeRenderSettings Clone() {
+
+            MoleculeRenderSettings renderSettings = new MoleculeRenderSettings();
+
+            renderSettings.ShowPrimaryStructure = this.ShowPrimaryStructure;
+            renderSettings.ShowBonds = this.ShowBonds;
+            renderSettings.ShowAtoms = this.ShowAtoms;
+            renderSettings.ShowStandardResidues = this.ShowStandardResidues;
+            renderSettings.ShowNonStandardResidues = this.ShowNonStandardResidues;
+            renderSettings.ShowMainChains = this.ShowMainChains;
+            renderSettings.Representation = this.Representation;
+
+            renderSettings.AtomScale = this.AtomScale;
+            renderSettings.BondScale = this.BondScale;
+
+            renderSettings.ShowSecondaryStructure = this.ShowSecondaryStructure;
+            renderSettings.ShowHelices = this.ShowHelices;
+            renderSettings.ShowSheets = this.ShowSheets;
+            renderSettings.ShowTurns = this.ShowTurns;
+            renderSettings.SmoothNodes = this.SmoothNodes;
+
+            renderSettings.ShowSimulationBox = this.ShowSimulationBox;
+            renderSettings.CalculateBoxEveryFrame = this.CalculateBoxEveryFrame;
+
+            renderSettings.EnabledElements = this.EnabledElements == null ? null : new HashSet<string>(this.EnabledElements);
+            renderSettings.EnabledResidueNames = this.EnabledResidueNames == null ? null : new HashSet<string>(this.EnabledResidueNames);
+            renderSettings.CustomResidueNames = this.CustomResidueNames == null ? null : new HashSet<string>(this.CustomResidueNames);
+            renderSettings.EnabledResidueIDs = this.EnabledResidueIDs == null ? null : new HashSet<int>(this.EnabledResidueIDs);
+
+            if (this.CustomResidueRenderSettings == null) {
+                renderSettings.CustomResidueRenderSettings = null;
+            }
+            else {
+
+                renderSettings.CustomResidueRenderSettings = new Dictionary<int, ResidueRenderSettings>();
+
+                foreach (KeyValuePair<int, ResidueRenderSettings> item in this.CustomResidueRenderSettings) {
+                    renderSettings.CustomResidueRenderSettings.Add(item.Key, item.Value.Clone());
+                }
+            }
+
+            return renderSettings;
+        }
+
         public override string ToString() {
 
             string output =

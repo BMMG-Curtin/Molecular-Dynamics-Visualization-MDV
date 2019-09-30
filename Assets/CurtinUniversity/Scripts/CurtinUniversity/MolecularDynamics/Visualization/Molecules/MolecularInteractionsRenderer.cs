@@ -21,8 +21,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private Gradient negativeGradient;
 
-        private Transform molecule1;
-        private Transform molecule2;
+        public Molecule Molecule1 { get; set; }
+        public Molecule Molecule2 { get; set; }
 
         private List<AtomInteraction> interactions;
         private Dictionary<int, LineRenderer> interactionLines;
@@ -43,11 +43,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             foreach (Transform transform in interactionLineParent.transform) {
                 GameObject.Destroy(transform.gameObject);
             }
+
+            if (Molecule1 != null) {
+                Molecule1.ClearAtomHighlights();
+            }
+
+            if (Molecule2 != null) {
+                Molecule2.ClearAtomHighlights();
+            }
         }
 
-        public void RenderInteractions(Transform molecule1, Transform molecule2) {
+        public void RenderInteractions() {
 
-            if (interactions == null || molecule1 == null || molecule2 == null) {
+            if (interactions == null || Molecule1 == null || Molecule2 == null) {
                 return;
             }
 
@@ -76,8 +84,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 atom2Position.z *= -1;
 
                 Vector3[] positions = new Vector3[] {
-                    molecule1.transform.TransformPoint(atom1Position),
-                    molecule2.transform.TransformPoint(atom2Position)
+                    Molecule1.MoleculeRender.transform.TransformPoint(atom1Position),
+                    Molecule2.MoleculeRender.transform.TransformPoint(atom2Position)
                 };
 
                 lineRenderer.SetPositions(positions);
@@ -105,6 +113,57 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             foreach (int key in toRemove) {
                 interactionLines.Remove(key);
             }
+        }
+
+        public void RenderAtomHighlights(int meshQuality) {
+
+            Color32 atomColour = Color.white;
+            Quaternion atomOrientation = Quaternion.Euler(45, 45, 45);
+
+            List<HighLightedAtom> molecule1Atoms = new List<HighLightedAtom>();
+            List<HighLightedAtom> molecule2Atoms = new List<HighLightedAtom>();
+
+            foreach (AtomInteraction interaction in interactions) {
+
+                // atom 1
+                Vector3 atom1Position = interaction.Atom1.Position;
+                atom1Position.z *= -1;
+
+                float atom1Size = interaction.Atom1.AtomicRadius;
+                Vector3 atom1Scale = new Vector3(atom1Size, atom1Size, atom1Size);
+
+                Color atom1HighlightColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1);
+
+                HighLightedAtom atom1 = new HighLightedAtom();
+                atom1.Atom = interaction.Atom1;
+                atom1.Position = atom1Position;
+                atom1.Rotation = atomOrientation;
+                atom1.Scale = atom1Scale;
+                atom1.HighlightColor = atom1HighlightColor;
+
+                molecule1Atoms.Add(atom1);
+
+                // atom 2
+                Vector3 atom2Position = interaction.Atom2.Position;
+                atom2Position.z *= -1;
+
+                float atom2Size = interaction.Atom2.AtomicRadius;
+                Vector3 atom2Scale = new Vector3(atom2Size, atom2Size, atom2Size);
+
+                Color atom2HighlightColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1);
+
+                HighLightedAtom atom2 = new HighLightedAtom();
+                atom2.Atom = interaction.Atom2;
+                atom2.Position = atom2Position;
+                atom2.Rotation = atomOrientation;
+                atom2.Scale = atom2Scale;
+                atom2.HighlightColor = atom2HighlightColor;
+
+                molecule2Atoms.Add(atom2);
+            }
+
+            Molecule1.RenderAtomHighlights(molecule1Atoms);
+            Molecule2.RenderAtomHighlights(molecule2Atoms);
         }
     }
 }

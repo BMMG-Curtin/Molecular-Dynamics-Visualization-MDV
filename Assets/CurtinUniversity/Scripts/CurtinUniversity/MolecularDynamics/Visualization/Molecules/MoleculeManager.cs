@@ -130,7 +130,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 // check to see if the meshQuality needs to change given the new primary structure
                 updateMeshQuality();
 
-                yield return StartCoroutine(molecule.Render(settings, generalSettings.MeshQuality));
+                molecule.SetRenderSettings(settings);
+                yield return StartCoroutine(molecule.Render(generalSettings.MeshQuality));
                 MoleculeEvents.RaiseMoleculeLoaded(moleculeID, Path.GetFileName(filePath), primaryStructure);
             }
 
@@ -226,7 +227,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             cacheRenderSettings(moleculeID, settings, frameNumber);
 
             if (molecules.ContainsKey(moleculeID)) {
-                StartCoroutine(molecules[moleculeID].Render(settings, generalSettings.MeshQuality, frameNumber));
+                molecules[moleculeID].SetRenderSettings(settings);
+                StartCoroutine(molecules[moleculeID].Render(generalSettings.MeshQuality, frameNumber));
             }
         }
 
@@ -464,7 +466,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     frameNumber = cachedFrameNumbers[moleculeID];
                 }
 
-                StartCoroutine(molecules[moleculeID].Render(settings, generalSettings.MeshQuality, frameNumber));
+                molecules[moleculeID].SetRenderSettings(settings);
+                StartCoroutine(molecules[moleculeID].Render(generalSettings.MeshQuality, frameNumber));
             }
         }
     }

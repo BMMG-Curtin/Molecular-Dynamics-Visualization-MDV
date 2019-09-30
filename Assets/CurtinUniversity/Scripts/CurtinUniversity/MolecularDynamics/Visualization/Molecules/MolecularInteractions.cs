@@ -57,9 +57,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                         outputInteractionResults(interactions);
                         interactionsRenderer.SetInteractions(interactions);
                     }
+
+                    interactionsRenderer.RenderAtomHighlights(0);
                 }
 
-                interactionsRenderer.RenderInteractions(Molecule1.MoleculeRender.transform, Molecule2.MoleculeRender.transform);
+                interactionsRenderer.RenderInteractions();
             }
         }
 
@@ -84,6 +86,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             this.Molecule2 = molecule2;
             this.settings = settings;
 
+            interactionsRenderer.Molecule1 = molecule1;
+            interactionsRenderer.Molecule2 = molecule2;
+
             Active = true;
         }
 
@@ -98,6 +103,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             interactionsUpdated = false;
 
             interactionsRenderer.ClearInteractions();
+
+            interactionsRenderer.Molecule1 = null;
+            interactionsRenderer.Molecule2 = null;
         }
 
         public void UpdateMolecularInteractionSettings(MolecularInteractionSettings settings) {

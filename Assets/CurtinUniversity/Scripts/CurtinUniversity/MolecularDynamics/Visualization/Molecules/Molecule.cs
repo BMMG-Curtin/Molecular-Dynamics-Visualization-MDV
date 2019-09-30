@@ -26,6 +26,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         public SecondaryStructureRenderer secondaryStructureRenderer;
 
+        [SerializeField]
+        public AtomHighlightsRenderer atomHighlightsRenderer;
+
         public int ID { get; private set; }
         public PrimaryStructure PrimaryStructure { get; private set; }
         public PrimaryStructureTrajectory PrimaryStructureTrajectory { get; private set; }
@@ -37,16 +40,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        [SerializeField]
+        public GameObject atomHighlightsParent;
+        public GameObject AtomHighlightsParent { get { return atomHighlightsParent; } }
+
         private SecondaryStructure secondaryStructure;
         private SecondaryStructureTrajectory secondaryStructureTrajectory;
         private BoundingBox boundingBox;
 
         private bool buildSecondaryStructureTrajectory = true;
 
+        private MoleculeRenderSettings renderSettings;
+
         private bool rendering = false;
         private bool awaitingRender = false;
 
-        private MoleculeRenderSettings awaitingRenderSettings;
         private int awaitingMeshQuality;
         private int? awaitingFrameNumber;
 
@@ -108,7 +116,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (!rendering && awaitingRender) {
 
                 awaitingRender = false;
-                StartCoroutine(Render(awaitingRenderSettings, awaitingMeshQuality, awaitingFrameNumber));
+                StartCoroutine(Render(awaitingMeshQuality, awaitingFrameNumber));
             }
         }
 
@@ -116,6 +124,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             this.PrimaryStructureTrajectory = trajectory;
             this.secondaryStructureTrajectory = new SecondaryStructureTrajectory(PrimaryStructure, trajectory, Settings.StrideExecutablePath, Settings.TmpFilePath);
+        }
+
+        public void SetRenderSettings(MoleculeRenderSettings settings) {
+
+            renderSettings = settings;
+            atomHighlightsRenderer.SetRenderSettings(settings);
         }
 
         public void EnableInput(bool inputEnabled) {
@@ -142,11 +156,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             moleculeRender.SetActive(false);
         }
 
-        public IEnumerator Render(MoleculeRenderSettings renderSettings, int meshQuality, int? frameNumber = null) {
+        public IEnumerator Render(int meshQuality, int? frameNumber = null) {
 
             if(rendering) {
 
-                awaitingRenderSettings = renderSettings;
                 awaitingMeshQuality = meshQuality;
                 awaitingFrameNumber = frameNumber;
                 awaitingRender = true;
@@ -165,7 +178,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 frame = PrimaryStructureTrajectory.GetFrame((int)frameNumber);
             }
 
-            yield return StartCoroutine(primaryStructureRenderer.Render(renderSettings, frame, meshQuality));
+            // we clone the render settings so any updates dont interfere with the builds
+            MoleculeRenderSettings renderSettingsClone = renderSettings.Clone();
+
+
+            yield return StartCoroutine(primaryStructureRenderer.Render(renderSettingsClone, frame, meshQuality));
 
             // secondary structure render
 
@@ -201,16 +218,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 secondaryStructureToBuild = secondaryStructure;
             }
 
-            yield return secondaryStructureRenderer.Render(renderSettings, frame, secondaryStructureToBuild);
+            yield return secondaryStructureRenderer.Render(renderSettingsClone, frame, secondaryStructureToBuild);
 
             // simulation box render
 
-            if (renderSettings.ShowSimulationBox) {
+            if (renderSettingsClone.ShowSimulationBox) {
 
                 moleculeBox.gameObject.SetActive(true);
                 BoundingBox box = boundingBox;
 
-                if (renderSettings.CalculateBoxEveryFrame && frame != null) {
+                if (renderSettingsClone.CalculateBoxEveryFrame && frame != null) {
                     box = new BoundingBox(frame);
                 }
 
@@ -230,6 +247,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             //UnityEngine.Debug.Log("Ending model build. Elapsed time [" + watch.ElapsedMilliseconds.ToString() + "]");
             yield break;
+        }
+
+        public void RenderAtomHighlights(List<HighLightedAtom> atoms) {
+            atomHighlightsRenderer.RenderAtomHighlights(atoms);
+        }
+
+        public void ClearAtomHighlights() {
+            atomHighlightsRenderer.ClearHighlights();
         }
     }
 }
