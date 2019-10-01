@@ -20,6 +20,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Toggle calculateClosestInteractionsToggle;
 
         [SerializeField]
+        private Toggle highlightInteractingAtomsToggle;
+
+        [SerializeField]
+        private Toggle renderInteractionLinesToggle;
+
+        [SerializeField]
         private TextMeshProUGUI StartStopButtonText;
 
         [SerializeField]
@@ -50,6 +56,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             renderClosestInteractionsToggle.isOn = interactionSettings.RenderClosestInteractionsOnly;
             calculateClosestInteractionsToggle.isOn = interactionSettings.CalculateClosestInteractionsOnly;
+            highlightInteractingAtomsToggle.isOn = interactionSettings.HighlightInteracingAtoms;
+            renderInteractionLinesToggle.isOn = interactionSettings.RenderInteractionLines;
         }
 
         private void OnEnable() {
@@ -80,6 +88,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void OnCalculateClosestInteractionsToggle() {
 
             interactionSettings.CalculateClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
+        }
+
+        public void OnHighlightInteractingAtomsToggle() {
+
+            interactionSettings.HighlightInteracingAtoms = highlightInteractingAtomsToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
+        }
+
+        public void OnRenderInteractionLinesToggle() {
+
+            interactionSettings.RenderInteractionLines = renderInteractionLinesToggle.isOn;
             UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 

@@ -5,7 +5,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public bool CalculateClosestInteractionsOnly { get; set; }
         public bool RenderClosestInteractionsOnly { get; set; }
-
+        public bool HighlightInteracingAtoms { get; set; }
+        public bool RenderInteractionLines { get; set; }
 
         public static MolecularInteractionSettings Default() {
 
@@ -13,6 +14,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 CalculateClosestInteractionsOnly = true,
                 RenderClosestInteractionsOnly = true,
+                HighlightInteracingAtoms = true,
+                RenderInteractionLines = true,
             };
         }
 
@@ -20,7 +23,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             return
                 "CalculateClosestInteractionsOnly: " + CalculateClosestInteractionsOnly + "\n" +
-                "RenderClosestInteractionsOnly: " + RenderClosestInteractionsOnly + "\n";
+                "RenderClosestInteractionsOnly: " + RenderClosestInteractionsOnly + "\n" +
+                "HighlightInteracingAtoms: " + HighlightInteracingAtoms + "\n" +
+                "RenderInteractionLines: " + RenderInteractionLines + "\n";
         }
     }
 }
