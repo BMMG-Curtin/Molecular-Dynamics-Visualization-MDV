@@ -24,10 +24,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             float originz = box.Origin.z;
             float vectorz = box.Vector3.z;
 
-            if (Settings.FlipZCoordinates) {
-                originz = originz * -1;
-                vectorz = vectorz * -1;
-            }
+            // FlipZCoordinates
+            originz *= -1;
+            vectorz *= -1;
 
             Vector3 vertex1 = new Vector3(box.Origin.x, box.Origin.y, originz);
             Vector3 vertex2 = new Vector3(box.Origin.x, box.Vector2.y, originz);

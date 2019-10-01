@@ -143,9 +143,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     position = new Vector3(frame.Coords[atom.Index * 3], frame.Coords[(atom.Index * 3) + 1], frame.Coords[(atom.Index * 3) + 2]);
                 }
 
-                if (Settings.FlipZCoordinates) {
-                    position.z = position.z * -1;
-                }
+                // flip coord system for Unity
+                position.z *= -1;
 
                 node.Position = position;
 
@@ -260,11 +259,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 Vector3 vertexB = residue.CarbonylCarbon.Position;
                 Vector3 vertexC = residue.CarbonylOxygen.Position;
 
-                if (Settings.FlipZCoordinates) {
-                    vertexA.z *= -1;
-                    vertexB.z *= -1;
-                    vertexC.z *= -1;
-                }
+                // flip coord system for Unity
+                vertexA.z *= -1;
+                vertexB.z *= -1;
+                vertexC.z *= -1;
 
                 //// create a triangle to show the peptide plane on the model for debugging purposes
                 //GameObject residuePlane = createTriangle(vertexA, vertexB, vertexC);

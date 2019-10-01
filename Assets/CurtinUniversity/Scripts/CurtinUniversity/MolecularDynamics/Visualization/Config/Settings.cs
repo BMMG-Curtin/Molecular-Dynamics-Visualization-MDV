@@ -140,7 +140,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             ResidueColourDefault = new Color32(150, 150, 150, 255);   // grey (default needs to be different than any above)
 
-            FlipZCoordinates = true; // chemistry simulation coordinate systems are left handed, Unity coordinate system is right handed. This setting will flip z coordinates in the model views to compensate. 
             ModelHoverHeight = 2.5f;
             ModelCentre = new Vector3(0, 0, 0);
             ModelBoxEdgeWidthDefault = 0.05f;

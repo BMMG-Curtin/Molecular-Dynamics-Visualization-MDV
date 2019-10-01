@@ -124,6 +124,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
+            MoleculeRenderSettings molecule1Settings = molecules.Get(moleculeIDs[0]).RenderSettings;
+            MoleculeRenderSettings molecule2Settings = molecules.Get(moleculeIDs[0]).RenderSettings;
+
             if (molecules.Get(moleculeIDs[0]).HasTrajectory || molecules.Get(moleculeIDs[1]).HasTrajectory) {
 
                 MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. Monitored molecules cannot have trajectories loaded.", true);
@@ -132,7 +135,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             MonitoringEnabled = true;
             StartStopButtonText.text = "Stop Monitoring Molecules";
-            UserInterfaceEvents.RaiseStartMonitoringMoleculeInteractions(moleculeIDs[0], moleculeIDs[1], interactionSettings);
+            UserInterfaceEvents.RaiseStartMonitoringMoleculeInteractions(moleculeIDs[0], moleculeIDs[1], interactionSettings, molecule1Settings, molecule2Settings);
 
             ResetPositionsButton.interactable = true;
         }

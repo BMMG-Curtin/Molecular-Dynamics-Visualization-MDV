@@ -175,9 +175,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     position = new Vector3(frame.Coords[atom.Index * 3], frame.Coords[(atom.Index * 3) + 1], frame.Coords[(atom.Index * 3) + 2]);
                 }
 
-                if (Settings.FlipZCoordinates) {
-                    position.z = position.z * -1;
-                }
+                // flip coord system for Unity
+                position.z *= -1;
 
                 Color32? customColour = null;
                 MolecularRepresentation? customRepresentation = null;
@@ -305,10 +304,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     atom2pos = new Vector3(frame.Coords[bond.Value.Atom2Index * 3], frame.Coords[(bond.Value.Atom2Index * 3) + 1], frame.Coords[(bond.Value.Atom2Index * 3) + 2]);
                 }
 
-                if (Settings.FlipZCoordinates) {
-                    atom1pos.z = atom1pos.z * -1;
-                    atom2pos.z = atom2pos.z * -1;
-                }
+                // flip coord system for Unity
+                atom1pos.z *= -1;
+                atom2pos.z *= -1;
 
                 // bonds aren't recalculated on each frame. In some frames atoms jump from one side of the simulation box to another. When this happens need to disable bond view
                 float bondLength = (atom2pos - atom1pos).magnitude / 2;
@@ -412,9 +410,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                         position = new Vector3(frame.Coords[atom.Index * 3], frame.Coords[(atom.Index * 3) + 1], frame.Coords[(atom.Index * 3) + 2]);
                     }
 
-                    if (Settings.FlipZCoordinates) {
-                        position.z = position.z * -1;
-                    }
+                    // flip coord system for Unity
+                    position.z *= -1;
 
                     nodePositions.Add(position);
                 }

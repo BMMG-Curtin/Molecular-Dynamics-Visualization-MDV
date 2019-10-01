@@ -31,8 +31,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         GeneralSettings generalSettings;
 
-        //private float moleculeAutoRotateSpeed = 0;
-
         private void Awake() {
 
             molecules = new Dictionary<int, Molecule>();
@@ -230,6 +228,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 molecules[moleculeID].SetRenderSettings(settings);
                 StartCoroutine(molecules[moleculeID].Render(generalSettings.MeshQuality, frameNumber));
             }
+
+            if (moleculeInterations.Active) {
+
+                if (moleculeInterations.Molecule1.ID == moleculeID) {
+                    moleculeInterations.SetMolecule1RenderSettings(settings);
+                }
+                else if (moleculeInterations.Molecule2.ID == moleculeID) {
+                    moleculeInterations.SetMolecule2RenderSettings(settings);
+                }
+            }
         }
 
         public void UpdateGeneralSettings(GeneralSettings newSettings) {
@@ -343,7 +351,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void StartMonitoringInteractions(int molecule1ID, int molecule2ID, MolecularInteractionSettings settings) {
+        public void StartMonitoringInteractions(int molecule1ID, int molecule2ID, MolecularInteractionSettings interactionSettings, MoleculeRenderSettings molecule1Settings, MoleculeRenderSettings molecule2Settings) {
 
             if(!molecules.ContainsKey(molecule1ID)) {
 
@@ -357,7 +365,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 return;
             }
 
-            moleculeInterations.StartMonitoring(molecules[molecule1ID], molecules[molecule2ID], settings);
+            moleculeInterations.StartMonitoring(molecules[molecule1ID], molecules[molecule2ID], interactionSettings, molecule1Settings, molecule2Settings);
         }
 
         public void StopMonitoringInteractions() {
@@ -365,7 +373,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void UpdateMolecularInteractionSettings(MolecularInteractionSettings settings) {
-            moleculeInterations.UpdateMolecularInteractionSettings(settings);
+            moleculeInterations.SetMolecularInteractionSettings(settings);
         }
 
         private int loadTrajectoryAtomCount(string trajectoryFile) {

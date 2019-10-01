@@ -99,11 +99,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public delegate void StartMonitoringMoleculeInteractions(int molecule1ID, int molecule2ID, MolecularInteractionSettings settings);
+        public delegate void StartMonitoringMoleculeInteractions(int molecule1ID, int molecule2ID, MolecularInteractionSettings interactionSettings, MoleculeRenderSettings molecule1Settings, MoleculeRenderSettings molecule2Settings);
         public static event StartMonitoringMoleculeInteractions OnStartMonitoringMoleculeInteractions;
-        public static void RaiseStartMonitoringMoleculeInteractions(int molecule1ID, int molecule2ID, MolecularInteractionSettings settings) {
+        public static void RaiseStartMonitoringMoleculeInteractions(int molecule1ID, int molecule2ID, MolecularInteractionSettings interactionSettings, MoleculeRenderSettings molecule1Settings, MoleculeRenderSettings molecule2Settings) {
             if(OnStartMonitoringMoleculeInteractions != null) {
-                OnStartMonitoringMoleculeInteractions(molecule1ID, molecule2ID, settings);
+                OnStartMonitoringMoleculeInteractions(molecule1ID, molecule2ID, interactionSettings, molecule1Settings, molecule2Settings);
             }
         }
 

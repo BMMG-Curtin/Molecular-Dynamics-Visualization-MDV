@@ -12,9 +12,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public struct HighLightedAtom {
         public Atom Atom;
-        public Vector3 Position;
-        public Quaternion Rotation;
-        public Vector3 Scale;
         public Color HighlightColor;
     }
 
@@ -27,12 +24,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject atomHighlightsParent;
 
         [SerializeField]
-        private Dictionary<Element, GameObject> atomHighlightMeshes;
+        private Dictionary<float, GameObject> atomHighlightMeshes;
 
         private MoleculeRenderSettings renderSettings;
 
         private void Awake() {
-            atomHighlightMeshes = new Dictionary<Element, GameObject>();
+            atomHighlightMeshes = new Dictionary<float, GameObject>();
             renderSettings = MoleculeRenderSettings.Default();
         }
 
@@ -44,38 +41,48 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             ClearHighlights();
 
-            Dictionary<Element, List<HighLightedAtom>> atomsByElement = new Dictionary<Element, List<HighLightedAtom>>();
+            Dictionary<float, List<HighLightedAtom>> atomsBySize = new Dictionary<float, List<HighLightedAtom>>();
 
             // separate List into atoms by element
-            foreach(HighLightedAtom atom in atoms) {
+            foreach(HighLightedAtom highlighedAtom in atoms) {
 
-                Element atomElement = atom.Atom.Element;
-
-                if (!atomsByElement.ContainsKey(atomElement)) {
-                    atomsByElement.Add(atomElement, new List<HighLightedAtom>());
+                if ((renderSettings.EnabledResidueNames != null && !renderSettings.EnabledResidueNames.Contains(highlighedAtom.Atom.ResidueName)) ||
+                    (renderSettings.EnabledResidueIDs != null && !renderSettings.EnabledResidueIDs.Contains(highlighedAtom.Atom.ResidueID))) {
+                    continue;
                 }
 
-                atomsByElement[atomElement].Add(atom);
+                // get atom size
+                float atomSize = getAtomScale(highlighedAtom.Atom);
+
+                if (!atomsBySize.ContainsKey(atomSize)) {
+                    atomsBySize.Add(atomSize, new List<HighLightedAtom>());
+                }
+
+                atomsBySize[atomSize].Add(highlighedAtom);
             }
 
             // render mesh for each element
-            foreach(KeyValuePair<Element, List<HighLightedAtom>> item in atomsByElement) {
+            foreach(KeyValuePair<float, List<HighLightedAtom>> item in atomsBySize) {
                 renderAtomHighlights(item.Key, item.Value);
             }
         }
 
-        private void renderAtomHighlights(Element element, List<HighLightedAtom> atoms) {
+        private void renderAtomHighlights(float size, List<HighLightedAtom> atoms) {
 
             GameObject atomHighlightsMesh;
 
-            if (atomHighlightMeshes.ContainsKey(element)) {
-                atomHighlightsMesh = atomHighlightMeshes[element];
+            if (atomHighlightMeshes.ContainsKey(size)) {
+                atomHighlightsMesh = atomHighlightMeshes[size];
             }
             else {
 
                 atomHighlightsMesh = GameObject.Instantiate(atomHighlightsMeshPrefab);
-                atomHighlightMeshes.Add(element, atomHighlightsMesh);
+                atomHighlightMeshes.Add(size, atomHighlightsMesh);
                 atomHighlightsMesh.transform.SetParent(atomHighlightsParent.transform, false);
+
+                MeshRenderer mr = atomHighlightsMesh.GetComponent<MeshRenderer>();
+                float pointSize = (size / 2f) + 0.01f;
+                mr.material.SetFloat("_PointSize", pointSize);
             }
 
             Vector3[] vertices = new Vector3[atoms.Count];
@@ -84,7 +91,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             for (int i = 0; i < atoms.Count; i++) {
 
-                vertices[i] = atoms[i].Position;
+                vertices[i] = atoms[i].Atom.Position;
+                vertices[i].z *= -1;
                 indices[i] = i;
                 colors[i] = atoms[i].HighlightColor;
             }
@@ -101,26 +109,49 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             atomHighlightsMesh.SetActive(true);
         }
 
-        private float getAtomScale(Atom atom, MoleculeRenderSettings settings, MolecularRepresentation? customRepresentation) {
+        private float getAtomScale(Atom atom) {
 
-            MolecularRepresentation atomRepresentation;
+            MolecularRepresentation? customRepresentation = null;
 
-            if (customRepresentation != null && customRepresentation != MolecularRepresentation.None) {
-                atomRepresentation = (MolecularRepresentation)customRepresentation;
-            }
-            else {
-                atomRepresentation = settings.Representation;
+            if (renderSettings.CustomResidueRenderSettings != null && renderSettings.CustomResidueRenderSettings.ContainsKey(atom.ResidueID)) {
+
+                ResidueRenderSettings residueSettings = renderSettings.CustomResidueRenderSettings[atom.ResidueID];
+
+                if (residueSettings != null) { 
+
+                    // use the atom specific settings if available. 
+                    if (residueSettings.AtomSettings.ContainsKey(atom.Name)) {
+
+                        AtomRenderSettings atomSettings = residueSettings.AtomSettings[atom.Name];
+                        if (atomSettings.Representation != MolecularRepresentation.None) {
+                            customRepresentation = atomSettings.Representation;
+                        }
+                    }
+
+                    // if we didn't get from atom specific settings then try residue settings
+                    if (customRepresentation == null) {
+                        if (residueSettings.AtomRepresentation != MolecularRepresentation.None) {
+                            customRepresentation = residueSettings.AtomRepresentation;
+                        }
+                    }
+                }
             }
 
             float atomRadius;
-            if (atomRepresentation == MolecularRepresentation.VDW) {
-                atomRadius = atom.VDWRadius;
+
+            if(!renderSettings.ShowAtoms) {
+                atomRadius = 0.001f;
             }
-            else { // default to CPK
-                atomRadius = atom.AtomicRadius;
+            else if (customRepresentation != null && customRepresentation != MolecularRepresentation.None) {
+                atomRadius = (MolecularRepresentation)customRepresentation == MolecularRepresentation.VDW ? atom.VDWRadius : atom.AtomicRadius;
+                atomRadius *= renderSettings.AtomScale;
+            }
+            else {
+                atomRadius = renderSettings.Representation == MolecularRepresentation.VDW ? atom.VDWRadius : atom.AtomicRadius;
+                atomRadius *= renderSettings.AtomScale;
             }
 
-            return settings.AtomScale * atomRadius;
+            return atomRadius;
         }
 
         public void ClearHighlights() {

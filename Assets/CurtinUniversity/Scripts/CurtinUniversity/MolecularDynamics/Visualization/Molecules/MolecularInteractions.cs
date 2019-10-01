@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 using UnityEngine;
@@ -30,7 +31,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private List<AtomInteraction> interactions;
         private List<AtomInteraction> closestInteractions;
-        private MolecularInteractionSettings settings;
+        private MolecularInteractionSettings interactionSettings;
+
+        private List<Atom> molecule1RenderedAtoms;
+        private List<Atom> molecule2RenderedAtoms;
 
         private void LateUpdate() {
 
@@ -47,7 +51,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 if(interactionsUpdated) {
 
-                    if (settings.RenderClosestInteractionsOnly) {
+                    if (interactionSettings.RenderClosestInteractionsOnly) {
 
                         outputInteractionResults(closestInteractions);
                         interactionsRenderer.SetInteractions(closestInteractions);
@@ -65,7 +69,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void StartMonitoring(Molecule molecule1, Molecule molecule2, MolecularInteractionSettings settings) {
+        public void StartMonitoring(Molecule molecule1, Molecule molecule2, MolecularInteractionSettings interactionSettings, MoleculeRenderSettings molecule1Settings, MoleculeRenderSettings molecule2Settings) {
 
             if(molecule1 == null) {
                 MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. First molecule is null.", true);
@@ -84,7 +88,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             this.Molecule1 = molecule1;
             this.Molecule2 = molecule2;
-            this.settings = settings;
+            this.interactionSettings = interactionSettings;
+
+            SetMolecule1RenderSettings(molecule1Settings);
+            SetMolecule2RenderSettings(molecule2Settings);
 
             interactionsRenderer.Molecule1 = molecule1;
             interactionsRenderer.Molecule2 = molecule2;
@@ -108,8 +115,27 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             interactionsRenderer.Molecule2 = null;
         }
 
-        public void UpdateMolecularInteractionSettings(MolecularInteractionSettings settings) {
-            this.settings = settings;
+        public void SetMolecularInteractionSettings(MolecularInteractionSettings settings) {
+            this.interactionSettings = settings;
+        }
+
+        public void SetMolecule1RenderSettings(MoleculeRenderSettings molecule1Settings) {
+
+            if (!molecule1Settings.ShowPrimaryStructure) {
+                this.molecule1RenderedAtoms = new List<Atom>();
+            }
+            else {
+                this.molecule1RenderedAtoms = Molecule1.PrimaryStructure.GetAtoms(molecule1Settings.ShowStandardResidues, molecule1Settings.ShowNonStandardResidues, molecule1Settings.EnabledElements, molecule1Settings.EnabledResidueNames, molecule1Settings.EnabledResidueIDs).Values.ToList();
+            }
+        }
+
+        public void SetMolecule2RenderSettings(MoleculeRenderSettings molecule2Settings) {
+            if (!molecule2Settings.ShowPrimaryStructure) {
+                this.molecule2RenderedAtoms = new List<Atom>();
+            }
+            else {
+                this.molecule2RenderedAtoms = Molecule2.PrimaryStructure.GetAtoms(molecule2Settings.ShowStandardResidues, molecule2Settings.ShowNonStandardResidues, molecule2Settings.EnabledElements, molecule2Settings.EnabledResidueNames, molecule2Settings.EnabledResidueIDs).Values.ToList();
+            }
         }
 
         private IEnumerator processInteractions() {
@@ -117,21 +143,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             processingInteractions = true;
 
             // can't access Unity transforms in the thread
-            List<Vector3> molecule1AtomPositions = getWorldPositions(Molecule1.PrimaryStructure.Atoms(), Molecule1.MoleculeRender.transform);
-            List<Vector3> molecule2AtomPositions = getWorldPositions(Molecule2.PrimaryStructure.Atoms(), Molecule2.MoleculeRender.transform);
+            List<Vector3> molecule1AtomPositions = getWorldPositions(molecule1RenderedAtoms, Molecule1.MoleculeRender.transform);
+            List<Vector3> molecule2AtomPositions = getWorldPositions(molecule2RenderedAtoms, Molecule2.MoleculeRender.transform);
 
             Thread thread = new Thread(() => {
 
                 InteractionsCalculator interactionsCalculator = new InteractionsCalculator();
                 List<AtomInteraction> newInteractions = interactionsCalculator.GetAllInteractions(
-                    Molecule1.PrimaryStructure.Atoms(),
+                    molecule1RenderedAtoms,
                     molecule1AtomPositions,
-                    Molecule2.PrimaryStructure.Atoms(),
+                    molecule2RenderedAtoms,
                     molecule2AtomPositions
                 );
 
                 List<AtomInteraction> newClosestInteractions = null;
-                if (settings.CalculateClosestInteractionsOnly || settings.RenderClosestInteractionsOnly) {
+                if (interactionSettings.CalculateClosestInteractionsOnly || interactionSettings.RenderClosestInteractionsOnly) {
                     newClosestInteractions = interactionsCalculator.GetClosestInteractions(newInteractions);
                 }
 

@@ -117,48 +117,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void RenderAtomHighlights(int meshQuality) {
 
-            Color32 atomColour = Color.white;
-            Quaternion atomOrientation = Quaternion.Euler(45, 45, 45);
-
             List<HighLightedAtom> molecule1Atoms = new List<HighLightedAtom>();
             List<HighLightedAtom> molecule2Atoms = new List<HighLightedAtom>();
 
             foreach (AtomInteraction interaction in interactions) {
 
-                // atom 1
-                Vector3 atom1Position = interaction.Atom1.Position;
-                atom1Position.z *= -1;
-
-                float atom1Size = interaction.Atom1.AtomicRadius;
-                Vector3 atom1Scale = new Vector3(atom1Size, atom1Size, atom1Size);
-
-                Color atom1HighlightColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1);
-
                 HighLightedAtom atom1 = new HighLightedAtom();
                 atom1.Atom = interaction.Atom1;
-                atom1.Position = atom1Position;
-                atom1.Rotation = atomOrientation;
-                atom1.Scale = atom1Scale;
-                atom1.HighlightColor = atom1HighlightColor;
-
+                atom1.HighlightColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1); ;
                 molecule1Atoms.Add(atom1);
-
-                // atom 2
-                Vector3 atom2Position = interaction.Atom2.Position;
-                atom2Position.z *= -1;
-
-                float atom2Size = interaction.Atom2.AtomicRadius;
-                Vector3 atom2Scale = new Vector3(atom2Size, atom2Size, atom2Size);
-
-                Color atom2HighlightColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1);
 
                 HighLightedAtom atom2 = new HighLightedAtom();
                 atom2.Atom = interaction.Atom2;
-                atom2.Position = atom2Position;
-                atom2.Rotation = atomOrientation;
-                atom2.Scale = atom2Scale;
-                atom2.HighlightColor = atom2HighlightColor;
-
+                atom2.HighlightColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1);
                 molecule2Atoms.Add(atom2);
             }
 
