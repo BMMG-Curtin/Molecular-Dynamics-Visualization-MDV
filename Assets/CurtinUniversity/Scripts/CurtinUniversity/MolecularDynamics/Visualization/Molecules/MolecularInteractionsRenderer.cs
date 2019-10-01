@@ -102,7 +102,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 lineRenderer.startWidth = 0.005f;
                 lineRenderer.endWidth = 0.005f;
 
-                Color lineColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1);
+                Color lineColor = interaction.SimpleVDWInteractionForce > 0 ? positiveGradient.Evaluate(interaction.SimpleVDWInteractionForce) : negativeGradient.Evaluate(interaction.SimpleVDWInteractionForce * -1);
                 lineRenderer.material.color = lineColor;
 
                 lineRenderer.gameObject.SetActive(true);
@@ -136,12 +136,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                     HighLightedAtom atom1 = new HighLightedAtom();
                     atom1.Atom = interaction.Atom1;
-                    atom1.HighlightColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1); ;
+                    atom1.HighlightColor = interaction.SimpleVDWInteractionForce > 0 ? positiveGradient.Evaluate(interaction.SimpleVDWInteractionForce) : negativeGradient.Evaluate(interaction.SimpleVDWInteractionForce * -1); ;
                     molecule1Atoms.Add(atom1);
 
                     HighLightedAtom atom2 = new HighLightedAtom();
                     atom2.Atom = interaction.Atom2;
-                    atom2.HighlightColor = interaction.InteractionForce > 0 ? positiveGradient.Evaluate(interaction.InteractionForce) : negativeGradient.Evaluate(interaction.InteractionForce * -1);
+                    atom2.HighlightColor = interaction.SimpleVDWInteractionForce > 0 ? positiveGradient.Evaluate(interaction.SimpleVDWInteractionForce) : negativeGradient.Evaluate(interaction.SimpleVDWInteractionForce * -1);
                     molecule2Atoms.Add(atom2);
                 }
             }

@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
+using UnityEngine;
+
 namespace CurtinUniversity.MolecularDynamics.Model {
 
     public class BondCalculator {
@@ -67,7 +69,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 threadCount = 1;
             }
 
-            int maxAtomsPerThread = atomIndexes.Count / threadCount;
+            int maxAtomsPerThread = Mathf.Max(1, atomIndexes.Count / threadCount);
 
             for (int i = 0; i < atomIndexes.Count; i += maxAtomsPerThread) {
 

@@ -225,8 +225,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     }
                 }
 
-                float atomSize = getAtomScale(atom, renderSettings, customRepresentation);
-                Vector3 scale = new Vector3(atomSize, atomSize, atomSize);
+                float atomDiameter = getAtomRadius(atom, renderSettings, customRepresentation) * 2;
+                Vector3 scale = new Vector3(atomDiameter, atomDiameter, atomDiameter);
 
                 Matrix4x4 atomTransform = Matrix4x4.TRS(position, atomOrientation, scale);
 
@@ -443,7 +443,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private float getAtomScale(Atom atom, MoleculeRenderSettings settings, MolecularRepresentation? customRepresentation) {
+        private float getAtomRadius(Atom atom, MoleculeRenderSettings settings, MolecularRepresentation? customRepresentation) {
 
             MolecularRepresentation atomRepresentation;
 
@@ -459,10 +459,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 atomRadius = atom.VDWRadius;
             }
             else { // default to CPK
-                atomRadius = atom.AtomicRadius;
+                atomRadius = atom.AtomicRadius / 2f;
             }
 
-            return settings.AtomScale * atomRadius; 
+            return atomRadius; // * settings.AtomScale; 
         }
     }
 }

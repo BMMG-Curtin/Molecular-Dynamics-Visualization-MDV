@@ -73,6 +73,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             cacheRenderSettings(moleculeID, settings, null);
             int oldAtomMeshQuality = generalSettings.MeshQuality;
 
+            Debug.Log("Loading structure");
+
             PrimaryStructure primaryStructure = null;
             string loadException = null;
 
@@ -99,6 +101,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             while (thread.IsAlive) {
                 yield return null;
             }
+
+            Debug.Log("Finished Loading structure");
 
             if (loadException != null) {
 
@@ -389,28 +393,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
                 else if (trajectoryFile.EndsWith(".gro")) {
                     count = GROTrajectoryParser.GetAtomCount(trajectoryFile);
-                }
-            }
-            catch (FileParseException ex) {
-                MoleculeEvents.RaiseRenderMessage("Error Loading Trajectory File: " + ex.Message, true);
-            }
-
-            return count;
-        }
-
-        private int loadAvailableTrajectoryFrames(string trajectoryFile) {
-
-            int count = 0;
-
-            try {
-                if (trajectoryFile.EndsWith(".xtc")) {
-                    count = XTCTrajectoryParser.GetFrameCount(trajectoryFile);
-                }
-                else if (trajectoryFile.EndsWith(".dcd")) {
-                    count = DCDTrajectoryParser.GetFrameCount(trajectoryFile);
-                }
-                else if (trajectoryFile.EndsWith(".gro")) {
-                    count = GROTrajectoryParser.GetFrameCount(trajectoryFile);
                 }
             }
             catch (FileParseException ex) {

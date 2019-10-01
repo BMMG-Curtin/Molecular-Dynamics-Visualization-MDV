@@ -11,7 +11,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public Atom Atom1;
         public Atom Atom2;
         public float Distance;
-        public float InteractionForce;
+        public float SimpleVDWInteractionForce;
 
         public override int GetHashCode() {
 
@@ -34,7 +34,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return
                 "Atom1: " + Atom1 +
                 "Atom2: " + Atom2 +
-                "InteractionForce: " + InteractionForce;
+                "InteractionForce: " + SimpleVDWInteractionForce;
         }
     }
 
@@ -84,16 +84,19 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     float distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 
                     // interaction force is -1 to +1 
-                    float interactionForce = ((0.5f * BondSettings.MaximumLengthAllElements) - distance) / (0.5f * BondSettings.MaximumLengthAllElements);
+                    float? interactionForce = GetSimpleBondingForce(atom, interactingAtom, distance);
 
-                    AtomInteraction interaction = new AtomInteraction() {
-                        Atom1 = atom,
-                        Atom2 = interactingAtom,
-                        Distance = distance,
-                        InteractionForce = interactionForce
-                    };
+                    if (interactionForce != null) {
 
-                    interactions.Add(interaction);
+                        AtomInteraction interaction = new AtomInteraction() {
+                            Atom1 = atom,
+                            Atom2 = interactingAtom,
+                            Distance = distance,
+                            SimpleVDWInteractionForce = (float)interactionForce
+                        };
+
+                        interactions.Add(interaction);
+                    }
                 }
             }
 
@@ -137,6 +140,26 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             }
 
             return 0;
+        }
+
+        public float? GetSimpleBondingForce(Atom atom1, Atom atom2, float distance) {
+
+            // null if distance > combined Atomic radii
+            // 0 at distance at combined Atomic radii 
+            // -1 at distance 2/3 of combined Atomic radii 
+            // 0 at distance 1/3 of combined Atomic radii 
+            // +1 at distance 0 of combined Atomic radii 
+
+            float combinedAtomicRadius = atom1.AtomicRadius + atom2.AtomicRadius;
+
+            if (distance > combinedAtomicRadius) {
+                return null;
+            }
+
+            float distanceRatio = (combinedAtomicRadius - distance) / combinedAtomicRadius;
+            float force = Mathf.Cos((Mathf.PI / 2) + (Mathf.PI * 1.5f * distanceRatio));
+
+            return force;
         }
     }
 }

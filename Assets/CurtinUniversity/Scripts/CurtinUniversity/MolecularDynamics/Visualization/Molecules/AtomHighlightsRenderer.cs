@@ -52,13 +52,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
 
                 // get atom size
-                float atomSize = getAtomScale(highlighedAtom.Atom);
+                float atomDiameter = getAtomRadius(highlighedAtom.Atom) * 2;
 
-                if (!atomsBySize.ContainsKey(atomSize)) {
-                    atomsBySize.Add(atomSize, new List<HighLightedAtom>());
+                if (!atomsBySize.ContainsKey(atomDiameter)) {
+                    atomsBySize.Add(atomDiameter, new List<HighLightedAtom>());
                 }
 
-                atomsBySize[atomSize].Add(highlighedAtom);
+                atomsBySize[atomDiameter].Add(highlighedAtom);
             }
 
             // render mesh for each element
@@ -109,7 +109,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             atomHighlightsMesh.SetActive(true);
         }
 
-        private float getAtomScale(Atom atom) {
+        private float getAtomRadius(Atom atom) {
 
             MolecularRepresentation? customRepresentation = null;
 
@@ -143,11 +143,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 atomRadius = 0.001f;
             }
             else if (customRepresentation != null && customRepresentation != MolecularRepresentation.None) {
-                atomRadius = (MolecularRepresentation)customRepresentation == MolecularRepresentation.VDW ? atom.VDWRadius : atom.AtomicRadius;
+                atomRadius = (MolecularRepresentation)customRepresentation == MolecularRepresentation.VDW ? atom.VDWRadius : atom.AtomicRadius / 2f;
                 atomRadius *= renderSettings.AtomScale;
             }
             else {
-                atomRadius = renderSettings.Representation == MolecularRepresentation.VDW ? atom.VDWRadius : atom.AtomicRadius;
+                atomRadius = renderSettings.Representation == MolecularRepresentation.VDW ? atom.VDWRadius : atom.AtomicRadius / 2f;
                 atomRadius *= renderSettings.AtomScale;
             }
 

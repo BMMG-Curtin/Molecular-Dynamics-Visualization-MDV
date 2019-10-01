@@ -14,7 +14,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         // default value for hydrogen simple calculations, 
         // can be overriden in dictionary below
-        public const float MaximumLengthHydrogen = 0.11f;
+        public const float MaximumLengthHydrogen = 0.11f; 
 
         // Maximum bond length between elements
         public static Dictionary<ElementPair, float> Lengths = new Dictionary<ElementPair, float>() {
