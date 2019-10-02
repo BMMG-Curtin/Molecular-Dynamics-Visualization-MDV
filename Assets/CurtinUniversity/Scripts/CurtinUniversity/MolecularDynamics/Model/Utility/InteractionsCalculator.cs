@@ -36,8 +36,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 "Atom1: " + Atom1 + "\n" +
                 "Atom2: " + Atom2 + "\n" +
                 "Distance: " + Distance + "\n" +
-                "InteractionForce: " + SimpleBondingForce + "\n" +
-                "VDWAttractionForce: " + VDWForce + "\n";
+                "SimpleForce: " + SimpleBondingForce + "\n" +
+                "VDWForce: " + VDWForce + "\n";
         }
     }
 
@@ -90,7 +90,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     float? simpleForce = GetSimpleBondingForce(atom, interactingAtom, distance);
                     double? vdwForce = getVDWForces(atom, interactingAtom, distance, 0.8d);
 
-                    // attraction forces max around 0.05. Multply by 20 to get to 1 for max attraction force
+                    // VDW attraction forces max around 0.05. Multiply by 20 to get to 1 for max attraction force
                     if (vdwForce < 0) {
                         vdwForce *= 20;
                     }
@@ -146,7 +146,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             AtomSigmaEpsilon atom1SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
             AtomSigmaEpsilon atom2SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
 
-            //double sumOfAtomicRadii = ((double)atom1SigmaEpsilon.Sigma + (double)atom2SigmaEpsilon.Sigma) / 2d;
+            // double sumOfAtomicRadii = ((double)atom1SigmaEpsilon.Sigma + (double)atom2SigmaEpsilon.Sigma) / 2d;
             double sumOfAtomicRadii = (((double)atom1.AtomicRadius * 10d) + ((double)atom2.AtomicRadius * 10d)); // nanometres to angstroms
             double energyWellDepth = Math.Sqrt((double)atom1SigmaEpsilon.Epsilon * (double)atom2SigmaEpsilon.Epsilon);
             double distanceBetweenAtoms6 = Math.Pow(distanceBetweenAtoms, 6);
@@ -202,24 +202,11 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return new double?[] { attractionScore, repulsionScore };
         }
 
+        // simple sin wave from 0 to -ve to -0t to +ve as distance approaches 0
         public float? GetSimpleBondingForce(Atom atom1, Atom atom2, float distance) {
 
-            // null if distance > combined Atomic radii
-            // 0 at distance at combined Atomic radii 
-            // -1 at distance 2/3 of combined Atomic radii 
-            // 0 at distance 1/3 of combined Atomic radii 
-            // +1 at distance 0 of combined Atomic radii 
-
-            float combinedAtomicRadius = atom1.AtomicRadius + atom2.AtomicRadius;
-
-            if (distance > combinedAtomicRadius) {
-                return null;
-            }
-
-            float distanceRatio = (combinedAtomicRadius - distance) / combinedAtomicRadius;
-            float force = Mathf.Cos((Mathf.PI / 2) + (Mathf.PI * 1.5f * distanceRatio));
-
-            return force;
+            float distanceRatio = (BondLengths.MaximumLengthAllElements - distance) / BondLengths.MaximumLengthAllElements;
+            return Mathf.Cos((Mathf.PI / 2) + (Mathf.PI * 1.5f * distanceRatio));
         }
     }
 }

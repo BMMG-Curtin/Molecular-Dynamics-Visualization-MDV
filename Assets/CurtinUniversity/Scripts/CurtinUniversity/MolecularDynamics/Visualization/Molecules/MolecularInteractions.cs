@@ -30,11 +30,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private float processingTime;
 
         private List<AtomInteraction> interactions;
-        private List<AtomInteraction> closestInteractions;
         private MolecularInteractionSettings interactionSettings;
 
         private List<Atom> molecule1RenderedAtoms;
         private List<Atom> molecule2RenderedAtoms;
+
+        private void Awake() {
+            interactionSettings = MolecularInteractionSettings.Default();
+        }
 
         private void LateUpdate() {
 
@@ -51,24 +54,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 if(interactionsUpdated) {
 
-                    if (interactionSettings.RenderClosestInteractionsOnly) {
-
-                        outputInteractionResults(closestInteractions);
-                        interactionsRenderer.SetInteractions(closestInteractions);
-                    }
-                    else {
-
-                        outputInteractionResults(interactions);
-                        interactionsRenderer.SetInteractions(interactions);
-                    }
+                    outputInteractionResults(interactions);
+                    interactionsRenderer.SetInteractions(interactions);
 
                     if (interactionSettings.HighlightInteracingAtoms) {
-                        interactionsRenderer.RenderAtomHighlights();
+                        interactionsRenderer.RenderAtomHighlights(interactionSettings);
                     }
                 }
 
                 if (interactionSettings.RenderInteractionLines) {
-                    interactionsRenderer.RenderInteractionLines();
+                    interactionsRenderer.RenderInteractionLines(interactionSettings);
                 }
             }
         }
@@ -110,7 +105,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Active = false;
 
             interactions = null;
-            closestInteractions = null;
             interactionsUpdated = false;
 
             interactionsRenderer.ClearInteractions();
@@ -162,6 +156,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Thread thread = new Thread(() => {
 
                 InteractionsCalculator interactionsCalculator = new InteractionsCalculator();
+
                 List<AtomInteraction> newInteractions = interactionsCalculator.GetAllInteractions(
                     molecule1RenderedAtoms,
                     molecule1AtomPositions,
@@ -169,15 +164,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     molecule2AtomPositions
                 );
 
-                List<AtomInteraction> newClosestInteractions = null;
-                if (interactionSettings.CalculateClosestInteractionsOnly || interactionSettings.RenderClosestInteractionsOnly) {
-                    newClosestInteractions = interactionsCalculator.GetClosestInteractions(newInteractions);
+                if (interactionSettings.RenderClosestInteractionsOnly) {
+                    newInteractions = interactionsCalculator.GetClosestInteractions(newInteractions);
                 }
 
                 if(Active) {
 
                     interactions = newInteractions;
-                    closestInteractions = newClosestInteractions;
                     interactionsUpdated = true;
                 }
             });
@@ -202,8 +195,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
             else {
 
-                output += interactions.Count + " molecular interactions found";
-                output += "\nFirst interaction:\n" + interactions[0].ToString();
+                output += interactions.Count + " molecular interactions found\n\n";
+                output += "First interaction:\n\n" + interactions[0].ToString();
             }
 
             MoleculeEvents.RaiseInteractionsInformation(output);

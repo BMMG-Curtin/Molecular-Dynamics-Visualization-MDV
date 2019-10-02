@@ -14,16 +14,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TextMeshProUGUI selectedMoleculeText;
 
         [SerializeField]
-        private Toggle renderClosestInteractionsToggle;
+        private Toggle renderSimpleForcesToggle;
 
         [SerializeField]
-        private Toggle calculateClosestInteractionsToggle;
+        private Toggle renderVDWForcesToggle;
 
         [SerializeField]
         private Toggle highlightInteractingAtomsToggle;
 
         [SerializeField]
         private Toggle renderInteractionLinesToggle;
+
+        [SerializeField]
+        private Toggle renderClosestInteractionsToggle;
 
         [SerializeField]
         private TextMeshProUGUI StartStopButtonText;
@@ -54,10 +57,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             interactionSettings = MolecularInteractionSettings.Default();
 
-            renderClosestInteractionsToggle.isOn = interactionSettings.RenderClosestInteractionsOnly;
-            calculateClosestInteractionsToggle.isOn = interactionSettings.CalculateClosestInteractionsOnly;
+            renderSimpleForcesToggle.isOn = interactionSettings.ShowSimpleForces;
+            renderVDWForcesToggle.isOn = interactionSettings.ShowVDWForces;
             highlightInteractingAtomsToggle.isOn = interactionSettings.HighlightInteracingAtoms;
             renderInteractionLinesToggle.isOn = interactionSettings.RenderInteractionLines;
+            renderClosestInteractionsToggle.isOn = interactionSettings.RenderClosestInteractionsOnly;
         }
 
         private void OnEnable() {
@@ -79,15 +83,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void OnRenderClosestInteractionsToggle() {
+        public void OnShowSimpleForcesToggle() {
 
-            interactionSettings.RenderClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
+            interactionSettings.ShowSimpleForces = renderSimpleForcesToggle.isOn;
             UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 
-        public void OnCalculateClosestInteractionsToggle() {
+        public void OnShowVDWForcesToggle() {
 
-            interactionSettings.CalculateClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
+            interactionSettings.ShowVDWForces = renderVDWForcesToggle.isOn;
             UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 
@@ -100,6 +104,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void OnRenderInteractionLinesToggle() {
 
             interactionSettings.RenderInteractionLines = renderInteractionLinesToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
+        }
+
+        public void OnRenderClosestInteractionsToggle() {
+
+            interactionSettings.RenderClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
             UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 

@@ -63,7 +63,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void RenderInteractionLines() {
+        public void RenderInteractionLines(MolecularInteractionSettings interactionSettings) {
 
             if (interactions == null || Molecule1 == null || Molecule2 == null) {
                 return;
@@ -73,7 +73,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             foreach (AtomInteraction interaction in interactions) {
 
-                if (interaction.SimpleBondingForce == null && interaction.VDWForce == null) {
+                Color? forceColor = getForceColor(interaction, interactionSettings);
+                if (forceColor == null) {
                     continue;
                 }
 
@@ -105,10 +106,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 lineRenderer.SetPositions(positions);
                 lineRenderer.startWidth = 0.005f;
                 lineRenderer.endWidth = 0.005f;
-
-                //Color color = interaction.SimpleBondingForce > 0 ? positiveGradient.Evaluate((float)interaction.SimpleBondingForce) : negativeGradient.Evaluate((float)interaction.SimpleBondingForce * -1);
-                Color color = interaction.VDWForce > 0 ? positiveGradient.Evaluate((float)interaction.VDWForce) : negativeGradient.Evaluate((float)interaction.VDWForce * -1);
-                lineRenderer.material.color = color;
+                lineRenderer.material.color = (Color)forceColor;
 
                 lineRenderer.gameObject.SetActive(true);
                 newInteractions.Add(key);
@@ -130,7 +128,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void RenderAtomHighlights() {
+        public void RenderAtomHighlights(MolecularInteractionSettings interactionSettings) {
 
             List<HighLightedAtom> molecule1Atoms = new List<HighLightedAtom>();
             List<HighLightedAtom> molecule2Atoms = new List<HighLightedAtom>();
@@ -139,27 +137,52 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 foreach (AtomInteraction interaction in interactions) {
 
-                    if(interaction.SimpleBondingForce == null && interaction.VDWForce == null) {
+                    Color? forceColor = getForceColor(interaction, interactionSettings);
+                    if(forceColor == null) {
                         continue;
                     }
 
-                    //Color color = interaction.SimpleBondingForce > 0 ? positiveGradient.Evaluate((float)interaction.SimpleBondingForce) : negativeGradient.Evaluate((float)interaction.SimpleBondingForce * -1);
-                    Color color = interaction.VDWForce > 0 ? positiveGradient.Evaluate((float)interaction.VDWForce) : negativeGradient.Evaluate((float)interaction.VDWForce * -1);
-
                     HighLightedAtom atom1 = new HighLightedAtom();
                     atom1.Atom = interaction.Atom1;
-                    atom1.HighlightColor = color;
+                    atom1.HighlightColor = (Color)forceColor;
                     molecule1Atoms.Add(atom1);
 
                     HighLightedAtom atom2 = new HighLightedAtom();
                     atom2.Atom = interaction.Atom2;
-                    atom2.HighlightColor = color;
+                    atom2.HighlightColor = (Color)forceColor;
                     molecule2Atoms.Add(atom2);
                 }
             }
 
             Molecule1.RenderAtomHighlights(molecule1Atoms);
             Molecule2.RenderAtomHighlights(molecule2Atoms);
+        }
+
+        // forece colour is the average of all the shown force types
+        private Color? getForceColor(AtomInteraction interaction, MolecularInteractionSettings interactionSettings) {
+
+            double? force = null;
+            int valuesAdded = 0;
+
+            if (interactionSettings.ShowSimpleForces && interaction.SimpleBondingForce != null) {
+
+                force = interaction.SimpleBondingForce;
+                valuesAdded++;
+            }
+
+            if (interactionSettings.ShowVDWForces && interaction.VDWForce != null) {
+
+                force = force == null ? interaction.VDWForce : force + interaction.VDWForce;
+                valuesAdded++;
+            }
+
+            if (force == null) {
+                return null;
+            }
+
+            force = force / (double)valuesAdded;
+
+            return force > 0 ? positiveGradient.Evaluate((float)force) : negativeGradient.Evaluate((float)force * -1);
         }
     }
 }
