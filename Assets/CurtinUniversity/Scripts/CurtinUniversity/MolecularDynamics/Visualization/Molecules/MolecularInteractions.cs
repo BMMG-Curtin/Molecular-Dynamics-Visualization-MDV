@@ -195,17 +195,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             // output to UI
 
-            if (interactions == null || interactions.Count <= 0) {
-                return;
-            }
-
             string output = "";
 
             if (interactions == null || interactions.Count <= 0) {
                 output += "No molecular interactions found";
             }
             else {
+
                 output += interactions.Count + " molecular interactions found";
+                output += "\nFirst interaction:\n" + interactions[0].ToString();
             }
 
             MoleculeEvents.RaiseInteractionsInformation(output);

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace CurtinUniversity.MolecularDynamics.Model {
 
+    public struct AtomSigmaEpsilon {
+        public float Sigma;
+        public float Epsilon;
+    }
+
     public static class InteractionForces {
 
         // Preliminary look-up table. 
@@ -32,12 +37,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         // P           3.70000e-01  8.40000e-01
         // S           3.56000e-01  1.05000e+00
 
-        public struct AtomSigmaEpsilon {
-            public float Sigma;
-            public float Epsilon;
-        }
-
         // Indexed by Residue Name and Atom Type
+        // Values in Angstroms
         public static Dictionary<string, AtomSigmaEpsilon> AtomTypeSigmaEpsilon = new Dictionary<string, AtomSigmaEpsilon> {
 
             { "SER_HG",  new AtomSigmaEpsilon { Sigma = 0.0000000f, Epsilon = 0.0000000f } },
@@ -46,6 +47,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             { "SYS_HG",  new AtomSigmaEpsilon { Sigma = 0.1069080f, Epsilon = 0.0656888f } },
         };
 
+        // Values in Angstroms
         public static Dictionary<Element, AtomSigmaEpsilon> AtomElementSigmaEpsilon = new Dictionary<Element, AtomSigmaEpsilon> {
 
             { Element.C,  new AtomSigmaEpsilon { Sigma = 0.3400000f, Epsilon = 0.3600000f } },

@@ -42,7 +42,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public override int GetHashCode() {
 
             // atom1 will always be lower than atom2 so the bond hash will always equal
-            return (Atom1Index.ToString() + Atom2Index.ToString()).GetHashCode();
+            return (Atom1Index.ToString() + "_" + Atom2Index.ToString()).GetHashCode();
         }
 
         public override string ToString() {
