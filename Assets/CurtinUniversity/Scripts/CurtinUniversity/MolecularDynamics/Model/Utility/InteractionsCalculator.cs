@@ -69,7 +69,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 Atom atom = molecule1Atoms[i];
                 Vector3 atomPosition = molecule1AtomPositions[i];
 
-                KdTreeNode<float, int>[] interactingAtoms = molecule2AtomTree.RadialSearch(new float[] { atomPosition.x, atomPosition.y, atomPosition.z }, BondSettings.MaximumLengthAllElements, maxInteractionsPerAtom);
+                KdTreeNode<float, int>[] interactingAtoms = molecule2AtomTree.RadialSearch(new float[] { atomPosition.x, atomPosition.y, atomPosition.z }, BondLengths.MaximumLengthAllElements, maxInteractionsPerAtom);
 
                 foreach(KdTreeNode<float, int> node in interactingAtoms) {
 

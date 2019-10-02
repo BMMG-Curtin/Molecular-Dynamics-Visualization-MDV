@@ -33,7 +33,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         // http://proteopedia.org/wiki/index.php/Atomic_coordinate_file
         // 
         public Dictionary<int, Bond> CalculateBonds(Dictionary<int, Atom> atoms, int processorCores) {
-            return CalculateBonds(atoms, BondSettings.Lengths, processorCores);
+            return CalculateBonds(atoms, BondLengths.Lengths, processorCores);
         }
 
         // same as above method but allows for custom max bond lengths
@@ -104,7 +104,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                 Atom atom = atoms[atomIndex];
 
-                KdTreeNode<float, int>[] bondAtoms = tree.RadialSearch(new float[] { atom.Position.x, atom.Position.y, atom.Position.z }, BondSettings.MaximumLengthAllElements, BondSettings.MaxBondsPerAtom);
+                KdTreeNode<float, int>[] bondAtoms = tree.RadialSearch(new float[] { atom.Position.x, atom.Position.y, atom.Position.z }, BondLengths.MaximumLengthAllElements, BondLengths.MaxBondsPerAtom);
 
                 foreach (KdTreeNode<float, int> bondAtomNode in bondAtoms) {
 
@@ -129,16 +129,16 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                             // if lookup fails use defaults 
                             if (atom.Element == Element.H || bondAtom.Element == Element.H) {
-                                maxBondLength = BondSettings.MaximumLengthHydrogen;
+                                maxBondLength = BondLengths.MaximumLengthHydrogen;
                             }
                             else {
-                                maxBondLength = BondSettings.MaximumLengthAllElements;
+                                maxBondLength = BondLengths.MaximumLengthAllElements;
                             }
                         }
 
                         // if the maxBondLength is lower than the search radius in the KDTree search
                         // then calculate the bond length between the atoms and check it doesn't exceed maxBondLength
-                        if (maxBondLength < BondSettings.MaximumLengthAllElements) {
+                        if (maxBondLength < BondLengths.MaximumLengthAllElements) {
                             if (atomDistance(atom, bondAtom) > maxBondLength) {
                                 continue;
                             }

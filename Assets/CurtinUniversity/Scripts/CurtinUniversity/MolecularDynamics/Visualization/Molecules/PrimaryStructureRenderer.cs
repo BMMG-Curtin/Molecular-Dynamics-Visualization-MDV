@@ -310,7 +310,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 // bonds aren't recalculated on each frame. In some frames atoms jump from one side of the simulation box to another. When this happens need to disable bond view
                 float bondLength = (atom2pos - atom1pos).magnitude / 2;
-                if (bondLength > BondSettings.MaximumLengthAllElements) {
+                if (bondLength > BondLengths.MaximumLengthAllElements) {
                     continue;
                 }
 

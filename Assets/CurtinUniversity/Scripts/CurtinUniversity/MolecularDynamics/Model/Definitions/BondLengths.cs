@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CurtinUniversity.MolecularDynamics.Model {
 
-    public static class BondSettings {
+    public static class BondLengths {
 
         // this will limit the tree search to improve performance. 
         // Need to experiment with higher values to see performance impact
