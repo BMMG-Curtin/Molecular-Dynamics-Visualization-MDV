@@ -11,8 +11,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public Atom Atom1;
         public Atom Atom2;
         public float Distance;
-        public double? SimpleBondingForce;
         public double? VDWForce;
+        public double? ElectrostaticForce;
 
         public override int GetHashCode() {
 
@@ -36,13 +36,14 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 "Atom1: " + Atom1 + "\n" +
                 "Atom2: " + Atom2 + "\n" +
                 "Distance: " + Distance + "\n" +
-                "SimpleForce: " + SimpleBondingForce + "\n" +
-                "VDWForce: " + VDWForce + "\n";
+                "VDWForce: " + VDWForce + "\n" + 
+                "SimpleForce: " + ElectrostaticForce + "\n";
         }
     }
 
     public class InteractionsCalculator {
 
+        private const float maxInteractionDistance = 0.8f;
         private const int maxInteractionsPerAtom = 5;
 
         public List<AtomInteraction> GetAllInteractions(List<Atom> molecule1Atoms, List<Vector3> molecule1AtomPositions, List<Atom> molecule2Atoms, List<Vector3> molecule2AtomPositions, int processorCores = 1) {
@@ -72,7 +73,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 Atom atom = molecule1Atoms[i];
                 Vector3 atomPosition = molecule1AtomPositions[i];
 
-                KdTreeNode<float, int>[] interactingAtoms = molecule2AtomTree.RadialSearch(new float[] { atomPosition.x, atomPosition.y, atomPosition.z }, BondLengths.MaximumLengthAllElements, maxInteractionsPerAtom);
+                KdTreeNode<float, int>[] interactingAtoms = molecule2AtomTree.RadialSearch(new float[] { atomPosition.x, atomPosition.y, atomPosition.z }, maxInteractionDistance, maxInteractionsPerAtom);
 
                 foreach(KdTreeNode<float, int> node in interactingAtoms) {
 
@@ -86,22 +87,16 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     float deltaZ = interactingAtomPosition.z - atomPosition.z;
                     float distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 
-                    // interaction force is -1 to +1 
-                    float? simpleForce = GetSimpleBondingForce(atom, interactingAtom, distance);
-                    double? vdwForce = getVDWForces(atom, interactingAtom, distance, 0.8d);
-
-                    // VDW attraction forces max around 0.05. Multiply by 20 to get to 1 for max attraction force
-                    if (vdwForce < 0) {
-                        vdwForce *= 20;
-                    }
+                    double? electrostaticForce = getElecrostaticForce(atom, interactingAtom, distance);
+                    double? ljPotential = getLJPotential(atom, interactingAtom, distance);
 
                     AtomInteraction interaction = new AtomInteraction() {
 
                         Atom1 = atom,
                         Atom2 = interactingAtom,
                         Distance = distance,
-                        SimpleBondingForce = simpleForce,
-                        VDWForce = vdwForce,
+                        VDWForce = ljPotential,
+                        ElectrostaticForce = electrostaticForce,
                     };
 
                     interactions.Add(interaction);
@@ -132,81 +127,29 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             return closestInteractions;
         }
 
-        // repulsionReductionFactor - between 0 and 1 with 1 being strongest
-        private double? getVDWForces(Atom atom1, Atom atom2, double distanceBetweenAtoms, double repulsionReductionFactor = 0d) {
-
-            distanceBetweenAtoms *= 10f; // Nanomaters to Angstroms
-
-            // if repulsion reduce reduce distance away from repulsion point by repulsion reduction factor
-            // this helps mitigate the expenetial rise in repulsion force after initial repulsion point
-            if(distanceBetweenAtoms < 0.89d) {
-                distanceBetweenAtoms = distanceBetweenAtoms + ((0.89d - distanceBetweenAtoms) * repulsionReductionFactor);
-            }
+        // Calculates the Lennard-Jones Potential for two atoms
+        private double? getLJPotential(Atom atom1, Atom atom2, double distanceBetweenAtoms) {
 
             AtomSigmaEpsilon atom1SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
             AtomSigmaEpsilon atom2SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
 
-            // double sumOfAtomicRadii = ((double)atom1SigmaEpsilon.Sigma + (double)atom2SigmaEpsilon.Sigma) / 2d;
-            double sumOfAtomicRadii = (((double)atom1.AtomicRadius * 10d) + ((double)atom2.AtomicRadius * 10d)); // nanometres to angstroms
+            double sumOfAtomicRadii = ((double)atom1SigmaEpsilon.Sigma + (double)atom2SigmaEpsilon.Sigma) / 2d;
             double energyWellDepth = Math.Sqrt((double)atom1SigmaEpsilon.Epsilon * (double)atom2SigmaEpsilon.Epsilon);
             double distanceBetweenAtoms6 = Math.Pow(distanceBetweenAtoms, 6);
             double distanceBetweenAtoms12 = Math.Pow(distanceBetweenAtoms, 12);
             double sumOfAtomicRadii6 = Math.Pow(sumOfAtomicRadii, 6);
             double sumOfAtomicRadii12 = Math.Pow(sumOfAtomicRadii, 12);
+
+            if(distanceBetweenAtoms >= 8d) {
+                return null;
+            }
 
             double score = energyWellDepth * ((sumOfAtomicRadii12 / distanceBetweenAtoms12) - (2d * sumOfAtomicRadii6 / distanceBetweenAtoms6));
             return Double.IsPositiveInfinity(score) ? Double.MaxValue : score;
         }
 
-
-        // repulsionReductionFactor - between 0 and 1 with 1 being strongest
-        private double?[] getVDWAttractionRepulsionForces(Atom atom1, Atom atom2, double distanceBetweenAtoms) {
-
-            distanceBetweenAtoms *= 10f; // Nanomaters to Angstroms
-
-            AtomSigmaEpsilon atom1SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
-            AtomSigmaEpsilon atom2SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
-
-            //double sumOfAtomicRadii = ((double)atom1SigmaEpsilon.Sigma + (double)atom2SigmaEpsilon.Sigma) / 2d;
-            double sumOfAtomicRadii = (((double)atom1.AtomicRadius * 10d) + ((double)atom2.AtomicRadius * 10d)); // nanometres to angstroms
-
-            double energyWellDepth = Math.Sqrt((double)atom1SigmaEpsilon.Epsilon * (double)atom2SigmaEpsilon.Epsilon);
-
-            double distanceBetweenAtoms6 = Math.Pow(distanceBetweenAtoms, 6);
-            double distanceBetweenAtoms12 = Math.Pow(distanceBetweenAtoms, 12);
-
-            double sumOfAtomicRadii6 = Math.Pow(sumOfAtomicRadii, 6);
-            double sumOfAtomicRadii12 = Math.Pow(sumOfAtomicRadii, 12);
-
-            double? attractionScore = null;
-            double? repulsionScore = null;
-
-            if (distanceBetweenAtoms >= 0.89d * sumOfAtomicRadii && distanceBetweenAtoms < 8d) {
-                attractionScore = energyWellDepth * ((sumOfAtomicRadii12 / distanceBetweenAtoms12) - (2d * sumOfAtomicRadii6 / distanceBetweenAtoms6));
-            }
-            else if (distanceBetweenAtoms < 0.89d * sumOfAtomicRadii) { // && distanceBetweenAtoms >= 0.6d * sumOfAtomicRadii) {
-
-                // repulsion tends towards infinity at small distances
-                double score = energyWellDepth * ((sumOfAtomicRadii12 / distanceBetweenAtoms12) - (2d * sumOfAtomicRadii6 / distanceBetweenAtoms6));
-                repulsionScore = Double.IsPositiveInfinity(score) ? Double.MaxValue : score;
-
-            }
-            //else if(distanceBetweenAtoms < 0.6d * sumOfAtomicRadii) {
-
-            //    double A = (sumOfAtomicRadii12 / Math.Pow(0.6d * sumOfAtomicRadii, 12d)) - (2d * (sumOfAtomicRadii6 / Math.Pow(0.6d * sumOfAtomicRadii, 6d)));
-            //    double B = (-12d * (sumOfAtomicRadii12 / Math.Pow(0.6d * sumOfAtomicRadii, 13d))) + (12d * (sumOfAtomicRadii6 / Math.Pow(0.6d * sumOfAtomicRadii, 7d)));
-
-            //    repulsionScore = energyWellDepth * (A + ((0.6d * sumOfAtomicRadii - distanceBetweenAtoms) * B));
-            //}
-
-            return new double?[] { attractionScore, repulsionScore };
-        }
-
-        // simple sin wave from 0 to -ve to -0t to +ve as distance approaches 0
-        public float? GetSimpleBondingForce(Atom atom1, Atom atom2, float distance) {
-
-            float distanceRatio = (BondLengths.MaximumLengthAllElements - distance) / BondLengths.MaximumLengthAllElements;
-            return Mathf.Cos((Mathf.PI / 2) + (Mathf.PI * 1.5f * distanceRatio));
+        private float? getElecrostaticForce(Atom atom1, Atom atom2, float distance) {
+            return null;
         }
     }
 }

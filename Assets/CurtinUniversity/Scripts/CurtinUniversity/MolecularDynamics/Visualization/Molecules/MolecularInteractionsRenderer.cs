@@ -164,9 +164,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             double? force = null;
             int valuesAdded = 0;
 
-            if (interactionSettings.ShowSimpleForces && interaction.SimpleBondingForce != null) {
+            if (interactionSettings.ShowSimpleForces && interaction.ElectrostaticForce != null) {
 
-                force = interaction.SimpleBondingForce;
+                force = interaction.ElectrostaticForce;
                 valuesAdded++;
             }
 
