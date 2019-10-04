@@ -3,7 +3,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MolecularInteractionSettings {
 
-        public bool ShowSimpleForces { get; set; }
+        public bool ShowElectrostaticForces { get; set; }
         public bool ShowVDWForces { get; set; }
         public bool RenderClosestInteractionsOnly { get; set; }
         public bool HighlightInteracingAtoms { get; set; }
@@ -13,7 +13,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             return new MolecularInteractionSettings {
 
-                ShowSimpleForces = true,
+                ShowElectrostaticForces = true,
                 ShowVDWForces = true,
                 RenderClosestInteractionsOnly = true,
                 HighlightInteracingAtoms = true,
@@ -24,7 +24,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public override string ToString() {
 
             return
-                "CalculateSimpleForces: " + ShowSimpleForces + "\n" +
+                "CalculateSimpleForces: " + ShowElectrostaticForces + "\n" +
                 "CalculateVDWForces: " + ShowVDWForces + "\n" +
                 "CalculateClosestInteractionsOnly: " + RenderClosestInteractionsOnly + "\n" +
                 "HighlightInteracingAtoms: " + HighlightInteracingAtoms + "\n" +

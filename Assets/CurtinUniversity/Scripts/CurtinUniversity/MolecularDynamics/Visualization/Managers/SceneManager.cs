@@ -238,7 +238,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             Vector3 lookAt = moleculetransform.Position;
             Vector3 cameraPosition = lookAt;
-            cameraPosition.z -= size * 1.5f;
+            float cameraDistance = Mathf.Max(size * 1.5f, 0.5f);
+            cameraPosition.z -= cameraDistance;
 
             sceneCamera.MoveTo(cameraPosition, lookAt);
         }

@@ -23,6 +23,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         private Dictionary<int, Atom> atomsByID;
 
+        private HashSet<Element> elements; // unique element names in this model
         private HashSet<string> elementNames; // unique element names in this model
         private HashSet<string> residueNames; // unique residue names in this model
         private HashSet<int> residueIDs; // unique residue names in this model
@@ -481,6 +482,23 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         // Other Methods //////////////////////////////////////////////////////
 
+        public HashSet<Element> Elements {
+
+            get {
+                if (elements != null) {
+                    return elements;
+                }
+
+                elements = new HashSet<Element>();
+
+                foreach (Atom atom in Atoms()) {
+                    elements.Add(atom.Element);
+                }
+
+                return elements;
+            }
+        }
+
         public HashSet<string> ElementNames {
 
             get {
@@ -491,7 +509,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 elementNames = new HashSet<string>();
 
                 foreach (Atom atom in Atoms()) {
-                    elementNames.Add(atom.Element.ToString().ToUpper());
+                    elementNames.Add(atom.Element.ToString());
                 }
 
                 return elementNames;

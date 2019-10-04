@@ -63,8 +63,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             return new GeneralSettings {
 
-                ShowGround = true,
-                ShowShadows = true,
+                ShowGround = false,
+                ShowShadows = false,
                 MainLightsOn = true,
                 FillLightsOn = false,
                 AmbientLightsOn = true,

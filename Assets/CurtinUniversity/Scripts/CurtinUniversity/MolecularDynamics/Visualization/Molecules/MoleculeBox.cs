@@ -21,21 +21,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             // build new box
-            float originz = box.Origin.z;
-            float vectorz = box.Vector3.z;
-
-            // FlipZCoordinates
-            originz *= -1;
-            vectorz *= -1;
-
-            Vector3 vertex1 = new Vector3(box.Origin.x, box.Origin.y, originz);
-            Vector3 vertex2 = new Vector3(box.Origin.x, box.Vector2.y, originz);
-            Vector3 vertex3 = new Vector3(box.Vector1.x, box.Vector2.y, originz);
-            Vector3 vertex4 = new Vector3(box.Vector1.x, box.Origin.y, originz);
-            Vector3 vertex5 = new Vector3(box.Origin.x, box.Origin.y, vectorz);
-            Vector3 vertex6 = new Vector3(box.Origin.x, box.Vector2.y, vectorz);
-            Vector3 vertex7 = new Vector3(box.Vector1.x, box.Vector2.y, vectorz);
-            Vector3 vertex8 = new Vector3(box.Vector1.x, box.Origin.y, vectorz);
+            Vector3 vertex1 = new Vector3(box.Origin.x, box.Origin.y, box.Origin.z);
+            Vector3 vertex2 = new Vector3(box.Origin.x, box.Vector2.y, box.Origin.z);
+            Vector3 vertex3 = new Vector3(box.Vector1.x, box.Vector2.y, box.Origin.z);
+            Vector3 vertex4 = new Vector3(box.Vector1.x, box.Origin.y, box.Origin.z);
+            Vector3 vertex5 = new Vector3(box.Origin.x, box.Origin.y, box.Vector3.z);
+            Vector3 vertex6 = new Vector3(box.Origin.x, box.Vector2.y, box.Vector3.z);
+            Vector3 vertex7 = new Vector3(box.Vector1.x, box.Vector2.y, box.Vector3.z);
+            Vector3 vertex8 = new Vector3(box.Vector1.x, box.Origin.y, box.Vector3.z);
 
             RenderBoxEdge(vertex1, vertex2, box);
             RenderBoxEdge(vertex2, vertex3, box);
@@ -61,7 +54,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             boxEdge.transform.localScale = new Vector3(edgeWidth, (endPoint - startPoint).magnitude + edgeWidth, edgeWidth);
             boxEdge.transform.rotation = Quaternion.FromToRotation(Vector3.up, startPoint - endPoint);
 
-            boxEdge.transform.SetParent(transform, false);
+            boxEdge.transform.SetParent(transform, true);
             boxEdge.SetActive(true);
         }
 
@@ -75,10 +68,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             return edgeWidth;
-        }
-
-        public Vector3 Origin() {
-            return box.Origin;
         }
     }
 }

@@ -85,9 +85,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             moleculeBox.gameObject.SetActive(renderSettings.ShowSimulationBox);
-            boundingBox = new BoundingBox(primaryStructure); //.OriginalBoundingBox;
-            moleculeRender.transform.position = new Vector3(-1 * boundingBox.Centre.x, -1 * boundingBox.Centre.y, boundingBox.Centre.z);
-            transform.position = new Vector3(transform.position.x, (boundingBox.Height / 2f) + 0.5f, transform.position.z);
+            boundingBox = new BoundingBox(primaryStructure, true);
+            //moleculeBox.transform.position = boundingBox.Centre;
+            this.transform.position = boundingBox.Centre;
+
+            //moleculeBox.transform.position = boundingBox.Centre;
+            //transform.position = new Vector3(transform.position.x, (boundingBox.Height / 2f) + 0.5f, transform.position.z);
 
             if (renderSettings.ShowSimulationBox) {
                 moleculeBox.Build(boundingBox);

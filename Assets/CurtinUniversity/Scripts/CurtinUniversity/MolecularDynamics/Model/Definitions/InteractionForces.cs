@@ -4,8 +4,10 @@ using System.Collections.Generic;
 namespace CurtinUniversity.MolecularDynamics.Model {
 
     public struct AtomSigmaEpsilon {
+
         public float Sigma;
         public float Epsilon;
+        public bool IsDefault;
     }
 
     public static class InteractionForces {
@@ -41,27 +43,28 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         // Values in Angstroms
         public static Dictionary<string, AtomSigmaEpsilon> AtomTypeSigmaEpsilon = new Dictionary<string, AtomSigmaEpsilon> {
 
-            { "SER_HG",  new AtomSigmaEpsilon { Sigma = 0.0000000f, Epsilon = 0.0000000f } },
-            { "THR_HG1", new AtomSigmaEpsilon { Sigma = 0.0000000f, Epsilon = 0.0000000f } },
-            { "TYR_HH",  new AtomSigmaEpsilon { Sigma = 0.0000000f, Epsilon = 0.0000000f } },
-            { "SYS_HG",  new AtomSigmaEpsilon { Sigma = 0.1069080f, Epsilon = 0.0656888f } },
+            { "SER_HG",  new AtomSigmaEpsilon { Sigma = 0.0000000f, Epsilon = 0.0000000f, IsDefault = false  } },
+            { "THR_HG1", new AtomSigmaEpsilon { Sigma = 0.0000000f, Epsilon = 0.0000000f, IsDefault = false } },
+            { "TYR_HH",  new AtomSigmaEpsilon { Sigma = 0.0000000f, Epsilon = 0.0000000f, IsDefault = false } },
+            { "SYS_HG",  new AtomSigmaEpsilon { Sigma = 0.1069080f, Epsilon = 0.0656888f, IsDefault = false } },
         };
 
         // Values in Angstroms
         public static Dictionary<Element, AtomSigmaEpsilon> AtomElementSigmaEpsilon = new Dictionary<Element, AtomSigmaEpsilon> {
 
-            { Element.C,  new AtomSigmaEpsilon { Sigma = 0.3400000f, Epsilon = 0.3600000f } },
-            { Element.F,  new AtomSigmaEpsilon { Sigma = 0.3120000f, Epsilon = 0.2550000f } },
-            { Element.H,  new AtomSigmaEpsilon { Sigma = 0.2500000f, Epsilon = 0.0657000f } },
-            { Element.I,  new AtomSigmaEpsilon { Sigma = 0.4200000f, Epsilon = 1.7000000f } },
-            { Element.Cl, new AtomSigmaEpsilon { Sigma = 0.4400000f, Epsilon = 0.4200000f } },
-            { Element.N,  new AtomSigmaEpsilon { Sigma = 0.3250000f, Epsilon = 0.7110000f } },
-            { Element.O,  new AtomSigmaEpsilon { Sigma = 0.3000000f, Epsilon = 0.8800000f } },
-            { Element.P,  new AtomSigmaEpsilon { Sigma = 0.3700000f, Epsilon = 0.8400000f } },
-            { Element.S,  new AtomSigmaEpsilon { Sigma = 0.3560000f, Epsilon = 1.0500000f } },
+            { Element.C,  new AtomSigmaEpsilon { Sigma = 0.3400000f, Epsilon = 0.3600000f, IsDefault = false } },
+            { Element.F,  new AtomSigmaEpsilon { Sigma = 0.3120000f, Epsilon = 0.2550000f, IsDefault = false } },
+            { Element.H,  new AtomSigmaEpsilon { Sigma = 0.2500000f, Epsilon = 0.0657000f, IsDefault = false } },
+            { Element.I,  new AtomSigmaEpsilon { Sigma = 0.4200000f, Epsilon = 1.7000000f, IsDefault = false } },
+            { Element.Cl, new AtomSigmaEpsilon { Sigma = 0.4400000f, Epsilon = 0.4200000f, IsDefault = false } },
+            { Element.N,  new AtomSigmaEpsilon { Sigma = 0.3250000f, Epsilon = 0.7110000f, IsDefault = false } },
+            { Element.O,  new AtomSigmaEpsilon { Sigma = 0.3000000f, Epsilon = 0.8800000f, IsDefault = false } },
+            { Element.P,  new AtomSigmaEpsilon { Sigma = 0.3700000f, Epsilon = 0.8400000f, IsDefault = false } },
+            { Element.S,  new AtomSigmaEpsilon { Sigma = 0.3560000f, Epsilon = 1.0500000f, IsDefault = false } },
         };
 
-        public static AtomSigmaEpsilon defaultSigmaEpsilon = new AtomSigmaEpsilon { Sigma = 0.000000f, Epsilon = 0.000000f };
+        // default is equal to carbon
+        public static AtomSigmaEpsilon defaultSigmaEpsilon = new AtomSigmaEpsilon { Sigma = 0.3400000f, Epsilon = 0.3600000f, IsDefault = true };
 
         public static AtomSigmaEpsilon GetAtomSigmaEpsilon(Atom atom) {
 

@@ -95,6 +95,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             interactionsRenderer.Molecule1 = molecule1;
             interactionsRenderer.Molecule2 = molecule2;
 
+            reportSigmaEpsilonValueDefaults(molecule1, molecule2);
+
             Active = true;
         }
 
@@ -214,6 +216,27 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             return positions;
+        }
+
+        private void reportSigmaEpsilonValueDefaults(Molecule molecule1, Molecule molecule2) {
+
+            foreach(Atom atom in molecule1.PrimaryStructure.Atoms()) {
+
+                if(InteractionForces.GetAtomSigmaEpsilon(atom).IsDefault) {
+
+                    MoleculeEvents.RaiseInteractionsMessage("Sigma epsilon values for " + atom.Element + " atom not found. Using default values", true);
+                    return;
+                }
+            }
+
+            foreach (Atom atom in molecule2.PrimaryStructure.Atoms()) {
+
+                if (InteractionForces.GetAtomSigmaEpsilon(atom).IsDefault) {
+
+                    MoleculeEvents.RaiseInteractionsMessage("Sigma epsilon values for " + atom.Element + " atom not found. Using default values", true);
+                    return;
+                }
+            }
         }
     }
 }

@@ -14,10 +14,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TextMeshProUGUI selectedMoleculeText;
 
         [SerializeField]
-        private Toggle renderSimpleForcesToggle;
+        private Toggle renderVDWForcesToggle;
 
         [SerializeField]
-        private Toggle renderVDWForcesToggle;
+        private Toggle renderElectrostaticForcesToggle;
 
         [SerializeField]
         private Toggle highlightInteractingAtomsToggle;
@@ -57,8 +57,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             interactionSettings = MolecularInteractionSettings.Default();
 
-            renderSimpleForcesToggle.isOn = interactionSettings.ShowSimpleForces;
             renderVDWForcesToggle.isOn = interactionSettings.ShowVDWForces;
+            renderElectrostaticForcesToggle.isOn = interactionSettings.ShowElectrostaticForces;
             highlightInteractingAtomsToggle.isOn = interactionSettings.HighlightInteracingAtoms;
             renderInteractionLinesToggle.isOn = interactionSettings.RenderInteractionLines;
             renderClosestInteractionsToggle.isOn = interactionSettings.RenderClosestInteractionsOnly;
@@ -83,15 +83,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void OnShowSimpleForcesToggle() {
-
-            interactionSettings.ShowSimpleForces = renderSimpleForcesToggle.isOn;
-            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
-        }
-
         public void OnShowVDWForcesToggle() {
 
             interactionSettings.ShowVDWForces = renderVDWForcesToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
+        }
+
+        public void OnShowElectrostaticForcesToggle() {
+
+            interactionSettings.ShowElectrostaticForces = renderElectrostaticForcesToggle.isOn;
             UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 

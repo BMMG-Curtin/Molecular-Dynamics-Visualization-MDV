@@ -4,6 +4,8 @@ using System.Linq;
 
 using UnityEngine;
 
+using CurtinUniversity.MolecularDynamics.Model;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MoleculeRenderSettings {
@@ -101,7 +103,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 ShowTurns = true,
                 SmoothNodes = true,
 
-                ShowSimulationBox = false,
+                ShowSimulationBox = true,
                 CalculateBoxEveryFrame = false,
 
                 AtomScale = Settings.DefaultAtomScale,

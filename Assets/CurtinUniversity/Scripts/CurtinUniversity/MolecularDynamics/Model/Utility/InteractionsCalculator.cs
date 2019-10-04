@@ -14,22 +14,6 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public double? VDWForce;
         public double? ElectrostaticForce;
 
-        public override int GetHashCode() {
-
-            int hashcode = 23;
-
-            if (Atom1.Index < Atom2.Index) {
-                hashcode = (hashcode * 37) + Atom1.Index;
-                hashcode = (hashcode * 37) + Atom2.Index;
-            }
-            else {
-                hashcode = (hashcode * 37) + Atom2.Index;
-                hashcode = (hashcode * 37) + Atom1.Index;
-            }
-
-            return hashcode;
-        }
-
         public override string ToString() {
 
             return
@@ -45,6 +29,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         private const float maxInteractionDistance = 0.8f;
         private const int maxInteractionsPerAtom = 5;
+
+        private HashSet<int> addedInteractions;
 
         public List<AtomInteraction> GetAllInteractions(List<Atom> molecule1Atoms, List<Vector3> molecule1AtomPositions, List<Atom> molecule2Atoms, List<Vector3> molecule2AtomPositions, int processorCores = 1) {
 
@@ -88,10 +74,10 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     float distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 
                     double? electrostaticForce = getElecrostaticForce(atom, interactingAtom, distance);
+
                     double? ljPotential = getLJPotential(atom, interactingAtom, distance);
 
                     AtomInteraction interaction = new AtomInteraction() {
-
                         Atom1 = atom,
                         Atom2 = interactingAtom,
                         Distance = distance,
@@ -121,7 +107,6 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     usedAtoms.Add(interaction.Atom1.Index);
                     usedAtoms.Add(interaction.Atom2.Index);
                 }
-
             }
 
             return closestInteractions;
@@ -129,6 +114,10 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         // Calculates the Lennard-Jones Potential for two atoms
         private double? getLJPotential(Atom atom1, Atom atom2, double distanceBetweenAtoms) {
+
+            if (distanceBetweenAtoms >= 8d) {
+                return null;
+            }
 
             AtomSigmaEpsilon atom1SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
             AtomSigmaEpsilon atom2SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
@@ -140,16 +129,12 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             double sumOfAtomicRadii6 = Math.Pow(sumOfAtomicRadii, 6);
             double sumOfAtomicRadii12 = Math.Pow(sumOfAtomicRadii, 12);
 
-            if(distanceBetweenAtoms >= 8d) {
-                return null;
-            }
-
             double score = energyWellDepth * ((sumOfAtomicRadii12 / distanceBetweenAtoms12) - (2d * sumOfAtomicRadii6 / distanceBetweenAtoms6));
             return Double.IsPositiveInfinity(score) ? Double.MaxValue : score;
         }
 
         private float? getElecrostaticForce(Atom atom1, Atom atom2, float distance) {
-            return null;
+            return -1;
         }
     }
 }

@@ -2,7 +2,7 @@
 // Default Starting Model
 // All paths assume config file directory as a base
 LoadMoleculeOnStart: True
-LoadMoleculeFileName: C240.mdv
+LoadMoleculeFileName: C240.xyz
 // LoadMoleculeFileName: AB.gro
 
 // the amount of atoms from which the primary structure render will start using low quality meshes for better performance
