@@ -247,7 +247,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 yield return StartCoroutine(meshBuilder.CombinedMesh(prefab, item.Value.ToArray(), item.Key, parent));
             }
 
-            parent.transform.SetParent(AtomParent.transform, true);
+            parent.transform.SetParent(AtomParent.transform, false);
 
             yield break;
         }
@@ -367,7 +367,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             GameObject parent = new GameObject("StandardCombinedMeshParent");
             parent.SetActive(false);
             yield return StartCoroutine(meshBuilder.CombinedMesh(prefab, standardTransforms.ToArray(), bondColour, parent));
-            parent.transform.SetParent(BondParent.transform, true);
+            parent.transform.SetParent(BondParent.transform, false);
 
             parent = new GameObject("HighligtedCombinedMeshParent");
             parent.SetActive(false);
@@ -376,7 +376,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 yield return StartCoroutine(meshBuilder.CombinedMesh(prefab, item.Value.ToArray(), item.Key, parent));
             }
 
-            parent.transform.SetParent(BondParent.transform, true);
+            parent.transform.SetParent(BondParent.transform, false);
         }
 
         private IEnumerator createMainChains(PrimaryStructureFrame frame) {
@@ -436,7 +436,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 chainStructure.GetComponent<MeshFilter>().sharedMesh = chainMesh;
 
                 chainStructure.SetActive(false);
-                chainStructure.transform.SetParent(ChainParent.transform, true);
+                chainStructure.transform.SetParent(ChainParent.transform, false);
 
                 currentIndex++;
                 yield return null;

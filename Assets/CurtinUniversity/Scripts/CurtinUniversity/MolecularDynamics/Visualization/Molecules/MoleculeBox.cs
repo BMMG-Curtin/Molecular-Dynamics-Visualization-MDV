@@ -54,7 +54,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             boxEdge.transform.localScale = new Vector3(edgeWidth, (endPoint - startPoint).magnitude + edgeWidth, edgeWidth);
             boxEdge.transform.rotation = Quaternion.FromToRotation(Vector3.up, startPoint - endPoint);
 
-            boxEdge.transform.SetParent(transform, true);
+            boxEdge.transform.SetParent(transform, false);
             boxEdge.SetActive(true);
         }
 

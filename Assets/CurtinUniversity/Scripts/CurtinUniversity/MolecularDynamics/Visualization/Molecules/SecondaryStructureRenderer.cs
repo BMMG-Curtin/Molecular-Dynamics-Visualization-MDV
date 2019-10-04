@@ -100,7 +100,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 structure.GetComponent<MeshFilter>().sharedMesh = structureMesh;
 
                 structure.SetActive(false);
-                structure.transform.SetParent(StructureParent.transform, true);
+                structure.transform.SetParent(StructureParent.transform, false);
 
                 yield return null;
             }

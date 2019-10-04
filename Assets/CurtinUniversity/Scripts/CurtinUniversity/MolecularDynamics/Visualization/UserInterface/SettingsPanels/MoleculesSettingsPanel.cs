@@ -149,9 +149,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 moleculeListItems.Add(id, item);
                 numberMoleculeListItems();
 
-                if(molecules.GetSelected() == null) {
+                //if(molecules.GetSelected() == null) {
                     SetMoleculeSelected(id);
-                }
+                //}
+                onMoleculeListItemDoubleClick(id);
 
                 updateSelectedMoleculeInterfaceSettings();
             }

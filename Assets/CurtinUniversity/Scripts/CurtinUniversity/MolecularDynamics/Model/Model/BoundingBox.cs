@@ -110,7 +110,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         /// generate a box from a provided Primary Structure
         /// </summary>
         /// <returns></returns>
-        public BoundingBox(PrimaryStructureFrame frame) {
+        public BoundingBox(PrimaryStructureFrame frame, bool flipZ = false) {
 
             float minx = 0;
             float maxx = 0;
@@ -163,6 +163,11 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             maxy += edgeBuffer;
             minz -= edgeBuffer;
             maxz += edgeBuffer;
+
+            if (flipZ) {
+                minz *= -1;
+                maxz *= -1;
+            }
 
             setVectors(minx, maxx, miny, maxy, minz, maxz);
         }
