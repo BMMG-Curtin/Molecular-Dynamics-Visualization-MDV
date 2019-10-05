@@ -65,7 +65,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                             case "ATOM":
                             case "HETATM":
 
-                                int atomResidueID = int.Parse(record.Substring(22, 5).Trim());
+                                int atomResidueID = int.Parse(record.Substring(22, 4).Trim());
 
                                 if (atomResidueID != currentResidueID) {
 
