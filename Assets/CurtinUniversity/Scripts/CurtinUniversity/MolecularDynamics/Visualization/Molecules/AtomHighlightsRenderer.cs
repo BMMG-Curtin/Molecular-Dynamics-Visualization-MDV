@@ -81,8 +81,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 atomHighlightsMesh.transform.SetParent(atomHighlightsParent.transform, false);
 
                 MeshRenderer mr = atomHighlightsMesh.GetComponent<MeshRenderer>();
-                float pointSize = (size / 2f) + 0.01f;
-                mr.material.SetFloat("_PointSize", pointSize);
+                mr.material.SetFloat("_PointSize", size * 0.7f);
             }
 
             Vector3[] vertices = new Vector3[atoms.Count];

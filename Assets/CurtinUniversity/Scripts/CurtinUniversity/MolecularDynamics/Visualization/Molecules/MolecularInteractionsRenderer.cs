@@ -15,12 +15,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private GameObject interactionLineParent;
 
-        [SerializeField]
-        private Gradient positiveGradient;
-
-        [SerializeField]
-        private Gradient negativeGradient;
-
         public Molecule Molecule1 { get; set; }
         public Molecule Molecule2 { get; set; }
 
@@ -73,8 +67,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             foreach (AtomInteraction interaction in interactions) {
 
-                Color? forceColor = getForceColor(interaction, interactionSettings);
-                if (forceColor == null) {
+                if (interaction.InteractionColour == null) {
                     continue;
                 }
 
@@ -104,9 +97,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 };
 
                 lineRenderer.SetPositions(positions);
-                lineRenderer.startWidth = 0.005f;
-                lineRenderer.endWidth = 0.005f;
-                lineRenderer.material.color = (Color)forceColor;
+                lineRenderer.startWidth = 0.01f;
+                lineRenderer.endWidth = 0.01f;
+                lineRenderer.material.color = (Color)interaction.InteractionColour;
 
                 lineRenderer.gameObject.SetActive(true);
                 newInteractions.Add(key);
@@ -137,19 +130,18 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 foreach (AtomInteraction interaction in interactions) {
 
-                    Color? forceColor = getForceColor(interaction, interactionSettings);
-                    if(forceColor == null) {
+                    if(interaction.InteractionColour == null) {
                         continue;
                     }
 
                     HighLightedAtom atom1 = new HighLightedAtom();
                     atom1.Atom = interaction.Atom1;
-                    atom1.HighlightColor = (Color)forceColor;
+                    atom1.HighlightColor = (Color)interaction.InteractionColour;
                     molecule1Atoms.Add(atom1);
 
                     HighLightedAtom atom2 = new HighLightedAtom();
                     atom2.Atom = interaction.Atom2;
-                    atom2.HighlightColor = (Color)forceColor;
+                    atom2.HighlightColor = (Color)interaction.InteractionColour;
                     molecule2Atoms.Add(atom2);
                 }
             }
@@ -158,31 +150,31 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Molecule2.RenderAtomHighlights(molecule2Atoms);
         }
 
-        // forece colour is the average of all the shown force types
-        private Color? getForceColor(AtomInteraction interaction, MolecularInteractionSettings interactionSettings) {
+        //// forece colour is the average of all the shown force types
+        //private Color? getForceColor(AtomInteraction interaction, MolecularInteractionSettings interactionSettings) {
 
-            double? force = null;
-            int valuesAdded = 0;
+        //    double? force = null;
+        //    int valuesAdded = 0;
 
-            if (interactionSettings.ShowElectrostaticForces && interaction.ElectrostaticForce != null) {
+        //    if (interactionSettings.ShowElectrostaticForces && interaction.ElectrostaticForce != null) {
 
-                force = interaction.ElectrostaticForce;
-                valuesAdded++;
-            }
+        //        force = interaction.ElectrostaticForce;
+        //        valuesAdded++;
+        //    }
 
-            if (interactionSettings.ShowVDWForces && interaction.VDWForce != null) {
+        //    if (interactionSettings.ShowVDWForces && interaction.VDWForce != null) {
 
-                force = force == null ? interaction.VDWForce : force + interaction.VDWForce;
-                valuesAdded++;
-            }
+        //        force = force == null ? interaction.VDWForce : force + interaction.VDWForce;
+        //        valuesAdded++;
+        //    }
 
-            if (force == null) {
-                return null;
-            }
+        //    if (force == null) {
+        //        return null;
+        //    }
 
-            force = force / (double)valuesAdded;
+        //    force = force / (double)valuesAdded;
 
-            return force > 0 ? positiveGradient.Evaluate((float)force) : negativeGradient.Evaluate((float)force * -1);
-        }
+        //    return force > 0 ? positiveGradient.Evaluate((float)force) : negativeGradient.Evaluate((float)force * -1);
+        //}
     }
 }

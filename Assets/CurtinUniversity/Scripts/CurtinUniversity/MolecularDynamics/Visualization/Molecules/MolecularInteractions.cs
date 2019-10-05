@@ -17,6 +17,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private MolecularInteractionsRenderer interactionsRenderer;
 
+        [SerializeField]
+        private Gradient repulsiveGradient;
+
+        [SerializeField]
+        private Gradient strongAttractiveGradient;
+
+        [SerializeField]
+        private Gradient weakAttractiveGradient;
+
         public Molecule Molecule1 { get; private set; }
         public Molecule Molecule2 { get; private set; }
 
@@ -163,14 +172,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     molecule1RenderedAtoms,
                     molecule1AtomPositions,
                     molecule2RenderedAtoms,
-                    molecule2AtomPositions
+                    molecule2AtomPositions,
+                    repulsiveGradient, 
+                    strongAttractiveGradient, 
+                    weakAttractiveGradient
                 );
 
                 if (interactionSettings.RenderClosestInteractionsOnly) {
                     newInteractions = interactionsCalculator.GetClosestInteractions(newInteractions);
                 }
 
-                if(Active) {
+                if (Active) {
 
                     interactions = newInteractions;
                     interactionsUpdated = true;

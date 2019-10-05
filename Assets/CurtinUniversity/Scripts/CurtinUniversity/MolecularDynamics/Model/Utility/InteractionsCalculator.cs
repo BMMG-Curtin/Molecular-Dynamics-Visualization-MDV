@@ -6,13 +6,15 @@ using UnityEngine;
 
 namespace CurtinUniversity.MolecularDynamics.Model {
 
-    public struct AtomInteraction {
+    public class AtomInteraction {
 
         public Atom Atom1;
         public Atom Atom2;
         public float Distance;
-        public double? VDWForce;
+        public double SumOfAtomicRadii;
+        public double? LennardJonesPotential;
         public double? ElectrostaticForce;
+        public Color? InteractionColour;
 
         public override string ToString() {
 
@@ -20,8 +22,10 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 "Atom1: " + Atom1 + "\n" +
                 "Atom2: " + Atom2 + "\n" +
                 "Distance: " + Distance + "\n" +
-                "VDWForce: " + VDWForce + "\n" + 
-                "SimpleForce: " + ElectrostaticForce + "\n";
+                "SumOfAtomicRadii: " + SumOfAtomicRadii + "\n" +
+                "LJPotential: " + LennardJonesPotential + "\n" +
+                "ElectrostaticForce: " + ElectrostaticForce + "\n" +
+                "Colour: " + InteractionColour;
         }
     }
 
@@ -32,7 +36,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         private HashSet<int> addedInteractions;
 
-        public List<AtomInteraction> GetAllInteractions(List<Atom> molecule1Atoms, List<Vector3> molecule1AtomPositions, List<Atom> molecule2Atoms, List<Vector3> molecule2AtomPositions, int processorCores = 1) {
+        public List<AtomInteraction> GetAllInteractions(List<Atom> molecule1Atoms, List<Vector3> molecule1AtomPositions, List<Atom> molecule2Atoms, List<Vector3> molecule2AtomPositions, Gradient repulsiveGradient, Gradient strongAttractiveGradient, Gradient weakAttractiveGradient, int processorCores = 1) {
 
             if (molecule1Atoms == null || molecule1AtomPositions == null || molecule1Atoms.Count != molecule1AtomPositions.Count) {
                 Debug.Log("Interactions calculator, Molecule 1 atoms count and molecule 1 atom positions count don't match");
@@ -73,17 +77,15 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     float deltaZ = interactingAtomPosition.z - atomPosition.z;
                     float distance = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 
-                    double? electrostaticForce = getElecrostaticForce(atom, interactingAtom, distance);
-
-                    double? ljPotential = getLJPotential(atom, interactingAtom, distance);
-
                     AtomInteraction interaction = new AtomInteraction() {
                         Atom1 = atom,
                         Atom2 = interactingAtom,
                         Distance = distance,
-                        VDWForce = ljPotential,
-                        ElectrostaticForce = electrostaticForce,
                     };
+
+                    SetLennardJonesPotential(interaction);
+                    SetElecrostaticForce(interaction);
+                    SetColour(interaction, repulsiveGradient, strongAttractiveGradient, weakAttractiveGradient);
 
                     interactions.Add(interaction);
                 }
@@ -113,28 +115,58 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         }
 
         // Calculates the Lennard-Jones Potential for two atoms
-        private double? getLJPotential(Atom atom1, Atom atom2, double distanceBetweenAtoms) {
+        public void SetLennardJonesPotential(AtomInteraction interaction) {
 
-            if (distanceBetweenAtoms >= 8d) {
-                return null;
+            if (interaction.Distance >= 8d) {
+                return;
             }
 
-            AtomSigmaEpsilon atom1SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
-            AtomSigmaEpsilon atom2SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(atom1);
+            AtomSigmaEpsilon atom1SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(interaction.Atom1);
+            AtomSigmaEpsilon atom2SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(interaction.Atom2);
 
-            double sumOfAtomicRadii = ((double)atom1SigmaEpsilon.Sigma + (double)atom2SigmaEpsilon.Sigma) / 2d;
+            interaction.SumOfAtomicRadii = ((double)atom1SigmaEpsilon.Sigma + (double)atom2SigmaEpsilon.Sigma) / 2d;
+
             double energyWellDepth = Math.Sqrt((double)atom1SigmaEpsilon.Epsilon * (double)atom2SigmaEpsilon.Epsilon);
-            double distanceBetweenAtoms6 = Math.Pow(distanceBetweenAtoms, 6);
-            double distanceBetweenAtoms12 = Math.Pow(distanceBetweenAtoms, 12);
-            double sumOfAtomicRadii6 = Math.Pow(sumOfAtomicRadii, 6);
-            double sumOfAtomicRadii12 = Math.Pow(sumOfAtomicRadii, 12);
+            double distanceBetweenAtoms6 = Math.Pow(interaction.Distance, 6);
+            double distanceBetweenAtoms12 = Math.Pow(interaction.Distance, 12);
+            double sumOfAtomicRadii6 = Math.Pow(interaction.SumOfAtomicRadii, 6);
+            double sumOfAtomicRadii12 = Math.Pow(interaction.SumOfAtomicRadii, 12);
 
             double score = energyWellDepth * ((sumOfAtomicRadii12 / distanceBetweenAtoms12) - (2d * sumOfAtomicRadii6 / distanceBetweenAtoms6));
-            return Double.IsPositiveInfinity(score) ? Double.MaxValue : score;
+            interaction.LennardJonesPotential = Double.IsPositiveInfinity(score) ? Double.MaxValue : score;
         }
 
-        private float? getElecrostaticForce(Atom atom1, Atom atom2, float distance) {
-            return -1;
+        public void SetElecrostaticForce(AtomInteraction interaction) {
+            interaction.ElectrostaticForce = -1;
+        }
+
+        // Sets a colour calculated on distance compared to atom sigmas
+        public void SetColour(AtomInteraction interaction, Gradient repulsiveGradient, Gradient strongAttractiveGradient, Gradient weakAttractiveGradient) {
+
+            float weakAttractiveMaxDistance = 2.5f * (float)interaction.SumOfAtomicRadii;
+
+            if (interaction.Distance >= weakAttractiveMaxDistance) {
+                return;
+            }
+
+            float strongAttractiveMaxDistance = 1.5f * (float)interaction.SumOfAtomicRadii;
+            float repulsiveMaxDistance = 0.9f * (float)interaction.SumOfAtomicRadii;
+
+            if (interaction.Distance >= strongAttractiveMaxDistance) {
+
+                float weakForce = (interaction.Distance - strongAttractiveMaxDistance) / (weakAttractiveMaxDistance - strongAttractiveMaxDistance);
+                interaction.InteractionColour = weakAttractiveGradient.Evaluate(weakForce);
+            }
+            else if (interaction.Distance >= repulsiveMaxDistance) {
+
+                float strongForce = (interaction.Distance - repulsiveMaxDistance) / (strongAttractiveMaxDistance - repulsiveMaxDistance);
+                interaction.InteractionColour = strongAttractiveGradient.Evaluate(strongForce);
+            }
+            else {
+
+                float repulsiveForce = interaction.Distance / repulsiveMaxDistance;
+                interaction.InteractionColour = repulsiveGradient.Evaluate(repulsiveForce);
+            }
         }
     }
 }
