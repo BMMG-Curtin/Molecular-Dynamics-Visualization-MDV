@@ -108,6 +108,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 AtomScale = Settings.DefaultAtomScale,
                 BondScale = Settings.DefaultBondScale,
+
+                EnabledElements = null,
+                EnabledResidueNames = null,
+                CustomResidueNames = null,
+                EnabledResidueIDs = null,
+                CustomResidueRenderSettings = null,
             };
         }
 
@@ -175,9 +181,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 "AtomScale: " + AtomScale + "\n" +
                 "BondScale: " + BondScale + "\n";
 
+            output += "EnabledElements: ";
             output += EnabledElements == null ? "null\n" : string.Join("", EnabledElements.ToArray()) + "\n";
+            output += "EnabledResidueNames: ";
             output += EnabledResidueNames == null ? "null\n" : string.Join("", EnabledResidueNames.ToArray()) + "\n";
+            output += "EnabledResidueIDs: ";
             output += EnabledResidueIDs == null ? "null\n" : string.Join("", Array.ConvertAll(EnabledResidueIDs.ToArray(), element => element.ToString())) + "\n";
+            output += "CustomResidueNames: ";
             output += CustomResidueNames == null ? "null\n" : string.Join("", CustomResidueNames.ToArray()) + "\n";
 
             if (CustomResidueRenderSettings == null) {

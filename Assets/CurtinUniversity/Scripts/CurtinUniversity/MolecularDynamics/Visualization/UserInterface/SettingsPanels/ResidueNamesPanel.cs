@@ -66,7 +66,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             renderResidueNameButtons();
 
             allResiduesEnabled = false;
-            if (residueNameButtons.Count == this.moleculeRenderSettings.EnabledResidueNames.Count) {
+            if (this.moleculeRenderSettings.EnabledResidueNames != null && residueNameButtons.Count == this.moleculeRenderSettings.EnabledResidueNames.Count) {
                 allResiduesEnabled = true;
             }
 

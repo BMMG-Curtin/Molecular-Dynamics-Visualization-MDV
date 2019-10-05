@@ -98,6 +98,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void initialiseResidueRenderSettings(PrimaryStructure primaryStructure) {
 
+            if(primaryStructure.ResidueNames == null || primaryStructure.ResidueNames.Count == 0 || 
+                primaryStructure.ResidueIDs == null || primaryStructure.ResidueIDs.Count == 0) {
+                return;
+            }
+
             // initialise the residue render settings for the molecule
             if (selectedMolecule.RenderSettings.EnabledResidueNames == null) {
                 selectedMolecule.RenderSettings.EnabledResidueNames = new HashSet<string>(primaryStructure.ResidueNames);
@@ -119,7 +124,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private void showResidueNamesPanel(MoleculeRenderSettings renderSettings, PrimaryStructure primaryStructure) {
 
             residueNamesPanel.Initialise(renderSettings, primaryStructure, updateMoleculeRender);
-            residueNamesPanel.gameObject.SetActive(true);
+
+            if (primaryStructure.ResidueNames == null || primaryStructure.ResidueNames.Count == 0 ||
+                primaryStructure.ResidueIDs == null || primaryStructure.ResidueIDs.Count == 0) {
+
+                residueNamesPanelGO.gameObject.SetActive(false);
+            }
+            else {
+                residueNamesPanelGO.gameObject.SetActive(true);
+            }
         }
 
         private void updateMoleculeRender() {
