@@ -105,19 +105,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 newInteractions.Add(key);
             }
 
-            HashSet<int> toRemove = new HashSet<int>();
-
             foreach (KeyValuePair<int, LineRenderer> line in interactionLines) {
-
                 if (!newInteractions.Contains(line.Key)) {
-
-                    GameObject.Destroy(line.Value.gameObject);
-                    toRemove.Add(line.Key);
+                    line.Value.gameObject.SetActive(false);
                 }
-            }
-
-            foreach (int key in toRemove) {
-                interactionLines.Remove(key);
             }
         }
 
@@ -149,32 +140,5 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Molecule1.RenderAtomHighlights(molecule1Atoms);
             Molecule2.RenderAtomHighlights(molecule2Atoms);
         }
-
-        //// forece colour is the average of all the shown force types
-        //private Color? getForceColor(AtomInteraction interaction, MolecularInteractionSettings interactionSettings) {
-
-        //    double? force = null;
-        //    int valuesAdded = 0;
-
-        //    if (interactionSettings.ShowElectrostaticForces && interaction.ElectrostaticForce != null) {
-
-        //        force = interaction.ElectrostaticForce;
-        //        valuesAdded++;
-        //    }
-
-        //    if (interactionSettings.ShowVDWForces && interaction.VDWForce != null) {
-
-        //        force = force == null ? interaction.VDWForce : force + interaction.VDWForce;
-        //        valuesAdded++;
-        //    }
-
-        //    if (force == null) {
-        //        return null;
-        //    }
-
-        //    force = force / (double)valuesAdded;
-
-        //    return force > 0 ? positiveGradient.Evaluate((float)force) : negativeGradient.Evaluate((float)force * -1);
-        //}
     }
 }

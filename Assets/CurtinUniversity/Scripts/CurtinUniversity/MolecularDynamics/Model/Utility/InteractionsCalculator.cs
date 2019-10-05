@@ -16,6 +16,17 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public double? ElectrostaticForce;
         public Color? InteractionColour;
 
+
+        public override int GetHashCode() {
+
+            if (Atom1.Index < Atom2.Index) {
+                return (Atom1.Index + "_" + Atom2.Index).GetHashCode();
+            }
+            else {
+                return (Atom2.Index + "_" + Atom1.Index).GetHashCode();
+            }
+        }
+
         public override string ToString() {
 
             return
