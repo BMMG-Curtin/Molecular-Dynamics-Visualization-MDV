@@ -44,6 +44,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private List<Atom> molecule1RenderedAtoms;
         private List<Atom> molecule2RenderedAtoms;
 
+        private Thread processingThread;
+
         private void Awake() {
             interactionSettings = MolecularInteractionSettings.Default();
         }
@@ -111,6 +113,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void StopMonitoring() {
 
+            if (processingInteractions) {
+
+                processingThread.Abort();
+                processingThread = null;
+                processingInteractions = false;
+            }
+
             Molecule1 = null;
             Molecule2 = null;
             Active = false;
@@ -164,7 +173,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             List<Vector3> molecule1AtomPositions = getWorldPositions(molecule1RenderedAtoms, Molecule1.MoleculeRender.transform);
             List<Vector3> molecule2AtomPositions = getWorldPositions(molecule2RenderedAtoms, Molecule2.MoleculeRender.transform);
 
-            Thread thread = new Thread(() => {
+            processingThread = new Thread(() => {
 
                 InteractionsCalculator interactionsCalculator = new InteractionsCalculator();
 
@@ -189,12 +198,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             });
 
-            thread.Start();
+            processingThread.Start();
 
-            while(thread.IsAlive) {
+            // stop monitoring method can kill thread and make reference null
+            while(processingThread != null && processingThread.IsAlive) {
                 yield return null;
             }
 
+            processingThread = null;
             processingInteractions = false;
         }
 
