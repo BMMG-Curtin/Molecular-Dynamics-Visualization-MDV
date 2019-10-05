@@ -50,7 +50,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public IEnumerator LoadMolecule(int moleculeID, string structureFilePath, string trajectoryFilePath, MoleculeRenderSettings settings) {
 
             yield return StartCoroutine(LoadMoleculeStructure(moleculeID, structureFilePath, settings));
-            yield return StartCoroutine(LoadMoleculeTrajectory(moleculeID, trajectoryFilePath));
+
+            if(molecules.ContainsKey(moleculeID)) {
+                yield return StartCoroutine(LoadMoleculeTrajectory(moleculeID, trajectoryFilePath));
+            }
         }
 
         public IEnumerator LoadMoleculeStructure(int moleculeID, string filePath, MoleculeRenderSettings settings) {

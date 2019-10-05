@@ -142,6 +142,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                     userInterface.ShowConsoleError("Error loading settings: " + e.Message);
                     loadingSettingsFile = false;
+
+                    if(loadStructure) {
+                        userInterface.MoleculeLoadFailed(moleculeID);
+                    }
+
                     return;
                 }
 
@@ -151,8 +156,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                         settingsFile.StructureFilePath = null;
                     }
                     else if (!File.Exists(settingsFile.StructureFilePath)) {
+
                         userInterface.ShowConsoleMessage("Can't load molecule from settings file. File not found: " + settingsFile.StructureFilePath);
-                        settingsFile.StructureFilePath = null;
+                        userInterface.MoleculeLoadFailed(moleculeID);
+                        loadingSettingsFile = false;
+                        return;
                     }
                 }
                 else {
@@ -211,10 +219,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             if (settingsFile.CameraTransform != null) {
-
-                sceneCamera.transform.position = settingsFile.CameraTransform.Position;
-                sceneCamera.transform.rotation = settingsFile.CameraTransform.Rotation;
-                sceneCamera.transform.localScale = settingsFile.CameraTransform.Scale;
+                lookAtMolecule(moleculeID);
             }
 
             if (settingsFile.RenderSettings != null) {

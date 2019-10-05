@@ -141,5 +141,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             return molecules.First().Key;
         }
+
+        public override string ToString() {
+
+            string output = "Total molecules: " + molecules.Count + "\n";
+            output += "Molecule List: \n";
+
+            foreach (int id in molecules.Keys) {
+                output += "molecule ID: " + id + "\n";
+            }
+
+            return output;
+        }
     }
 }

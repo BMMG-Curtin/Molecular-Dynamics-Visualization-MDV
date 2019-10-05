@@ -157,6 +157,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void MoleculeLoadFailed(int id) {
+
             if (molecules.Contains(id)) {
                 molecules.Remove(id);
             }
