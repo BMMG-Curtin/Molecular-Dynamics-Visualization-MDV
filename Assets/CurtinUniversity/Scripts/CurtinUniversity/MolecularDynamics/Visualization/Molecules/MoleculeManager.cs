@@ -58,11 +58,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (molecules.ContainsKey(moleculeID)) {
 
                 MoleculeEvents.RaiseRenderMessage("Error Loading Molecule: already loaded", true);
+                MoleculeEvents.RaiseOnMoleculeLoadFailed(moleculeID);
                 yield break;
             }
 
             if (loadingStructure) {
                 MoleculeEvents.RaiseRenderMessage("Can't Load Molecule: another molecule currently loading", true);
+                MoleculeEvents.RaiseOnMoleculeLoadFailed(moleculeID);
                 yield break;
             }
 
@@ -108,6 +110,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 Debug.Log("Error Loading Structure File: " + loadException);
                 MoleculeEvents.RaiseRenderMessage("Error Loading Structure File: " + loadException, true);
+                MoleculeEvents.RaiseOnMoleculeLoadFailed(moleculeID);
                 loadingStructure = false;
                 yield break;
             }

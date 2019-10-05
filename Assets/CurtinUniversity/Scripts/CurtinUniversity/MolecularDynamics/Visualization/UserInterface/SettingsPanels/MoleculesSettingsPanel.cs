@@ -126,7 +126,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (molecules.Contains(id)) {
 
-                //console.ShowMessage("Loaded file: " + name);
+                console.ShowMessage("Loaded file: " + name);
 
                 MoleculeSettings settings = molecules.Get(id);
                 settings.Name = name;
@@ -149,12 +149,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 moleculeListItems.Add(id, item);
                 numberMoleculeListItems();
 
-                //if(molecules.GetSelected() == null) {
-                    SetMoleculeSelected(id);
-                //}
+                SetMoleculeSelected(id);
                 onMoleculeListItemDoubleClick(id);
 
                 updateSelectedMoleculeInterfaceSettings();
+            }
+        }
+
+        public void MoleculeLoadFailed(int id) {
+            if (molecules.Contains(id)) {
+                molecules.Remove(id);
             }
         }
 

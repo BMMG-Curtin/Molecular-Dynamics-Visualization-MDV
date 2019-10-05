@@ -118,6 +118,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             residuesSettingsPanel.SetPrimaryStructure(id, primaryStructure); 
         }
 
+        public void MoleculeLoadFailed(int id) {
+            moleculeSettingsPanel.MoleculeLoadFailed(id);
+        }
+
         public void MoleculeTrajectoryLoaded(int moleculeID, string filePath, int frameCount) {
             moleculeSettingsPanel.TrajectoryLoaded(moleculeID, filePath, frameCount);
         }

@@ -13,6 +13,14 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        public delegate void MoleculeLoadFailed(int moleculeID);
+        public static event MoleculeLoadFailed OnMoleculeLoadFailed;
+        public static void RaiseOnMoleculeLoadFailed(int moleculeID) {
+            if (OnMoleculeLoadFailed != null) {
+                OnMoleculeLoadFailed(moleculeID);
+            }
+        }
+
         public delegate void TrajectoryLoaded(int moleculeID, string filePath, int frameCount);
         public static event TrajectoryLoaded OnTrajectoryLoaded;
         public static void RaiseTrajectoryLoaded(int moleculeID, string filePath, int frameCount) {

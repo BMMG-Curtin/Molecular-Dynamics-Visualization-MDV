@@ -52,6 +52,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             UserInterfaceEvents.OnUpdateMolecularInteractionSettings += molecules.UpdateMolecularInteractionSettings;
 
             MoleculeEvents.OnMoleculeLoaded += userInterface.MoleculeLoaded;
+            MoleculeEvents.OnMoleculeLoadFailed += userInterface.MoleculeLoadFailed;
             MoleculeEvents.OnTrajectoryLoaded += userInterface.MoleculeTrajectoryLoaded;
 
             MoleculeEvents.OnRenderMessage += ShowConsoleMessage;
