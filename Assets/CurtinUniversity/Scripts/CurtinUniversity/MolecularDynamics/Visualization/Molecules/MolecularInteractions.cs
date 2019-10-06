@@ -187,7 +187,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     weakAttractiveGradient
                 );
 
-                if (interactionSettings.RenderClosestInteractionsOnly) {
+                if (interactionSettings.ShowClosestInteractionsOnly) {
                     newInteractions = interactionsCalculator.GetClosestInteractions(newInteractions);
                 }
 
@@ -200,7 +200,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             processingThread.Start();
 
-            // stop monitoring method can kill thread and make reference null
+            // StopMonitoring method can kill thread and make reference null
             while(processingThread != null && processingThread.IsAlive) {
                 yield return null;
             }
@@ -211,20 +211,56 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void outputInteractionResults(List<AtomInteraction> interactions) {
 
-            // output to UI
+            MolecularInteractionsInformation info = new MolecularInteractionsInformation();
 
-            string output = "";
+            foreach(AtomInteraction interaction in interactions) {
 
-            if (interactions == null || interactions.Count <= 0) {
-                output += "No molecular interactions found";
+                if (interaction.InteractionType != null) {
+
+                    if (interaction.LennardJonesPotential != null && interaction.LennardJonesPotential != 0) {
+
+                        info.SummedInteractionForce += (double)interaction.LennardJonesPotential;
+                        info.SummedLennardJonesForce += (double)interaction.LennardJonesPotential;
+
+                        if ((double)interaction.LennardJonesPotential >= 0) {
+                            info.SummedRepulsionForce += (double)interaction.LennardJonesPotential;
+                            info.SummedLennardJonesRepulsionForce += (double)interaction.LennardJonesPotential;
+                        }
+                        else {
+                            info.SummedAttractionForce += (double)interaction.LennardJonesPotential;
+                            info.SummedLennardJonesAttractionForce += (double)interaction.LennardJonesPotential;
+                        }
+                    }
+
+                    if (interaction.ElectrostaticForce != null && interaction.ElectrostaticForce != 0) {
+
+                        info.SummedInteractionForce += (double)interaction.ElectrostaticForce;
+                        info.SummedElectrostaticAttractionForce += (double)interaction.ElectrostaticForce;
+
+                        if ((double)interaction.ElectrostaticForce >= 0) {
+                            info.SummedRepulsionForce += (double)interaction.ElectrostaticForce;
+                            info.SummedElectrostaticRepulsionForce += (double)interaction.ElectrostaticForce;
+                        }
+                        else {
+                            info.SummedAttractionForce += (double)interaction.ElectrostaticForce;
+                            info.SummedElectrostaticAttractionForce += (double)interaction.ElectrostaticForce;
+                        }
+                    }
+
+                    info.TotalInteractions++;
+                    if(interaction.InteractionType == InteractionType.Attractive) {
+                        info.TotalAttractiveInteractions++;
+                    }
+                    else if(interaction.InteractionType == InteractionType.Stable) {
+                        info.TotalStableInteractions++;
+                    }
+                    else {
+                        info.TotalRepulsiveInteractions++;
+                    }
+                }
             }
-            else {
 
-                output += interactions.Count + " molecular interactions found\n\n";
-                output += "First interaction:\n\n" + interactions[0].ToString();
-            }
-
-            MoleculeEvents.RaiseInteractionsInformation(output);
+            MoleculeEvents.RaiseInteractionsInformation(info);
         }
 
         private List<Vector3> getWorldPositions(List<Atom> atoms, Transform moleculeTransform) {

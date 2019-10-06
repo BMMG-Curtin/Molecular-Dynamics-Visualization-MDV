@@ -199,8 +199,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             console.Silent = silent;
         }
 
-        public void ShowInteractionsInformation(string message) {
-            interactionsSettingsPanel.ShowInformation(message);
+        public void ShowInteractionsInformation(MolecularInteractionsInformation information) {
+            interactionsSettingsPanel.ShowInformation(information);
         }
     }
 }

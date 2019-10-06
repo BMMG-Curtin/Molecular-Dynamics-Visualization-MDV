@@ -211,7 +211,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 if (loadException != null) {
 
-                    MoleculeEvents.RaiseRenderMessage(loadException + " - Aborting trajectory secondary structure builds.", true);
+                    MoleculeEvents.RaiseShowMessage(loadException + " - Aborting trajectory secondary structure builds.", true);
                     buildSecondaryStructureTrajectory = false;
                 }
             }

@@ -29,17 +29,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public delegate void RenderMessage(string message, bool error);
-        public static event RenderMessage OnRenderMessage;
-        public static void RaiseRenderMessage(string message, bool error) {
-            if (OnRenderMessage != null) {
-                OnRenderMessage(message, error);
+        public delegate void ShowMessage(string message, bool error);
+        public static event ShowMessage OnShowMessage;
+        public static void RaiseShowMessage(string message, bool error) {
+            if (OnShowMessage != null) {
+                OnShowMessage(message, error);
             }
         }
 
-        public delegate void InteractionsInformation(string information);
+        public delegate void InteractionsInformation(MolecularInteractionsInformation information);
         public static event InteractionsInformation OnInteractionsInformation;
-        public static void RaiseInteractionsInformation(string information) {
+        public static void RaiseInteractionsInformation(MolecularInteractionsInformation information) {
             if (OnInteractionsInformation != null) {
                 OnInteractionsInformation(information);
             }

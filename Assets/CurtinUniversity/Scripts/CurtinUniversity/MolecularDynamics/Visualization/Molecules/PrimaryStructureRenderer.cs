@@ -52,7 +52,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private IEnumerator calculateBonds() {
 
-            MoleculeEvents.RaiseRenderMessage("Calculating bonds. Please wait", false);
+            MoleculeEvents.RaiseShowMessage("Calculating bonds. Please wait", false);
             yield return null;
 
             Stopwatch watch = new Stopwatch();
@@ -69,7 +69,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             watch.Stop();
-            MoleculeEvents.RaiseRenderMessage("Bonds calculated [" + watch.ElapsedMilliseconds + "ms]", false);
+            MoleculeEvents.RaiseShowMessage("Bonds calculated [" + watch.ElapsedMilliseconds + "ms]", false);
         }
 
         public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame, int meshQuality) {
@@ -169,7 +169,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
                 else {
                     if (atom.Index >= frame.AtomCount) {
-                        MoleculeEvents.RaiseRenderMessage("Atoms not found in frame record. Aborting frame render.", true);
+                        MoleculeEvents.RaiseShowMessage("Atoms not found in frame record. Aborting frame render.", true);
                         yield break;
                     }
                     position = new Vector3(frame.Coords[atom.Index * 3], frame.Coords[(atom.Index * 3) + 1], frame.Coords[(atom.Index * 3) + 2]);

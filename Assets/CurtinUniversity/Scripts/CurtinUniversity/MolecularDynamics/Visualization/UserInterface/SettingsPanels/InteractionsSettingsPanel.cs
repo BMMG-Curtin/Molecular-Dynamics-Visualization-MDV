@@ -14,10 +14,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TextMeshProUGUI selectedMoleculeText;
 
         [SerializeField]
-        private Toggle renderVDWForcesToggle;
-
-        [SerializeField]
-        private Toggle renderElectrostaticForcesToggle;
+        private Toggle renderClosestInteractionsToggle;
 
         [SerializeField]
         private Toggle highlightInteractingAtomsToggle;
@@ -26,16 +23,16 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Toggle renderInteractionLinesToggle;
 
         [SerializeField]
-        private Toggle renderClosestInteractionsToggle;
-
-        [SerializeField]
         private TextMeshProUGUI StartStopButtonText;
 
         [SerializeField]
         private Button ResetPositionsButton;
 
         [SerializeField]
-        private TextMeshProUGUI Informationtext;
+        private TextMeshProUGUI InteractionScoreText;
+
+        [SerializeField]
+        private TextMeshProUGUI InformationText;
 
         [SerializeField]
         private MoleculeList molecules;
@@ -51,17 +48,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void Awake() {
 
-            Informationtext.text = "";
+            InformationText.text = "";
             MonitoringEnabled = false;
             ResetPositionsButton.interactable = false;
 
             interactionSettings = MolecularInteractionSettings.Default();
 
-            renderVDWForcesToggle.isOn = interactionSettings.ShowVDWForces;
-            renderElectrostaticForcesToggle.isOn = interactionSettings.ShowElectrostaticForces;
+            renderClosestInteractionsToggle.isOn = interactionSettings.ShowClosestInteractionsOnly;
             highlightInteractingAtomsToggle.isOn = interactionSettings.HighlightInteracingAtoms;
             renderInteractionLinesToggle.isOn = interactionSettings.RenderInteractionLines;
-            renderClosestInteractionsToggle.isOn = interactionSettings.RenderClosestInteractionsOnly;
         }
 
         private void OnEnable() {
@@ -83,15 +78,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void OnShowVDWForcesToggle() {
+        public void OnRenderClosestInteractionsToggle() {
 
-            interactionSettings.ShowVDWForces = renderVDWForcesToggle.isOn;
-            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
-        }
-
-        public void OnShowElectrostaticForcesToggle() {
-
-            interactionSettings.ShowElectrostaticForces = renderElectrostaticForcesToggle.isOn;
+            interactionSettings.ShowClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
             UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 
@@ -107,14 +96,27 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 
-        public void OnRenderClosestInteractionsToggle() {
+        public void ShowInformation(MolecularInteractionsInformation information) {
 
-            interactionSettings.RenderClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
-            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
-        }
+            InteractionScoreText.text = information.SummedInteractionForce.ToString("N2");
 
-        public void ShowInformation(string text) {
-            Informationtext.text = text;
+            InformationText.text =
+
+                "Attraction Force: " + information.SummedAttractionForce.ToString("N2") + "\n" +
+                "Repulsion Force: " + information.SummedRepulsionForce.ToString("N2") + "\n\n" +
+
+                "Stable Interactions: " + information.TotalStableInteractions + "\n" +
+                "Attractive Interactions: " + information.TotalAttractiveInteractions + "\n" +
+                "Repulsive Interactions: " + information.TotalRepulsiveInteractions + "\n" +
+                "Total Interactions: " + information.TotalInteractions + "\n\n" +
+
+                "VDW Force: " + information.SummedLennardJonesForce.ToString("N2") + "\n" +
+                "VDW Attraction: " + information.SummedLennardJonesAttractionForce.ToString("N2") + "\n" +
+                "VDW Repulsion: " + information.SummedLennardJonesRepulsionForce.ToString("N2") + "\n\n" +
+
+                "Electrostatic Force: " + information.SummedElectrostaticForce.ToString("N2") + "\n" +
+                "Electrostatic Attraction: " + information.SummedElectrostaticAttractionForce.ToString("N2") + "\n" +
+                "Electrostatic Repulsion: " + information.SummedElectrostaticRepulsionForce.ToString("N2") + "\n";
         }
 
         public void StopInteractions() {
@@ -164,7 +166,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             MonitoringEnabled = true;
-            StartStopButtonText.text = "Stop Monitoring Molecules";
+            StartStopButtonText.text = "Stop Monitoring Interactions";
             UserInterfaceEvents.RaiseStartMonitoringMoleculeInteractions(moleculeIDs[0], moleculeIDs[1], interactionSettings, molecule1Settings, molecule2Settings);
 
             ResetPositionsButton.interactable = true;
@@ -173,7 +175,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private void stopInteracations() {
 
             MonitoringEnabled = false;
-            StartStopButtonText.text = "Start Monitoring Molecules";
+            StartStopButtonText.text = "Start Monitoring Interactions";
             UserInterfaceEvents.RaiseStopMonitoringMoleculeInteractions();
 
             ResetPositionsButton.interactable = false;

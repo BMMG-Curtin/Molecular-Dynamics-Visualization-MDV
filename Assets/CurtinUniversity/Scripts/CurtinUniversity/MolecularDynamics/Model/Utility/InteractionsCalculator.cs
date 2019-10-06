@@ -6,6 +6,13 @@ using UnityEngine;
 
 namespace CurtinUniversity.MolecularDynamics.Model {
 
+    public enum InteractionType {
+
+        Attractive,
+        Stable,
+        Repulsive
+    }
+
     public class AtomInteraction {
 
         public Atom Atom1;
@@ -14,8 +21,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public double SumOfAtomicRadii;
         public double? LennardJonesPotential;
         public double? ElectrostaticForce;
+        public InteractionType? InteractionType;
         public Color? InteractionColour;
-
 
         public override int GetHashCode() {
 
@@ -96,7 +103,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
                     SetLennardJonesPotential(interaction);
                     SetElecrostaticForce(interaction);
-                    SetColour(interaction, repulsiveGradient, strongAttractiveGradient, weakAttractiveGradient);
+                    SetInteractionType(interaction, repulsiveGradient, strongAttractiveGradient, weakAttractiveGradient);
 
                     interactions.Add(interaction);
                 }
@@ -148,15 +155,17 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         }
 
         public void SetElecrostaticForce(AtomInteraction interaction) {
-            interaction.ElectrostaticForce = -1;
+            interaction.ElectrostaticForce = 0;
         }
 
         // Sets a colour calculated on distance compared to atom sigmas
-        public void SetColour(AtomInteraction interaction, Gradient repulsiveGradient, Gradient strongAttractiveGradient, Gradient weakAttractiveGradient) {
+        public void SetInteractionType(AtomInteraction interaction, Gradient repulsiveGradient, Gradient strongAttractiveGradient, Gradient weakAttractiveGradient) {
 
             float weakAttractiveMaxDistance = 2.5f * (float)interaction.SumOfAtomicRadii;
 
             if (interaction.Distance >= weakAttractiveMaxDistance) {
+
+                interaction.InteractionType = null;
                 return;
             }
 
@@ -165,16 +174,19 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
             if (interaction.Distance >= strongAttractiveMaxDistance) {
 
+                interaction.InteractionType = InteractionType.Attractive;
                 float weakForce = (interaction.Distance - strongAttractiveMaxDistance) / (weakAttractiveMaxDistance - strongAttractiveMaxDistance);
                 interaction.InteractionColour = weakAttractiveGradient.Evaluate(weakForce);
             }
             else if (interaction.Distance >= repulsiveMaxDistance) {
 
+                interaction.InteractionType = InteractionType.Stable;
                 float strongForce = (interaction.Distance - repulsiveMaxDistance) / (strongAttractiveMaxDistance - repulsiveMaxDistance);
                 interaction.InteractionColour = strongAttractiveGradient.Evaluate(strongForce);
             }
             else {
 
+                interaction.InteractionType = InteractionType.Repulsive;
                 float repulsiveForce = interaction.Distance / repulsiveMaxDistance;
                 interaction.InteractionColour = repulsiveGradient.Evaluate(repulsiveForce);
             }
