@@ -48,7 +48,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void Awake() {
 
+            InteractionScoreText.text = "";
             InformationText.text = "";
+
             MonitoringEnabled = false;
             ResetPositionsButton.interactable = false;
 
@@ -176,6 +178,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             MonitoringEnabled = false;
             StartStopButtonText.text = "Start Monitoring Interactions";
+
+            InteractionScoreText.text = "";
+            InformationText.text = ""; 
+
             UserInterfaceEvents.RaiseStopMonitoringMoleculeInteractions();
 
             ResetPositionsButton.interactable = false;
