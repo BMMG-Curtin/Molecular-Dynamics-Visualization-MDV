@@ -409,8 +409,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         // All molecules are referenced by moleculeID
         private void numberMoleculeListItems() {
 
+            List<int> keys = moleculeListItems.Keys.ToList();
+            keys.Sort();
+
             int displayID = 0;
-            foreach(MoleculeSettingsPanelListItem item in moleculeListItems.Values) { 
+            foreach (int key in keys) {
+
+                MoleculeSettingsPanelListItem item = moleculeListItems[key];
                 item.DisplayID = ++displayID;
             }
         }

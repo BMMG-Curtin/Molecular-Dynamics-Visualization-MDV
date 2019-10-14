@@ -20,6 +20,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject MoleculePrefab;
 
         private Dictionary<int, Molecule> molecules;
+        private int? selectedMolecule;
 
         private Dictionary<int, MoleculeRenderSettings> cachedRenderSettings;
         private Dictionary<int, int?> cachedFrameNumbers;
@@ -29,16 +30,22 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private bool loadingStructure;
         private bool loadingTrajectory;
 
+        private bool moleculeMovementEnabled;
+
         GeneralSettings generalSettings;
 
         private void Awake() {
 
             molecules = new Dictionary<int, Molecule>();
+            selectedMolecule = null;
+
             cachedRenderSettings = new Dictionary<int, MoleculeRenderSettings>();
             cachedFrameNumbers = new Dictionary<int, int?>();
             defaultMoleculeTransforms = new Dictionary<int, SerializableTransform>();
             loadingStructure = false;
             loadingTrajectory = false;
+
+            moleculeMovementEnabled = true;
 
             generalSettings = GeneralSettings.Default();
         }
@@ -288,7 +295,33 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void SetMoleculeSelected(int moleculeID, bool selected) {
 
             if (molecules.ContainsKey(moleculeID)) {
-                molecules[moleculeID].EnableInput(selected);
+
+                if(selected && moleculeMovementEnabled) {
+                    molecules[moleculeID].EnableInput(true);
+                }
+                else {
+                    molecules[moleculeID].EnableInput(false);
+                }
+            }
+
+            if (selected) {
+                selectedMolecule = moleculeID;
+            }
+            else {
+                selectedMolecule = null;
+            }
+        }
+
+        public void EnableMoleculeInput(bool enable) {
+
+            moleculeMovementEnabled = enable;
+
+            foreach (Molecule molecule in molecules.Values) {
+                molecule.EnableInput(false);
+            }
+
+            if (moleculeMovementEnabled && selectedMolecule != null && molecules.ContainsKey((int)selectedMolecule)) {
+                molecules[(int)selectedMolecule].EnableInput(true);
             }
         }
 

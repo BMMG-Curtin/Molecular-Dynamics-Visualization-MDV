@@ -38,6 +38,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             UserInterfaceEvents.OnRemoveMolecule += molecules.RemoveMolecule;
             UserInterfaceEvents.OnMoleculeSelected += molecules.SetMoleculeSelected;
             UserInterfaceEvents.OnResetMoleculeTransform += molecules.LoadDefaultMoleculeTransform;
+            UserInterfaceEvents.OnEnableMoleculeMovement += molecules.EnableMoleculeInput;
             UserInterfaceEvents.OnShowMolecule += molecules.ShowMolecule;
             UserInterfaceEvents.OnHideMolecule += molecules.HideMolecule;
             UserInterfaceEvents.OnMoleculeRenderSettingsUpdated += molecules.UpdateMoleculeRenderSettings;

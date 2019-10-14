@@ -52,7 +52,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         private void OnEnable() {
+
             UpdateSelectedMolecule();
+            UserInterfaceEvents.RaiseEnableMoleculeMovement(false);
         }
 
         public void UpdateSelectedMolecule() {
@@ -79,7 +81,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         private void OnDisable() {
+
             enableResidueSettingsPanels(false);
+            UserInterfaceEvents.RaiseEnableMoleculeMovement(true);
         }
 
         public void SetPrimaryStructure(int moleculeID, PrimaryStructure primaryStructure) {
