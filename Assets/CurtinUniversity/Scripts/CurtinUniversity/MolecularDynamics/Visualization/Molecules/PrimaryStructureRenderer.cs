@@ -419,7 +419,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 List<DynamicMeshNode> nodes = new List<DynamicMeshNode>();
                 IEnumerable splinePoints = Interpolate.NewCatmullRom(nodePositions.ToArray(), interpolation, false);
                 Color32 chainColour = ChainColors[currentIndex % ChainColors.Length];
-                UnityEngine.Debug.Log("Chain colour: " + chainColour);
 
                 foreach (Vector3 position in splinePoints) {
 

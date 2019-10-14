@@ -51,12 +51,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private bool buildSecondaryStructureTrajectory = true;
 
         private MoleculeRenderSettings renderSettings;
+        private int? frameNumber;
 
         private bool rendering = false;
         private bool awaitingRender = false;
 
         private int awaitingMeshQuality;
-        private int? awaitingFrameNumber;
 
         private bool autoRotateEnabled = false;
         private float autoRotateSpeed = 10f;
@@ -75,6 +75,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             this.ID = id;
             this.PrimaryStructure = primaryStructure;
+            this.renderSettings = renderSettings;
+            this.frameNumber = null;
 
             try {
                 secondaryStructure = SecondaryStructure.CreateFromPrimaryStructure(primaryStructure, Settings.StrideExecutablePath, Settings.TmpFilePath);
@@ -117,7 +119,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if (!rendering && awaitingRender) {
 
                 awaitingRender = false;
-                StartCoroutine(Render(awaitingMeshQuality, awaitingFrameNumber));
+                StartCoroutine(Render(awaitingMeshQuality));
             }
         }
 
@@ -131,6 +133,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             renderSettings = settings;
             atomHighlightsRenderer.SetRenderSettings(settings);
+        }
+
+        public void SetFrameNumber(int? frameNumber) {
+            this.frameNumber = frameNumber;
         }
 
         public void EnableInput(bool inputEnabled) {
@@ -157,12 +163,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             moleculeRender.SetActive(false);
         }
 
-        public IEnumerator Render(int meshQuality, int? frameNumber = null) {
+        public IEnumerator Render(int meshQuality) {
 
             if(rendering) {
 
                 awaitingMeshQuality = meshQuality;
-                awaitingFrameNumber = frameNumber;
                 awaitingRender = true;
                 yield break;
             }
