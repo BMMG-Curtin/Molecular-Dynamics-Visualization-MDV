@@ -14,13 +14,19 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TextMeshProUGUI selectedMoleculeText;
 
         [SerializeField]
-        private Toggle renderClosestInteractionsToggle;
-
-        [SerializeField]
         private Toggle highlightInteractingAtomsToggle;
 
         [SerializeField]
         private Toggle renderInteractionLinesToggle;
+
+        [SerializeField]
+        private Toggle renderAttractiveInteractionsToggle;
+
+        [SerializeField]
+        private Toggle renderStableInteractionsToggle;
+
+        [SerializeField]
+        private Toggle renderRepulsiveInteractionsToggle;
 
         [SerializeField]
         private TextMeshProUGUI StartStopButtonText;
@@ -56,9 +62,11 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             interactionSettings = MolecularInteractionSettings.Default();
 
-            renderClosestInteractionsToggle.isOn = interactionSettings.ShowClosestInteractionsOnly;
             highlightInteractingAtomsToggle.isOn = interactionSettings.HighlightInteracingAtoms;
             renderInteractionLinesToggle.isOn = interactionSettings.RenderInteractionLines;
+            renderAttractiveInteractionsToggle.isOn = interactionSettings.ShowAttractiveInteractions;
+            renderStableInteractionsToggle.isOn = interactionSettings.ShowStableInteractions;
+            renderRepulsiveInteractionsToggle.isOn = interactionSettings.ShowRepulsiveInteractions;
         }
 
         private void OnEnable() {
@@ -80,12 +88,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        public void OnRenderClosestInteractionsToggle() {
-
-            interactionSettings.ShowClosestInteractionsOnly = renderClosestInteractionsToggle.isOn;
-            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
-        }
-
         public void OnHighlightInteractingAtomsToggle() {
 
             interactionSettings.HighlightInteracingAtoms = highlightInteractingAtomsToggle.isOn;
@@ -95,6 +97,24 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public void OnRenderInteractionLinesToggle() {
 
             interactionSettings.RenderInteractionLines = renderInteractionLinesToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
+        }
+
+        public void OnRenderAttractiveInteractionsToggle() {
+
+            interactionSettings.ShowAttractiveInteractions = renderAttractiveInteractionsToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
+        }
+
+        public void OnRenderStableInteractionsToggle() {
+
+            interactionSettings.ShowStableInteractions = renderStableInteractionsToggle.isOn;
+            UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
+        }
+
+        public void OnRenderRepulsiveInteractionsToggle() {
+
+            interactionSettings.ShowRepulsiveInteractions = renderRepulsiveInteractionsToggle.isOn;
             UserInterfaceEvents.RaiseMolecularInteractionSettingsUpdated(interactionSettings);
         }
 
@@ -118,7 +138,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 "Electrostatic Force: " + information.SummedElectrostaticForce.ToString("N2") + "\n" +
                 "Electrostatic Attraction: " + information.SummedElectrostaticAttractionForce.ToString("N2") + "\n" +
-                "Electrostatic Repulsion: " + information.SummedElectrostaticRepulsionForce.ToString("N2") + "\n";
+                "Electrostatic Repulsion: " + information.SummedElectrostaticRepulsionForce.ToString("N2"); // + "\n" + 
+
+                //"\nDebug Info: " + information.DebugString + "\n";
         }
 
         public void StopInteractions() {
@@ -159,7 +181,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             MoleculeRenderSettings molecule1Settings = molecules.Get(moleculeIDs[0]).RenderSettings;
-            MoleculeRenderSettings molecule2Settings = molecules.Get(moleculeIDs[0]).RenderSettings;
+            MoleculeRenderSettings molecule2Settings = molecules.Get(moleculeIDs[1]).RenderSettings;
 
             if (molecules.Get(moleculeIDs[0]).HasTrajectory || molecules.Get(moleculeIDs[1]).HasTrajectory) {
 

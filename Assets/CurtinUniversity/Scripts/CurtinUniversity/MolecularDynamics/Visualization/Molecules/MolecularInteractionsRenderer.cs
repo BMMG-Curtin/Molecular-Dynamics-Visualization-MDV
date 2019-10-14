@@ -71,6 +71,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     continue;
                 }
 
+                if ((interaction.InteractionType == InteractionType.Attractive && !interactionSettings.ShowAttractiveInteractions) ||
+                    (interaction.InteractionType == InteractionType.Stable && !interactionSettings.ShowStableInteractions) ||
+                    (interaction.InteractionType == InteractionType.Repulsive && !interactionSettings.ShowRepulsiveInteractions)) {
+                    continue;
+                }
+
                 int key = interaction.GetHashCode();
 
                 LineRenderer lineRenderer = null;
@@ -122,6 +128,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 foreach (AtomInteraction interaction in interactions) {
 
                     if(interaction.InteractionColour == null) {
+                        continue;
+                    }
+
+                    if((interaction.InteractionType == InteractionType.Attractive && !interactionSettings.ShowAttractiveInteractions) ||
+                        (interaction.InteractionType == InteractionType.Stable && !interactionSettings.ShowStableInteractions) ||
+                        (interaction.InteractionType == InteractionType.Repulsive && !interactionSettings.ShowRepulsiveInteractions)) {
                         continue;
                     }
 

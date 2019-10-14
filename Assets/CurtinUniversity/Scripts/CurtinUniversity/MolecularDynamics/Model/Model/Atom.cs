@@ -13,6 +13,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public float AtomicRadius { get; private set; } // in nanometres
         public float VDWRadius { get; private set; } // in nanometres
         public Vector3 Position { get; private set; } // in nanometres
+        public float Charge { get; private set; } 
 
         // parent information stored here so parent residue can be found easily without re-searching residue dictionary
         public int ResidueIndex { get; set; }
@@ -22,13 +23,14 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public int ChainIndex { get; set; }
         public string ChainID { get; set; }
 
-        public Atom(int index, int id, string name, Element element, Vector3 position) {
+        public Atom(int index, int id, string name, Element element, Vector3 position, float charge = 0) {
 
             Index = index;
             ID = id;
             Name = name;
             Element = element;
             Position = position;
+            Charge = charge;
 
             float atomicRadius;
             if (!ChemicalElement.AtomicRadius.TryGetValue(Element, out atomicRadius)) {
@@ -44,7 +46,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         }
 
         public override string ToString() {
-            return "Atom [" + ID + "][" + Name + "][" + Element + "][" + Position + "]";
+            return "Atom [" + ID + "][" + Name + "][" + Element + "][" + Position + "][" + Charge.ToString("N4") + "]";
         }
 
         public string ToStringExtended() {
@@ -56,6 +58,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 "Name: [" + Name + "]\n" +
                 "Element: [" + Element + "]\n" +
                 "Position: [" + Position + "]\n" +
+                "Charge: [" + Charge.ToString("N4") + "]\n" +
                 "ResidueIndex: [" + ResidueIndex + "]\n" +
                 "ResidueID: [" + ResidueID + "]\n" +
                 "ResidueName: [" + ResidueName + "]\n" +

@@ -104,6 +104,21 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                                 int atomID = int.Parse(record.Substring(6, 5).Trim());
                                 string atomName = record.Substring(12, 4).Trim();
                                 Element element = ElementHelper.Parse(record.Substring(76, 2).Trim());
+                                float charge = 0;
+
+                                // if the file has extra columns at the end then assume they are for charge and try to parse
+                                if (record.Length > 80) {
+
+                                    string chargeString = record.Substring(80, record.Length - 80).Trim();
+                                    if (chargeString.Length > 0) {
+                                        try {
+                                            charge = float.Parse(chargeString);
+                                        }
+                                        catch(Exception) {
+                                            // do nothing
+                                        }
+                                    }
+                                }
 
                                 // PDB coordinates are in angstroms. Convert to nanometres.
                                 Vector3 position = new Vector3();
@@ -112,7 +127,9 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                                 position.z = float.Parse(record.Substring(46, 8)) / 10;
 
                                 atomIndex++;
-                                Atom atom = new Atom(atomIndex, atomID, atomName, element, position);
+                                Atom atom = new Atom(atomIndex, atomID, atomName, element, position, charge);
+
+                                //Debug.Log("Atom: " + atom);
 
                                 // check for and store main chain elements. 
                                 if (recordName.Equals("ATOM") && residue.ResidueType != StandardResidue.None) {

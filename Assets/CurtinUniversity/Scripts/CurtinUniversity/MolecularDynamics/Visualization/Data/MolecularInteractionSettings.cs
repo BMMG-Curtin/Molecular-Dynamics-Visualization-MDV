@@ -3,26 +3,32 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class MolecularInteractionSettings {
 
-        public bool ShowClosestInteractionsOnly { get; set; }
         public bool HighlightInteracingAtoms { get; set; }
         public bool RenderInteractionLines { get; set; }
+        public bool ShowAttractiveInteractions { get; set; }
+        public bool ShowStableInteractions { get; set; }
+        public bool ShowRepulsiveInteractions { get; set; }
 
         public static MolecularInteractionSettings Default() {
 
             return new MolecularInteractionSettings {
 
-                ShowClosestInteractionsOnly = true,
                 HighlightInteracingAtoms = true,
                 RenderInteractionLines = true,
+                ShowAttractiveInteractions = true,
+                ShowStableInteractions = true,
+                ShowRepulsiveInteractions = true,
             };
         }
 
         public override string ToString() {
 
             return
-                "ShowClosestInteractionsOnly: " + ShowClosestInteractionsOnly + "\n" +
                 "HighlightInteracingAtoms: " + HighlightInteracingAtoms + "\n" +
-                "RenderInteractionLines: " + RenderInteractionLines;
+                "RenderInteractionLines: " + RenderInteractionLines + "\n" +
+                "ShowAttractiveInteractions: " + ShowAttractiveInteractions + "\n" +
+                "ShowStableInteractions: " + ShowStableInteractions + "\n" +
+                "ShowRepulsiveInteractions: " + ShowRepulsiveInteractions;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public double SummedElectrostaticAttractionForce;
         public double SummedElectrostaticRepulsionForce;
 
-
+        public string DebugString;
 
         public MolecularInteractionsInformation() {
 

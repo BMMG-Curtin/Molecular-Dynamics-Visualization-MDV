@@ -156,17 +156,17 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         public void SetElecrostaticForce(AtomInteraction interaction) {
 
+            //double coulombsConstant = 332;
+            double coulombsConstant = 8987551787;
+
             double distanceInMetres = interaction.Distance * 0.000000001d; // 1e-9;
+            double chargeAtom1 = (double)interaction.Atom1.Charge;
+            double chargeAtom2 = (double)interaction.Atom2.Charge;
 
-            //double coulombsConstant = 8987551787;
-            double coulombsConstant = 332;
+            double electrostaticForce = coulombsConstant * (chargeAtom1 * chargeAtom2) / (distanceInMetres * distanceInMetres);
+            //double electrostaticForce = coulombsConstant * (chargeAtom1 * chargeAtom2) / (interaction.Distance * interaction.Distance);
 
-            double chargeAtom1 = 0;
-            double chargeAtom2 = 0;
-
-            double electrostaticForce = 332d * (chargeAtom1 * chargeAtom2) / (distanceInMetres * distanceInMetres);
-
-            interaction.ElectrostaticForce = 0;
+            interaction.ElectrostaticForce = electrostaticForce;
         }
 
         // Sets a colour calculated on distance compared to atom sigmas

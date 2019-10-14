@@ -81,6 +81,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void StartMonitoring(Molecule molecule1, Molecule molecule2, MolecularInteractionSettings interactionSettings, MoleculeRenderSettings molecule1Settings, MoleculeRenderSettings molecule2Settings) {
 
+            UnityEngine.Debug.Log("Start monitoring " + Time.time);
+
             if(molecule1 == null) {
                 MoleculeEvents.RaiseInteractionsMessage("Can't monitor interactions. First molecule is null.", true);
                 return;
@@ -112,6 +114,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         public void StopMonitoring() {
+
+            UnityEngine.Debug.Log("Stop monitoring " + Time.time);
 
             if (processingInteractions) {
 
@@ -148,20 +152,30 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void SetMolecule1RenderSettings(MoleculeRenderSettings molecule1Settings) {
 
+
+            UnityEngine.Debug.Log("Molecule1Interaction Settings " + molecule1Settings);
+
             if (!molecule1Settings.ShowPrimaryStructure) {
                 this.molecule1RenderedAtoms = new List<Atom>();
+                UnityEngine.Debug.Log("Interactions calc. Molecule1 Atom empty list");
             }
             else {
                 this.molecule1RenderedAtoms = Molecule1.PrimaryStructure.GetAtoms(molecule1Settings.ShowStandardResidues, molecule1Settings.ShowNonStandardResidues, molecule1Settings.EnabledElements, molecule1Settings.EnabledResidueNames, molecule1Settings.EnabledResidueIDs).Values.ToList();
+                UnityEngine.Debug.Log(Time.time + " Interactions calc. Molecule1 Atom count: " + this.molecule1RenderedAtoms.Count);
             }
         }
 
         public void SetMolecule2RenderSettings(MoleculeRenderSettings molecule2Settings) {
+
+            UnityEngine.Debug.Log("Molecule2Interaction Settings " + molecule2Settings);
+
             if (!molecule2Settings.ShowPrimaryStructure) {
                 this.molecule2RenderedAtoms = new List<Atom>();
+                UnityEngine.Debug.Log("Interactions calc. Molecule2 Atom empty list");
             }
             else {
                 this.molecule2RenderedAtoms = Molecule2.PrimaryStructure.GetAtoms(molecule2Settings.ShowStandardResidues, molecule2Settings.ShowNonStandardResidues, molecule2Settings.EnabledElements, molecule2Settings.EnabledResidueNames, molecule2Settings.EnabledResidueIDs).Values.ToList();
+                UnityEngine.Debug.Log(Time.time + " Interactions calc. Molecule2 Atom count: " + this.molecule2RenderedAtoms.Count);
             }
         }
 
@@ -186,10 +200,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     strongAttractiveGradient, 
                     weakAttractiveGradient
                 );
-
-                if (interactionSettings.ShowClosestInteractionsOnly) {
-                    newInteractions = interactionsCalculator.GetClosestInteractions(newInteractions);
-                }
 
                 if (Active) {
 
@@ -234,15 +244,15 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                     if (interaction.ElectrostaticForce != null && interaction.ElectrostaticForce != 0) {
 
-                        info.SummedInteractionForce += (double)interaction.ElectrostaticForce;
-                        info.SummedElectrostaticAttractionForce += (double)interaction.ElectrostaticForce;
+                        //info.SummedInteractionForce += (double)interaction.ElectrostaticForce;
+                        info.SummedElectrostaticForce += (double)interaction.ElectrostaticForce;
 
                         if ((double)interaction.ElectrostaticForce >= 0) {
-                            info.SummedRepulsionForce += (double)interaction.ElectrostaticForce;
+                            //info.SummedRepulsionForce += (double)interaction.ElectrostaticForce;
                             info.SummedElectrostaticRepulsionForce += (double)interaction.ElectrostaticForce;
                         }
                         else {
-                            info.SummedAttractionForce += (double)interaction.ElectrostaticForce;
+                            //info.SummedAttractionForce += (double)interaction.ElectrostaticForce;
                             info.SummedElectrostaticAttractionForce += (double)interaction.ElectrostaticForce;
                         }
                     }
