@@ -107,7 +107,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                 RectTransform rect = button.GetComponent<RectTransform>();
 
-                Text text = button.GetComponentInChildren<Text>();
+                TextMeshProUGUI text = button.GetComponentInChildren<TextMeshProUGUI>();
                 if (text != null) {
                     if (symbol != null) {
                         text.text = symbol;

@@ -461,6 +461,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 atomRadius = atom.AtomicRadius / 2f;
             }
 
+            atomRadius *= settings.AtomScale;
+
             return atomRadius; // * settings.AtomScale; 
         }
     }

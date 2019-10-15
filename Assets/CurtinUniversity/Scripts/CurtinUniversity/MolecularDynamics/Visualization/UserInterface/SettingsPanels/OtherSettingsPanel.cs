@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class OtherSettingsPanel : MonoBehaviour {
@@ -24,22 +26,22 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Toggle ambientLightsToggle;
 
         [SerializeField]
-        private Text lightIntensityText;
+        private TextMeshProUGUI lightIntensityText;
 
         [SerializeField]
-        private Text autoRotateSpeedText;
+        private TextMeshProUGUI autoRotateSpeedText;
 
         [SerializeField]
         private Toggle autoMeshQualityToggle;
 
         [SerializeField]
-        private Text meshQualityText;
+        private TextMeshProUGUI meshQualityText;
 
         [SerializeField]
-        private Text mouseSpeedText;
+        private TextMeshProUGUI mouseSpeedText;
 
         [SerializeField]
-        private Text moleculeMovementSpeedText;
+        private TextMeshProUGUI moleculeMovementSpeedText;
 
         [SerializeField]
         private Toggle spaceNavigatorCameraControlToggle;

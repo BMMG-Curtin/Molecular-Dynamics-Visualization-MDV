@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class ResidueIDButton : MonoBehaviour {
 
         [SerializeField]
-        private Text buttonIDText;
+        private TextMeshProUGUI buttonIDText;
 
         [SerializeField]
         private Color32 EnabledColour;

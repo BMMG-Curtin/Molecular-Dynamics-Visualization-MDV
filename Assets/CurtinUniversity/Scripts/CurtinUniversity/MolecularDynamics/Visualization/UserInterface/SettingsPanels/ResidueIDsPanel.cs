@@ -33,7 +33,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject residueButtonPrefab;
 
         [SerializeField]
-        private Text toggleResiduesButtonText;
+        private TextMeshProUGUI toggleResiduesButtonText;
 
         [SerializeField]
         private ConfirmDialog confirmDialog;

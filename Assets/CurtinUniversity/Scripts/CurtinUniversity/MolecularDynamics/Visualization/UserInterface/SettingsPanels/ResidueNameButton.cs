@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public class ResidueNameButton : MonoBehaviour {
 
         [SerializeField]
-        private Text buttonNameText;
+        private TextMeshProUGUI buttonNameText;
 
         [SerializeField]
         private Color32 EnabledColour;

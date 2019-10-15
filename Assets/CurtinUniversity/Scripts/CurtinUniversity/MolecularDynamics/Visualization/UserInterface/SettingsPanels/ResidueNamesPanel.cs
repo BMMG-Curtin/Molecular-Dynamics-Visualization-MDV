@@ -5,6 +5,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
@@ -40,7 +42,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject residueButtonPrefab;
 
         [SerializeField]
-        private Text toggleResiduesButtonText;
+        private TextMeshProUGUI toggleResiduesButtonText;
 
         [SerializeField]
         private ConfirmDialog confirmDialog;

@@ -27,7 +27,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private TextMeshProUGUI ValidatedText;
 
         [SerializeField]
-        private Text toggleResiduesButtonText;
+        private TextMeshProUGUI toggleResiduesButtonText;
 
         [SerializeField]
         private ConfirmDialog confirmDialog;

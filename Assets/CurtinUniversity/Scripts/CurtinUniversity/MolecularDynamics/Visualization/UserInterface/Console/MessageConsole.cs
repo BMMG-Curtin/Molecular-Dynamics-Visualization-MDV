@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public enum ConsoleMessageType {
@@ -17,13 +19,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
     public class MessageConsole : MonoBehaviour {
         
         [SerializeField]
-        private Text BannerMessage;
+        private TextMeshProUGUI bannerMessage;
 
         [SerializeField]
-        private Text ConsoleContent;
+        private TextMeshProUGUI consoleContent;
 
         [SerializeField]
-        private ScrollRect ScrollRect;
+        private ScrollRect scrollRect;
 
         public bool Silent { get; set; }
         public bool ShowBanner { get; set; }
@@ -118,21 +120,21 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (ShowBanner) {
 
-                BannerMessage.text = "";
+                bannerMessage.text = "";
 
                 if (bannerBuildTime != null && bannerBuildTime != "")
-                    BannerMessage.text += bannerBuildTime + "ms build";
+                    bannerMessage.text += bannerBuildTime + "ms build";
 
                 if (bannerFPS != null) {
 
-                    if (BannerMessage.text != null && BannerMessage.text != "")
-                        BannerMessage.text += ", ";
+                    if (bannerMessage.text != null && bannerMessage.text != "")
+                        bannerMessage.text += ", ";
 
-                    BannerMessage.text += bannerFPS + " fps";
+                    bannerMessage.text += bannerFPS + " fps";
                 }
             }
             else
-                BannerMessage.text = "";
+                bannerMessage.text = "";
         }
 
         private IEnumerator updateConsole() {
@@ -147,12 +149,12 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 }
             }
 
-            ConsoleContent.text = consoleText;
+            consoleContent.text = consoleText;
 
             // wait a frame or veritalNormalizedPosition wont work correctly
             yield return null;
 
-            ScrollRect.verticalNormalizedPosition = 0f;
+            scrollRect.verticalNormalizedPosition = 0f;
         }
 
         private string HTMLColor(Color color) {

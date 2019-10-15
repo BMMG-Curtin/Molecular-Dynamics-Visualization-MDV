@@ -60,10 +60,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private Toggle CalculateBoxEveryFrameToggle;
 
         [SerializeField]
-        private Text AtomScale;
+        private TextMeshProUGUI AtomScale;
 
         [SerializeField]
-        private Text BondScale;
+        private TextMeshProUGUI BondScale;
 
         private MoleculeSettings selectedMolecule;
         private float scaleIncrementAmount = 0.1f;

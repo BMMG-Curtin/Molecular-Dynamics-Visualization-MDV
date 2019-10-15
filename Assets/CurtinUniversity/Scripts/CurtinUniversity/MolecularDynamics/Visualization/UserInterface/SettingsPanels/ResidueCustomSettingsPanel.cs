@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void SetCustomColourButtonColourDelegate(Color? color);
@@ -27,7 +29,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private GameObject atomListContentPanel;
 
         [SerializeField]
-        private Text panelTitle;
+        private TextMeshProUGUI panelTitle;
 
         [SerializeField]
         private Toggle colourAtomsToggle;
