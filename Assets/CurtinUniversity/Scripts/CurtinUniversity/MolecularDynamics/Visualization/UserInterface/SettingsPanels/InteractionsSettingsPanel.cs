@@ -120,23 +120,23 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ShowInformation(MolecularInteractionsInformation information) {
 
-            InteractionScoreText.text = information.SummedInteractionForce.ToString("N2");
+            InteractionScoreText.text = information.SummedInteractionEnergy.ToString("N2") + " kJ/mol";
 
             InformationText.text =
 
-                "Attraction Force: " + information.SummedAttractionForce.ToString("N2") + "\n" +
-                "Repulsion Force: " + information.SummedRepulsionForce.ToString("N2") + "\n\n" +
+                "Attraction Energy: " + information.SummedAttractionForce.ToString("N2") + "\n" +
+                "Repulsion Energy: " + information.SummedRepulsionForce.ToString("N2") + "\n\n" +
 
                 "Stable Interactions: " + information.TotalStableInteractions + "\n" +
                 "Attractive Interactions: " + information.TotalAttractiveInteractions + "\n" +
                 "Repulsive Interactions: " + information.TotalRepulsiveInteractions + "\n" +
                 "Total Interactions: " + information.TotalInteractions + "\n\n" +
 
-                "VDW Force: " + information.SummedLennardJonesForce.ToString("N2") + "\n" +
-                "VDW Attraction: " + information.SummedLennardJonesAttractionForce.ToString("N2") + "\n" +
-                "VDW Repulsion: " + information.SummedLennardJonesRepulsionForce.ToString("N2") + "\n\n" +
+                "VDW Energy: " + information.SummedLennardJonesEnergy.ToString("N2") + "\n" +
+                "VDW Attraction: " + information.SummedLennardJonesAttractionEnergy.ToString("N2") + "\n" +
+                "VDW Repulsion: " + information.SummedLennardJonesRepulsionEnergy.ToString("N2") + "\n\n" +
 
-                "Electrostatic Force: " + information.SummedElectrostaticForce.ToString("N2") + "\n" +
+                "Electrostatic Energy: " + information.SummedElectrostaticForce.ToString("N2") + "\n" +
                 "Electrostatic Attraction: " + information.SummedElectrostaticAttractionForce.ToString("N2") + "\n" +
                 "Electrostatic Repulsion: " + information.SummedElectrostaticRepulsionForce.ToString("N2"); // + "\n" + 
 

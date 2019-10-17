@@ -8,13 +8,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public int TotalStableInteractions;
         public int TotalRepulsiveInteractions;
 
-        public double SummedInteractionForce;
+        public double SummedInteractionEnergy;
         public double SummedAttractionForce;
         public double SummedRepulsionForce;
 
-        public double SummedLennardJonesForce;
-        public double SummedLennardJonesAttractionForce;
-        public double SummedLennardJonesRepulsionForce;
+        public double SummedLennardJonesEnergy;
+        public double SummedLennardJonesAttractionEnergy;
+        public double SummedLennardJonesRepulsionEnergy;
 
         public double SummedElectrostaticForce;
         public double SummedElectrostaticAttractionForce;
@@ -29,13 +29,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             TotalStableInteractions = 0;
             TotalRepulsiveInteractions = 0;
 
-            SummedInteractionForce = 0;
+            SummedInteractionEnergy = 0;
             SummedAttractionForce = 0;
             SummedRepulsionForce = 0;
 
-            SummedLennardJonesForce = 0;
-            SummedLennardJonesAttractionForce = 0;
-            SummedLennardJonesRepulsionForce = 0;
+            SummedLennardJonesEnergy = 0;
+            SummedLennardJonesAttractionEnergy = 0;
+            SummedLennardJonesRepulsionEnergy = 0;
 
             SummedElectrostaticForce = 0;
             SummedElectrostaticAttractionForce = 0;
@@ -50,13 +50,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 "Repulsive Interactions: " + TotalRepulsiveInteractions + "\n" +
                 "Total Interactions: " + TotalInteractions + "\n\n" +
 
-                "Total Force: " + SummedInteractionForce.ToString("N2") + "\n" +
+                "Total Force: " + SummedInteractionEnergy.ToString("N2") + "\n" +
                 "Attraction Force: " + SummedAttractionForce.ToString("N2") + "\n" +
                 "Repulsion Force: " + SummedRepulsionForce.ToString("N2") + "\n\n" +
 
-                "VDW Force: " + SummedLennardJonesForce.ToString("N2") + "\n" +
-                "VDW Attraction: " + SummedLennardJonesAttractionForce.ToString("N2") + "\n" +
-                "VDW Repulsion: " + SummedLennardJonesRepulsionForce.ToString("N2") + "\n\n" +
+                "VDW Force: " + SummedLennardJonesEnergy.ToString("N2") + "\n" +
+                "VDW Attraction: " + SummedLennardJonesAttractionEnergy.ToString("N2") + "\n" +
+                "VDW Repulsion: " + SummedLennardJonesRepulsionEnergy.ToString("N2") + "\n\n" +
 
                 "Electrostatic Force: " + SummedElectrostaticForce.ToString("N2") + "\n" +
                 "Electrostatic Attraction: " + SummedElectrostaticAttractionForce.ToString("N2") + "\n" +

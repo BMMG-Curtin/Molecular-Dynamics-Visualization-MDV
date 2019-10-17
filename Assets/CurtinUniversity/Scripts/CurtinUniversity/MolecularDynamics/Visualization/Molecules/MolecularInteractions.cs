@@ -229,31 +229,31 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
                     if (interaction.LennardJonesPotential != null && interaction.LennardJonesPotential != 0) {
 
-                        info.SummedInteractionForce += (double)interaction.LennardJonesPotential;
-                        info.SummedLennardJonesForce += (double)interaction.LennardJonesPotential;
+                        info.SummedInteractionEnergy += (double)interaction.LennardJonesPotential;
+                        info.SummedLennardJonesEnergy += (double)interaction.LennardJonesPotential;
 
                         if ((double)interaction.LennardJonesPotential >= 0) {
                             info.SummedRepulsionForce += (double)interaction.LennardJonesPotential;
-                            info.SummedLennardJonesRepulsionForce += (double)interaction.LennardJonesPotential;
+                            info.SummedLennardJonesRepulsionEnergy += (double)interaction.LennardJonesPotential;
                         }
                         else {
                             info.SummedAttractionForce += (double)interaction.LennardJonesPotential;
-                            info.SummedLennardJonesAttractionForce += (double)interaction.LennardJonesPotential;
+                            info.SummedLennardJonesAttractionEnergy += (double)interaction.LennardJonesPotential;
                         }
                     }
 
-                    if (interaction.ElectrostaticForce != null && interaction.ElectrostaticForce != 0) {
+                    if (interaction.ElectrostaticEnergy != null && interaction.ElectrostaticEnergy != 0) {
 
-                        //info.SummedInteractionForce += (double)interaction.ElectrostaticForce;
-                        info.SummedElectrostaticForce += (double)interaction.ElectrostaticForce;
+                        info.SummedInteractionEnergy += (double)interaction.ElectrostaticEnergy;
+                        info.SummedElectrostaticForce += (double)interaction.ElectrostaticEnergy;
 
-                        if ((double)interaction.ElectrostaticForce >= 0) {
+                        if ((double)interaction.ElectrostaticEnergy >= 0) {
                             //info.SummedRepulsionForce += (double)interaction.ElectrostaticForce;
-                            info.SummedElectrostaticRepulsionForce += (double)interaction.ElectrostaticForce;
+                            info.SummedElectrostaticRepulsionForce += (double)interaction.ElectrostaticEnergy;
                         }
                         else {
                             //info.SummedAttractionForce += (double)interaction.ElectrostaticForce;
-                            info.SummedElectrostaticAttractionForce += (double)interaction.ElectrostaticForce;
+                            info.SummedElectrostaticAttractionForce += (double)interaction.ElectrostaticEnergy;
                         }
                     }
 
@@ -291,7 +291,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             foreach(Atom atom in molecule1.PrimaryStructure.Atoms()) {
 
-                if(InteractionForces.GetAtomSigmaEpsilon(atom).IsDefault) {
+                if(InteractionForces.GetAtomSigmaEpsilonNanometres(atom).IsDefault) {
 
                     MoleculeEvents.RaiseInteractionsMessage("Sigma epsilon values for " + atom.Element + " atom not found. Using default values", true);
                     return;
@@ -300,7 +300,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             foreach (Atom atom in molecule2.PrimaryStructure.Atoms()) {
 
-                if (InteractionForces.GetAtomSigmaEpsilon(atom).IsDefault) {
+                if (InteractionForces.GetAtomSigmaEpsilonNanometres(atom).IsDefault) {
 
                     MoleculeEvents.RaiseInteractionsMessage("Sigma epsilon values for " + atom.Element + " atom not found. Using default values", true);
                     return;
