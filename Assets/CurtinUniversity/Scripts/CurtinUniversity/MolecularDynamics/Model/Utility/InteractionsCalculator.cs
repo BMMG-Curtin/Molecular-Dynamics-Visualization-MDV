@@ -20,7 +20,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         public float Distance;
         public double SumOfAtomicRadii;
         public double? LennardJonesPotential;
-        public double? ElectrostaticForce;
+        public double? ElectrostaticEnergy;
         public InteractionType? InteractionType;
         public Color? InteractionColour;
 
@@ -42,7 +42,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                 "Distance: " + Distance + "\n" +
                 "SumOfAtomicRadii: " + SumOfAtomicRadii + "\n" +
                 "LJPotential: " + LennardJonesPotential + "\n" +
-                "ElectrostaticForce: " + ElectrostaticForce + "\n" +
+                "ElectrostaticEnergy: " + ElectrostaticEnergy + "\n" +
                 "Colour: " + InteractionColour;
         }
     }
@@ -102,7 +102,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
                     };
 
                     SetLennardJonesPotential(interaction);
-                    SetElecrostaticForce(interaction);
+                    SetElecrostaticEnergy(interaction);
                     SetInteractionType(interaction, repulsiveGradient, strongAttractiveGradient, weakAttractiveGradient);
 
                     interactions.Add(interaction);
@@ -135,12 +135,16 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         // Calculates the Lennard-Jones Potential for two atoms
         public void SetLennardJonesPotential(AtomInteraction interaction) {
 
+            // distance and sigma/epsilon need to be both in nanometres
+            
+            // interaction distance is in Nanometres
             if (interaction.Distance >= 8d) {
                 return;
             }
 
-            AtomSigmaEpsilon atom1SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(interaction.Atom1);
-            AtomSigmaEpsilon atom2SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilon(interaction.Atom2);
+            // get sigma/epsilon in nanometres
+            AtomSigmaEpsilon atom1SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilonAngstroms(interaction.Atom1);
+            AtomSigmaEpsilon atom2SigmaEpsilon = InteractionForces.GetAtomSigmaEpsilonAngstroms(interaction.Atom2);
 
             interaction.SumOfAtomicRadii = ((double)atom1SigmaEpsilon.Sigma + (double)atom2SigmaEpsilon.Sigma) / 2d;
 
@@ -154,19 +158,16 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             interaction.LennardJonesPotential = Double.IsPositiveInfinity(score) ? Double.MaxValue : score;
         }
 
-        public void SetElecrostaticForce(AtomInteraction interaction) {
+        public void SetElecrostaticEnergy(AtomInteraction interaction) {
 
-            //double coulombsConstant = 332;
-            double coulombsConstant = 8987551787;
-
-            double distanceInMetres = interaction.Distance * 0.000000001d; // 1e-9;
+            double coulombsConstant = 138.7848663d;
+            double distance = interaction.Distance;
             double chargeAtom1 = (double)interaction.Atom1.Charge;
             double chargeAtom2 = (double)interaction.Atom2.Charge;
 
-            double electrostaticForce = coulombsConstant * (chargeAtom1 * chargeAtom2) / (distanceInMetres * distanceInMetres);
-            //double electrostaticForce = coulombsConstant * (chargeAtom1 * chargeAtom2) / (interaction.Distance * interaction.Distance);
+            double electrostaticForce = coulombsConstant * ((chargeAtom1 * chargeAtom2) / distance);
 
-            interaction.ElectrostaticForce = electrostaticForce;
+            interaction.ElectrostaticEnergy = electrostaticForce;
         }
 
         // Sets a colour calculated on distance compared to atom sigmas

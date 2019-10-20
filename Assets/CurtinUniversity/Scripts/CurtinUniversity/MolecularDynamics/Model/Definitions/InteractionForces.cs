@@ -66,14 +66,35 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         // default is equal to carbon
         public static AtomSigmaEpsilon defaultSigmaEpsilon = new AtomSigmaEpsilon { Sigma = 0.3400000f, Epsilon = 0.3600000f, IsDefault = true };
 
-        public static AtomSigmaEpsilon GetAtomSigmaEpsilon(Atom atom) {
+        public static AtomSigmaEpsilon GetAtomSigmaEpsilonNanometres(Atom atom) {
+
+            AtomSigmaEpsilon sigmaEpsilon;
+
+            string atomResidueTypeKey = atom.ResidueName + "_" + atom.Name;
+            if (AtomTypeSigmaEpsilon.ContainsKey(atomResidueTypeKey)) {
+                sigmaEpsilon = AtomTypeSigmaEpsilon[atomResidueTypeKey];
+            }
+            else if(AtomElementSigmaEpsilon.ContainsKey(atom.Element)) {
+                sigmaEpsilon =  AtomElementSigmaEpsilon[atom.Element];
+            }
+            else {
+                return defaultSigmaEpsilon;
+            }
+
+            sigmaEpsilon.Epsilon /= 10f;
+            sigmaEpsilon.Sigma /= 10f;
+
+            return sigmaEpsilon;
+        }
+
+        public static AtomSigmaEpsilon GetAtomSigmaEpsilonAngstroms(Atom atom) {
 
             string atomResidueTypeKey = atom.ResidueName + "_" + atom.Name;
             if (AtomTypeSigmaEpsilon.ContainsKey(atomResidueTypeKey)) {
                 return AtomTypeSigmaEpsilon[atomResidueTypeKey];
             }
 
-            if(AtomElementSigmaEpsilon.ContainsKey(atom.Element)) {
+            if (AtomElementSigmaEpsilon.ContainsKey(atom.Element)) {
                 return AtomElementSigmaEpsilon[atom.Element];
             }
 
