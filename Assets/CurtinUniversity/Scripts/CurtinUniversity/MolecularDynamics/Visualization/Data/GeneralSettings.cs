@@ -73,8 +73,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 MeshQuality = Settings.DefaultMeshQuality,
                 AutoRotateSpeed = (float)(Settings.DefaultAutoRotateSpeed - Settings.MinAutoRotateSpeed) / (float)(Settings.MaxAutoRotateSpeed - Settings.MinAutoRotateSpeed),
                 MoleculeInputSensitivity = (float)(Settings.DefaultMoleculeMovementSpeed - Settings.MinMoleculeMovementSpeed) / (float)(Settings.MaxMoleculeMovementSpeed - Settings.MinMoleculeMovementSpeed),
-                SpaceNavigatorCameraControlEnabled = false,
-                SpaceNavigatorMoleculeControlEnabled = false,
+                SpaceNavigatorCameraControlEnabled = true,
+                SpaceNavigatorMoleculeControlEnabled = true,
             };
         }
 
