@@ -120,27 +120,35 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void ShowInformation(MolecularInteractionsInformation information) {
 
-            InteractionScoreText.text = information.SummedInteractionEnergy.ToString("N2") + " kJ/mol";
+            InteractionScoreText.text = getForceString(information.SummedInteractionEnergy) + " kJ/mol";
 
-            InformationText.text =
-
-                "Attraction Energy: " + information.SummedAttractionForce.ToString("N2") + "\n" +
-                "Repulsion Energy: " + information.SummedRepulsionForce.ToString("N2") + "\n\n" +
+            InformationText.text = "Attraction Energy: " + getForceString(information.SummedAttractionForce) + "\n" +
+                "Repulsion Energy: " + getForceString(information.SummedRepulsionForce) + "\n\n" +
 
                 "Stable Interactions: " + information.TotalStableInteractions + "\n" +
                 "Attractive Interactions: " + information.TotalAttractiveInteractions + "\n" +
                 "Repulsive Interactions: " + information.TotalRepulsiveInteractions + "\n" +
                 "Total Interactions: " + information.TotalInteractions + "\n\n" +
 
-                "VDW Energy: " + information.SummedLennardJonesEnergy.ToString("N2") + "\n" +
-                "VDW Attraction: " + information.SummedLennardJonesAttractionEnergy.ToString("N2") + "\n" +
-                "VDW Repulsion: " + information.SummedLennardJonesRepulsionEnergy.ToString("N2") + "\n\n" +
+                "VDW Energy: " + getForceString(information.SummedLennardJonesEnergy) + "\n" +
+                "VDW Attraction: " + getForceString(information.SummedLennardJonesAttractionEnergy) + "\n" +
+                "VDW Repulsion: " + getForceString(information.SummedLennardJonesRepulsionEnergy) + "\n\n" +
 
-                "Electrostatic Energy: " + information.SummedElectrostaticForce.ToString("N2") + "\n" +
-                "Electrostatic Attraction: " + information.SummedElectrostaticAttractionForce.ToString("N2") + "\n" +
-                "Electrostatic Repulsion: " + information.SummedElectrostaticRepulsionForce.ToString("N2"); // + "\n" + 
+                "Electrostatic Energy: " + getForceString(information.SummedElectrostaticForce) + "\n" +
+                "Electrostatic Attraction: " + getForceString(information.SummedElectrostaticAttractionForce) + "\n" +
+                "Electrostatic Repulsion: " + getForceString(information.SummedElectrostaticRepulsionForce); // + "\n" + 
 
                 //"\nDebug Info: " + information.DebugString + "\n";
+        }
+
+        private string getForceString(double force) {
+
+            if (force > 100000) {
+                return force.ToString("0.00000e0");
+            }
+            else {
+                return force.ToString("N2");
+            }
         }
 
         public void StopInteractions() {
