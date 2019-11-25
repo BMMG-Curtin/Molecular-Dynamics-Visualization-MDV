@@ -31,7 +31,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public bool Active { get; private set; }
 
-        private float reportInterval = 0f;
+        private float reportInterval = 0.1f;
         private float lastReportTime = 0;
 
         private bool processingInteractions = false;

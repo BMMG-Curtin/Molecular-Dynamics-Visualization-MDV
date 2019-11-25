@@ -96,15 +96,13 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 colors[i] = atoms[i].HighlightColor;
             }
 
-            Mesh mesh = new Mesh();
+            Mesh mesh = atomHighlightsMesh.GetComponent<MeshFilter>().mesh;
+            mesh.Clear();
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.vertices = vertices;
             mesh.SetIndices(indices, MeshTopology.Points, 0);
             mesh.colors = colors;
             mesh.bounds = new Bounds(transform.position, new Vector3(float.MaxValue, float.MaxValue, float.MaxValue));
-
-            MeshFilter mf = atomHighlightsMesh.GetComponent<MeshFilter>();
-            mf.mesh = mesh;
 
             atomHighlightsMesh.SetActive(true);
         }
