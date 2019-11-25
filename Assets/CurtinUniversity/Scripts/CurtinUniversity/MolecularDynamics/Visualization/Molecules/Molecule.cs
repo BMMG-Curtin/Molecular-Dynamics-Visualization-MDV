@@ -188,7 +188,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             MoleculeRenderSettings renderSettingsClone = renderSettings.Clone();
 
 
-            yield return StartCoroutine(primaryStructureRenderer.Render(renderSettingsClone, frame, meshQuality));
+            yield return StartCoroutine(primaryStructureRenderer.RenderStructure(renderSettingsClone, frame, meshQuality));
 
             // secondary structure render
 
@@ -224,7 +224,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 secondaryStructureToBuild = secondaryStructure;
             }
 
-            yield return secondaryStructureRenderer.Render(renderSettingsClone, frame, secondaryStructureToBuild);
+            yield return StartCoroutine(secondaryStructureRenderer.RenderStructure(renderSettingsClone, frame, secondaryStructureToBuild));
+
+            primaryStructureRenderer.ShowStructure();
+            secondaryStructureRenderer.ShowStructure();
 
             // simulation box render
 

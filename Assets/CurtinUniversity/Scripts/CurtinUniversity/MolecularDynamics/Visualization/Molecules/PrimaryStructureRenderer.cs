@@ -42,6 +42,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private PrimaryStructureTrajectory modelTrajectory;
         private Dictionary<int, Bond> bonds;
 
+        List<GameObject> objectStore = new List<GameObject>();
+
         private void Awake() {
             meshBuilder = GetComponent<MeshBuilder>();
         }
@@ -72,30 +74,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             MoleculeEvents.RaiseShowMessage("Bonds calculated [" + watch.ElapsedMilliseconds + "ms]", false);
         }
 
-        public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame, int meshQuality) {
+        // RenderStructure and ShowStructure are separate to allow the primary and secondary structures to be prerendered and then 
+        // both turned on at the same time. Before we did this, the show of the structures would be staggered showing some level of flickering 
+        public IEnumerator RenderStructure(MoleculeRenderSettings settings, PrimaryStructureFrame frame, int meshQuality) {
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            // store all the old model objects
-            List<GameObject> oldObjects = new List<GameObject>();
-
-            foreach (Transform child in AtomParent.transform) {
-                oldObjects.Add(child.gameObject);
-            }
-
-            foreach (Transform child in BondParent.transform) {
-                oldObjects.Add(child.gameObject);
-            }
-
-            foreach (Transform child in ChainParent.transform) {
-                oldObjects.Add(child.gameObject);
-            }
-
+            storeExistingstructure();
 
             // create the new model objects
             if (settings.ShowPrimaryStructure) {
-
 
                 if (settings.ShowAtoms) {
                     yield return StartCoroutine(createModelAtomsByElement(settings, frame, meshQuality));
@@ -113,39 +102,66 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 if (settings.ShowMainChains) {
                     yield return StartCoroutine(createMainChains(frame));
                 }
-
-                // show the new model objects
-                foreach (Transform child in AtomParent.transform) {
-                    child.gameObject.SetActive(true);
-                }
-
-                foreach (Transform child in BondParent.transform) {
-                    child.gameObject.SetActive(true);
-                }
-
-                foreach (Transform child in ChainParent.transform) {
-                    child.gameObject.SetActive(true);
-                }
-            }
-
-            // delete old model objects
-            foreach (GameObject oldObject in oldObjects) {
-                if (oldObject != null) {
-                    oldObject.SetActive(false);
-                }
-            }
-
-            foreach (GameObject oldObject in oldObjects) {
-                if (oldObject != null) {
-                    Destroy(oldObject);
-                }
             }
 
             watch.Stop();
             //if (Settings.DebugMessages)
             //    console.BannerBuildTime = watch.ElapsedMilliseconds.ToString();
+        }
 
-            yield break;
+        public void ShowStructure() {
+
+            removeStoredStructure();
+
+            // show all remaining model objects
+            foreach (Transform child in AtomParent.transform) {
+                child.gameObject.SetActive(true);
+            }
+
+            foreach (Transform child in BondParent.transform) {
+                child.gameObject.SetActive(true);
+            }
+
+            foreach (Transform child in ChainParent.transform) {
+                child.gameObject.SetActive(true);
+            }
+        }
+
+        private void storeExistingstructure() {
+
+            if(objectStore == null) {
+                objectStore = new List<GameObject>();
+            }
+
+            foreach (Transform child in AtomParent.transform) {
+                objectStore.Add(child.gameObject);
+            }
+
+            foreach (Transform child in BondParent.transform) {
+                objectStore.Add(child.gameObject);
+            }
+
+            foreach (Transform child in ChainParent.transform) {
+                objectStore.Add(child.gameObject);
+            }
+        }
+
+        private void removeStoredStructure() {
+
+            // delete old model objects
+            foreach (GameObject oldObject in objectStore) {
+                if (oldObject != null) {
+                    oldObject.SetActive(false);
+                }
+            }
+
+            foreach (GameObject oldObject in objectStore) {
+                if (oldObject != null) {
+                    Destroy(oldObject);
+                }
+            }
+
+            objectStore = new List<GameObject>();
         }
 
         private IEnumerator createModelAtomsByElement(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame, int meshQuality) {

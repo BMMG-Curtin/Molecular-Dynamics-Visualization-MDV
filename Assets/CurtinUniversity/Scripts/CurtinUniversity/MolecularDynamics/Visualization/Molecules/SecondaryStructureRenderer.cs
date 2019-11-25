@@ -32,6 +32,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private bool initialised = false;
 
+        List<GameObject> objectStore = new List<GameObject>();
+
         public void Initialise(PrimaryStructure primaryStructure) {
 
             this.primaryStructure = primaryStructure;
@@ -39,7 +41,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             initialised = true;
         }
 
-        public IEnumerator Render(MoleculeRenderSettings settings, PrimaryStructureFrame frame, SecondaryStructure secondaryStructure) {
+        // RenderStructure and ShowStructure are separate to allow the primary and secondary structures to be prerendered and then 
+        // both turned on at the same time. Before we did this, the show of the structures would be staggered showing some level of flickering 
+        public IEnumerator RenderStructure(MoleculeRenderSettings settings, PrimaryStructureFrame frame, SecondaryStructure secondaryStructure) {
 
             if (!initialised) {
                 yield break;
@@ -49,33 +53,38 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             watch.Start();
 
             yield return null;
-
-            List<GameObject> oldObjects = new List<GameObject>();
-            foreach (Transform child in StructureParent.transform) {
-                oldObjects.Add(child.gameObject);
-            }
+            storeExistingstructure();
 
             // create mesh
             if (secondaryStructure != null && settings.ShowSecondaryStructure) {
                 yield return StartCoroutine(createSecondaryStructure(settings, frame, secondaryStructure));
             }
 
-            // show new mesh, remove old mesh
-            foreach (Transform child in StructureParent.transform) {
+            watch.Stop();
+        }
 
-                if (oldObjects.Contains(child.gameObject)) {
-                    child.gameObject.SetActive(false);
-                }
-                else {
-                    child.gameObject.SetActive(true);
-                }
-            }
+        public void ShowStructure() {
 
-            foreach (GameObject oldObject in oldObjects) {
+            foreach (GameObject oldObject in objectStore) {
                 Destroy(oldObject);
             }
 
-            watch.Stop();
+            objectStore = new List<GameObject>();
+
+            foreach (Transform child in StructureParent.transform) {
+                    child.gameObject.SetActive(true);
+            }
+        }
+
+        private void storeExistingstructure() {
+
+            if (objectStore == null) {
+                objectStore = new List<GameObject>();
+            }
+
+            foreach (Transform child in StructureParent.transform) {
+                objectStore.Add(child.gameObject);
+            }
         }
 
         private IEnumerator createSecondaryStructure(MoleculeRenderSettings settings, PrimaryStructureFrame frame, SecondaryStructure secondaryStructure) {
