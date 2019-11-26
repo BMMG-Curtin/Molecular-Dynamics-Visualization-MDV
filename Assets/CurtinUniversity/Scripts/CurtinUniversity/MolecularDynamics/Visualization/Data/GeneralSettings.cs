@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Settings not related to molecule rendering or the user interface
     public struct GeneralSettings {
 
         public bool ShowGround { get; set; }

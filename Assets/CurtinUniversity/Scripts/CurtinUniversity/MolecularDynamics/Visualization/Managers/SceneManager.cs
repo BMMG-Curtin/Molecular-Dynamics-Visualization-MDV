@@ -10,6 +10,8 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // This is the 'main' class for the application. It should be set at a higher priority to load before 
+    // everything else in the application
     public class SceneManager : MonoBehaviour {
 
         [SerializeField]
@@ -30,6 +32,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Settings.Load();
         }
 
+        // The visualisation components are saparated into two groups, the User Interface and the Molecule Rendering
+        // The communication between the two groups is via the event assignments below
         private void Start() {
 
             // setup UI and Molecule events
@@ -93,6 +97,10 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             molecules.UpdateGeneralSettings(settings);
             sceneCamera.EnableSpaceNavigatorInput(settings.SpaceNavigatorCameraControlEnabled);
         }
+
+        // Settings file management methods below. These don't fit into the UserInterface or Molecule groups 
+        // so have left separately here. Could be moved into it's own class but the code but the code is minor 
+        // at the moment so have left here.
 
         private void saveSettingsFile(MoleculeSettings moleculeSettings, string saveFilePath) {
 

@@ -104,7 +104,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             return true;
         }
 
-
         public override string ToString() {
 
             string output =

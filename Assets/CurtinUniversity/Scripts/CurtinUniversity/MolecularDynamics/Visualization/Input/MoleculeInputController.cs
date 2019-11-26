@@ -4,6 +4,8 @@ using SpaceNavigatorDriver;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Component that manages mouse, keyboard and space mouse input for moleculemovement 
+    // and rotation. Uses the main camera forward direction as a reference for movement
     public class MoleculeInputController : MonoBehaviour {
 
         private float inputSensitivity;

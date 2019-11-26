@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Component to update lighting and ground settings from settings data
     public class Scene : MonoBehaviour {
 
         [SerializeField]

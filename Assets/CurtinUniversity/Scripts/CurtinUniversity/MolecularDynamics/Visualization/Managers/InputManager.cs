@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 using UnityEngine;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Helper class to privide information on modifiers to other input managers
+    // See the '\Input' folder for user interface and molecule input managers
     public class InputManager : MonoBehaviour {
 
         public bool ShiftPressed { get; private set; }

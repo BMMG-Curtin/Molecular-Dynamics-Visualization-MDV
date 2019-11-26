@@ -11,7 +11,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
     /// It maps the frame coordinates instead of structure coordinates if supplied.
     /// The purpose of the class is to facilitate stride analysis of non PDB structure files. 
     /// It is tightly coupled to the FileParser atom and residue index inputs to generate a file 
-    /// that will match the secondary strcuture residues to the primary structure residues when 
+    /// that will match the secondary structure residues to the primary structure residues when 
     /// processing the stride output.
     /// </summary>
     public class PDBStructureCreator {

@@ -4,10 +4,9 @@ using System.Linq;
 
 using UnityEngine;
 
-using CurtinUniversity.MolecularDynamics.Model;
-
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Complete collection of render settings related to a molecule
     public class MoleculeRenderSettings {
 
         // primary structure settings

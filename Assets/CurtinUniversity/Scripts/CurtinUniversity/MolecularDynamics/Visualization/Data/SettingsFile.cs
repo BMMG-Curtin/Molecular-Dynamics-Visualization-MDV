@@ -1,6 +1,7 @@
 ﻿
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Collection of molecule settings that are serialised to a settings file
     public class SettingsFile {
 
         public string StructureFilePath { get; set; }

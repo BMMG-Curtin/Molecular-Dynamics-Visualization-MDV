@@ -8,7 +8,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         // molecule loaded on start - adjustable in config file, see below
         public static bool LoadMoleculeOnStart { get; private set; }
         public static string LoadMoleculeFileName { get; private set; }
-        public static string LoadMoleculeFileName2 { get; private set; }
 
         // Colors for residue highlighting. 
         // Uses RGB values ranging from 0-255
@@ -120,7 +119,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             LoadMoleculeOnStart = false;
             LoadMoleculeFileName = "";
-            LoadMoleculeFileName2 = "";
 
             ResidueColour1 = new Color32(255, 0, 0, 255);	  // red1
             ResidueColour2 = new Color32(255, 65, 65, 255);   // red2
@@ -218,8 +216,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 NumberOfProcessorCores = Config.GetInt("NumberOfProcessorCores");
 
             Debug.Log("Processor Cores: " + NumberOfProcessorCores);
-
-
         }
     }
 }
