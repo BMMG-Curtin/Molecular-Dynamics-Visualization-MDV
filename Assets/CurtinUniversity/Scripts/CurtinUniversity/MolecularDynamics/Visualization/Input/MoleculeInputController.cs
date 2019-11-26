@@ -63,17 +63,17 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             float horizontalAxis = Input.GetAxis("Mouse X");
             float verticalAxis = Input.GetAxis("Mouse Y");
 
+            Vector3 forward = sceneCamera.transform.forward;
+            Vector3 right = sceneCamera.transform.right;
+            Vector3 up = sceneCamera.transform.up;
+
+            forward.y = 0f;
+            right.y = 0f;
+            forward.Normalize();
+            right.Normalize();
+
             // molecule movement in relation to camera
             if (InputManager.Instance.ShiftPressed) {
-
-                Vector3 forward = sceneCamera.transform.forward;
-                Vector3 right = sceneCamera.transform.right;
-                Vector3 up = sceneCamera.transform.up;
-
-                forward.y = 0f;
-                right.y = 0f;
-                forward.Normalize();
-                right.Normalize();
 
                 Vector3 moveDirection;
                 if (InputManager.Instance.ControlPressed) {
@@ -123,9 +123,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             if(InputManager.Instance.ControlPressed) {
 
                 Vector3 rotation = SpaceNavigator.Rotation.eulerAngles;
-                transform.RotateAround(transform.position, Vector3.up, SpaceNavigator.Rotation.y * baseMouseRotateSpeed * inputSensitivity);
-                transform.RotateAround(transform.position, Vector3.right, SpaceNavigator.Rotation.x * baseMouseRotateSpeed * inputSensitivity);
-                transform.RotateAround(transform.position, Vector3.forward, SpaceNavigator.Rotation.z * baseMouseRotateSpeed * inputSensitivity);
+                transform.RotateAround(transform.position, sceneCamera.transform.up, SpaceNavigator.Rotation.y * baseMouseRotateSpeed * inputSensitivity);
+                transform.RotateAround(transform.position, sceneCamera.transform.right, SpaceNavigator.Rotation.x * baseMouseRotateSpeed * inputSensitivity);
+                transform.RotateAround(transform.position, sceneCamera.transform.forward, SpaceNavigator.Rotation.z * baseMouseRotateSpeed * inputSensitivity);
             }
         }
     }
