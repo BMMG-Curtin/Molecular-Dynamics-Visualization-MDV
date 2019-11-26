@@ -8,6 +8,10 @@ using UnityEngine;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// The list of molecules loaded in the application.
+    /// Manages settings data for molecule across all settings panels.
+    /// </summary>
     public class MoleculeList : MonoBehaviour {
 
         private int? selectedMoleculeID;

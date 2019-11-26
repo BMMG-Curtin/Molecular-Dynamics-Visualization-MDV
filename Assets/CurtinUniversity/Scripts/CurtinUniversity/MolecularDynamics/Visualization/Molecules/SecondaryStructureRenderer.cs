@@ -8,6 +8,9 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Renders the secondary structure of a molecule given the molecule data and the render settings
+    /// </summary>
     public class SecondaryStructureRenderer : MonoBehaviour {
 
         [SerializeField]
@@ -53,7 +56,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             watch.Start();
 
             yield return null;
-            storeExistingstructure();
+            storeExistingStructure();
 
             // create mesh
             if (secondaryStructure != null && settings.ShowSecondaryStructure) {
@@ -76,7 +79,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private void storeExistingstructure() {
+        private void storeExistingStructure() {
 
             if (objectStore == null) {
                 objectStore = new List<GameObject>();

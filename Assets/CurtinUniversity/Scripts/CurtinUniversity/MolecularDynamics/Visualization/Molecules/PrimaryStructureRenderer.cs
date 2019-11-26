@@ -12,6 +12,9 @@ using System.Diagnostics;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Renders the primary structure of a molecule given the molecule data and the render settings
+    /// </summary>
     [RequireComponent(typeof(MeshBuilder))]
     public class PrimaryStructureRenderer : MonoBehaviour {
 
@@ -52,28 +55,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             primaryStructure = structure;
         }
 
-        private IEnumerator calculateBonds() {
-
-            MoleculeEvents.RaiseShowMessage("Calculating bonds. Please wait", false);
-            yield return null;
-
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-
-            Thread thread = new Thread(() => {
-                bonds = primaryStructure.GenerateBonds(Settings.NumberOfProcessorCores);
-            });
-
-            thread.Start();
-
-            while (thread.IsAlive) {
-                yield return null;
-            }
-
-            watch.Stop();
-            MoleculeEvents.RaiseShowMessage("Bonds calculated [" + watch.ElapsedMilliseconds + "ms]", false);
-        }
-
         // RenderStructure and ShowStructure are separate to allow the primary and secondary structures to be prerendered and then 
         // both turned on at the same time. Without this, the show of the structures is staggered and shows some level of flickering 
         public IEnumerator RenderStructure(MoleculeRenderSettings settings, PrimaryStructureFrame frame, int meshQuality) {
@@ -81,7 +62,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            storeExistingstructure();
+            storeExistingStructure();
 
             // create the new model objects
             if (settings.ShowPrimaryStructure) {
@@ -127,7 +108,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
-        private void storeExistingstructure() {
+        private void storeExistingStructure() {
 
             if(objectStore == null) {
                 objectStore = new List<GameObject>();
@@ -162,6 +143,28 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
 
             objectStore = new List<GameObject>();
+        }
+
+        private IEnumerator calculateBonds() {
+
+            MoleculeEvents.RaiseShowMessage("Calculating bonds. Please wait", false);
+            yield return null;
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+            Thread thread = new Thread(() => {
+                bonds = primaryStructure.GenerateBonds(Settings.NumberOfProcessorCores);
+            });
+
+            thread.Start();
+
+            while (thread.IsAlive) {
+                yield return null;
+            }
+
+            watch.Stop();
+            MoleculeEvents.RaiseShowMessage("Bonds calculated [" + watch.ElapsedMilliseconds + "ms]", false);
         }
 
         private IEnumerator createModelAtomsByElement(MoleculeRenderSettings renderSettings, PrimaryStructureFrame frame, int meshQuality) {

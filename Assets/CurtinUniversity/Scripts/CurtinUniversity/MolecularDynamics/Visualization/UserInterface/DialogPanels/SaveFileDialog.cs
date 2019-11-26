@@ -12,6 +12,9 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// This is mostly just a duplicate of the LoadFileDialog class with a few small changes to allow for selecting a save file
+    /// </summary>
     public class SaveFileDialog : MonoBehaviour {
 
         [SerializeField]

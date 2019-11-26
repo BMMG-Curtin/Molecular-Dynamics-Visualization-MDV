@@ -1,6 +1,10 @@
 ﻿
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Events raised by the User Interface classes
+    /// Most of these events are consumed by the Molecule loading and rendering classes
+    /// </summary>
     public class UserInterfaceEvents {
 
         public delegate void LoadMolecule(int moleculeID, string filename, MoleculeRenderSettings renderSettings);

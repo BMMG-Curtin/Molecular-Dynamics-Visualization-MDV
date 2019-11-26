@@ -7,6 +7,9 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Manages the rendering of molecule interactions calculated in the MolecularInteractions class
+    /// </summary>
     public class MolecularInteractionsRenderer : MonoBehaviour {
 
         [SerializeField]
@@ -24,7 +27,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         private void Awake() {
             ClearInteractions();
         }
-
+        
+        // interactions are updated on an interval
         public void SetInteractions(List<AtomInteraction> interactions) {
             this.interactions = interactions;
         }
@@ -57,6 +61,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        // interaction lines are generally rendered every frame
         public void RenderInteractionLines(MolecularInteractionSettings interactionSettings) {
 
             if (interactions == null || Molecule1 == null || Molecule2 == null) {
@@ -118,6 +123,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        // atom highlights are generally re-rendered only when interaction settings have been updated
         public void RenderAtomHighlights(MolecularInteractionSettings interactionSettings) {
 
             List<HighLightedAtom> molecule1Atoms = new List<HighLightedAtom>();

@@ -5,6 +5,9 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// FileNameButtons are used in the load and save file dialogs
+    /// </summary>
     public class FileNameButton : MonoBehaviour {
 
         [SerializeField]

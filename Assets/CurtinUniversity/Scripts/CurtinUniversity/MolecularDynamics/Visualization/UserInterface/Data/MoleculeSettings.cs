@@ -3,6 +3,11 @@ using System.IO;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Central settings class for a specific molecule
+    /// Used as a store by UserInterface for molecule specific settings in settings panels.
+    /// Is serialised into a settings file for storage between application usages.
+    /// </summary>
     public class MoleculeSettings {
 
         public int ID;

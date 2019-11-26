@@ -13,6 +13,9 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Component to manage file browsing and selecting a file
+    /// </summary>
     public class LoadFileDialog : MonoBehaviour {
 
         [SerializeField]
@@ -231,7 +234,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         private void displayDrives() {
 
-            // DriveInfo doesn't work with Unity C#
+            // DriveInfo doesn't work with Unity C# :(
             // DriveInfo[] info = DriveInfo.GetDrives();
 
             clearDirectoryView();

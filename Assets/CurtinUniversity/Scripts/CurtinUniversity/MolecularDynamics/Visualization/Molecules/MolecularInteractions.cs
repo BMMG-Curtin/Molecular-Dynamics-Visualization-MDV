@@ -7,11 +7,13 @@ using System.Threading;
 
 using UnityEngine;
 
-
 using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Manages the calulation of molecule interactions and the rendering of the calculation results
+    /// </summary>
     public class MolecularInteractions : MonoBehaviour {
 
         [SerializeField]
@@ -50,6 +52,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             interactionSettings = MolecularInteractionSettings.Default();
         }
 
+        // While calculations are set to 'Active' interactions are calculated constantly
+        // Rendering of atom hhighlights is done every time interaction calculations are completed
+        // Rendering of interaction lines is done every frame
         private void LateUpdate() {
 
             if(Active) {
@@ -152,7 +157,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public void SetMolecule1RenderSettings(MoleculeRenderSettings molecule1Settings) {
 
-
             UnityEngine.Debug.Log("Molecule1Interaction Settings " + molecule1Settings);
 
             if (!molecule1Settings.ShowPrimaryStructure) {
@@ -179,6 +183,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        // Process the interactions in a thread. Thread can be stopped by the StopMonitoring method
         private IEnumerator processInteractions() {
 
             processingInteractions = true;
@@ -219,6 +224,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             processingInteractions = false;
         }
 
+        // Exports inetaction results as an info class. Used to report interactions data in the UI
         private void outputInteractionResults(List<AtomInteraction> interactions) {
 
             MolecularInteractionsInformation info = new MolecularInteractionsInformation();
@@ -287,6 +293,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             return positions;
         }
 
+        // This method return whether default sigma and epsilson values are used in the interaction energy caluclations
         private void reportSigmaEpsilonValueDefaults(Molecule molecule1, Molecule molecule2) {
 
             foreach(Atom atom in molecule1.PrimaryStructure.Atoms()) {

@@ -10,6 +10,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
     public delegate void SetElementDelegate(string elementName, bool enabled);
 
+    /// <summary>
+    /// Element settings allow the enable and disable of specific elements within the selected molecule
+    /// </summary>
     public class ElementsSettingsPanel : MonoBehaviour {
 
         [SerializeField]

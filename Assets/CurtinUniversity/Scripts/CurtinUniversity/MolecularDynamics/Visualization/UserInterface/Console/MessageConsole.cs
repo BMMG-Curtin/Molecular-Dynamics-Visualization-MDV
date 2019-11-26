@@ -16,6 +16,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         Error
     }
 
+    /// <summary>
+    /// Message console provides user feedback on application events
+    /// </summary>
     public class MessageConsole : MonoBehaviour {
         
         [SerializeField]

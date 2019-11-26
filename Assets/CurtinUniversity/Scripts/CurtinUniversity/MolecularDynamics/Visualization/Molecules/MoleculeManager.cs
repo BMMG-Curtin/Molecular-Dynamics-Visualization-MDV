@@ -11,6 +11,9 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Manages the loading of molecule data and the rendering of molecules.
+    /// </summary>
     public class MoleculeManager : MonoBehaviour {
 
         [SerializeField]
@@ -58,6 +61,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        // Loads and renders a molecule using a structure file path and render settings
         public IEnumerator LoadMoleculeStructure(int moleculeID, string filePath, MoleculeRenderSettings settings) {
 
             if (molecules.ContainsKey(moleculeID)) {
@@ -157,6 +161,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             StartCoroutine(LoadMoleculeTrajectory(moleculeID, filePath));
         }
 
+        // Loads a molecule trajectory. Will only work if molecule is already loaded
         public IEnumerator LoadMoleculeTrajectory(int moleculeID, string filePath) {
 
             if (!molecules.ContainsKey(moleculeID)) {
@@ -285,6 +290,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        // Enables molecule movement input controls for the given molecule.
+        // All other molecule movement controls are disabled
         public void SetMoleculeSelected(int moleculeID, bool selected) {
 
             if (molecules.ContainsKey(moleculeID)) {
@@ -305,6 +312,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             }
         }
 
+        // This allows temporary disable of molecule movement.
+        // This is used to stop molecule movement when user interface is accepting text input.
         public void EnableMoleculeInput(bool enable) {
 
             moleculeMovementEnabled = enable;
@@ -336,7 +345,6 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 molecules[moleculeID].transform.localScale = moleculeTransform.Scale;
             }
         }
-
 
         public void SaveCurrentMoleculeTransformAsDefault(int moleculeID) {
 
@@ -378,7 +386,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     defaultMoleculeTransforms.Remove(moleculeID);
                 }
 
-                // check if the molecule was being monitored. If so, shut down monitoring
+                // check if the molecule was being monitored for interactions. If so, shut down monitoring
                 if(moleculeInterations.Active && (moleculeInterations.Molecule1.ID == moleculeID || moleculeInterations.Molecule2.ID == moleculeID)) {
                     moleculeInterations.StopMonitoring();
                 }

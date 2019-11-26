@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// ElementButton is used in ElementSettingsPanel to show and hide elements in the selected molecule
+    /// </summary>
     public class ElementButton : MonoBehaviour {
 
         [HideInInspector]

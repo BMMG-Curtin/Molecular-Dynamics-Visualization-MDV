@@ -1,14 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
+﻿
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-
-using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// ParentDirButton is used in the load and save file dialogs
+    /// </summary>
     public class ParentDirButton : MonoBehaviour {
 
         private OnFileBrowserParentDirectoryButtonClick onClick;

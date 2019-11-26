@@ -9,6 +9,9 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Manages all input and rendering for a single molecule
+    /// </summary>
     public class Molecule : MonoBehaviour {
 
         [SerializeField]
@@ -116,6 +119,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 transform.RotateAround(transform.position, Vector3.up, autoRotateSpeed * Time.deltaTime);
             }
 
+            // Initiate any waiting render
+            // We only handle the last request, any additional ones will have been overwritten
             if (!rendering && awaitingRender) {
 
                 awaitingRender = false;
@@ -165,6 +170,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
         public IEnumerator Render(int meshQuality) {
 
+            // if currently rendering, then store render request
             if(rendering) {
 
                 awaitingMeshQuality = meshQuality;
@@ -184,9 +190,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 frame = PrimaryStructureTrajectory.GetFrame((int)frameNumber);
             }
 
-            // we clone the render settings so any updates dont interfere with the builds
+            // We use a clone of the render settings so any settings updates dont interfere with the builds
             MoleculeRenderSettings renderSettingsClone = renderSettings.Clone();
-
 
             yield return StartCoroutine(primaryStructureRenderer.RenderStructure(renderSettingsClone, frame, meshQuality));
 

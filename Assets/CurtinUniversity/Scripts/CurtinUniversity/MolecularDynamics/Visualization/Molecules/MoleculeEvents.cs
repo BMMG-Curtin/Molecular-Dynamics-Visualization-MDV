@@ -3,6 +3,10 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Events raised by the molecule loading and rendering classes
+    /// Most of these events are consumed by the UI classes
+    /// </summary>
     public class MoleculeEvents {
 
         public delegate void MoleculeLoaded(int moleculeID, string name, PrimaryStructure primaryStructure);

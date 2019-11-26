@@ -7,6 +7,10 @@ using TMPro;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Component to allow management of trajectory animation.
+    /// Trajectory controls only show when a trajectory file is loaded
+    /// </summary>
     public class TrajectoryControls : MonoBehaviour {
 
         [SerializeField]

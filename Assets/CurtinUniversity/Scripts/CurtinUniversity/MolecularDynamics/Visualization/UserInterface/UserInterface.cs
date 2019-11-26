@@ -9,9 +9,12 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    /// <summary>
+    /// Primary interface to the application user interface.
+    /// The user interface also 
+    /// </summary>
     public class UserInterface : MonoBehaviour {
 
-        // inspector properties
         [SerializeField]
         private GameObject UserInterfaceCanvas;
 
@@ -88,7 +91,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     timer = frameCount = 0;
                 }
             }
-
+            
+            // iterates through the list of molecules in the loaded molecule list
             if (enabled) {
 
                 if (Input.GetKeyDown(KeyCode.Tab)) {
@@ -107,6 +111,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             applicationSettings.SetSceneSettings(settings);
         }
 
+        // Helper method for loading molecules at startup.
+        // this will load the molecule in the UI and then raise an event to load the molecule in the MoleculeManager
         public void LoadMolecule(string filePath) {
             moleculeSettingsPanel.LoadMolecule(filePath);
         }
