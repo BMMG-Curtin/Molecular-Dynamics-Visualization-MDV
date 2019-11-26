@@ -52,6 +52,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         [SerializeField]
         private ConfirmDialog confirmDialog;
 
+        [SerializeField]
+        private TextMeshProUGUI versionText;
+
         private string playerPrefsMouseSpeedKey = @"MouseSpeed";
         private string playerPrefsSpaceNavigatorCameraControlKey = @"SpaceNavigatorCameraControl";
         private string playerPrefsSpaceNavigatorMoleculeControlKey = @"SpaceNavigatorMoleculeControl";
@@ -81,6 +84,8 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
             else {
                 SetMouseSpeed(Settings.DefaultMouseSpeed);
             }
+
+            versionText.text = "Version: " + Application.version;
         }
 
         public void SetSceneSettings(GeneralSettings settings) {

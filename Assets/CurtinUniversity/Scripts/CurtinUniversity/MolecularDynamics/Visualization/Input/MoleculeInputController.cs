@@ -101,14 +101,29 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             if (InputManager.Instance.ShiftPressed) {
 
-                Vector3 translation = SpaceNavigator.Translation * 0.5f;
-                transform.Translate(translation, Space.World);
+                Vector3 forward = sceneCamera.transform.forward;
+                Vector3 right = sceneCamera.transform.right;
+                Vector3 up = sceneCamera.transform.up;
+
+                forward.y = 0f;
+                right.y = 0f;
+                forward.Normalize();
+                right.Normalize();
+
+                Vector3 translation =
+                    right * SpaceNavigator.Translation.x +
+                    up * SpaceNavigator.Translation.y +
+                    forward * SpaceNavigator.Translation.z;
+
+                transform.Translate(translation * inputSensitivity, Space.World);
             }
 
             if(InputManager.Instance.ControlPressed) {
 
                 Vector3 rotation = SpaceNavigator.Rotation.eulerAngles;
-                transform.Rotate(rotation, Space.World);
+                transform.RotateAround(transform.position, Vector3.up, SpaceNavigator.Rotation.y * baseMouseRotateSpeed * inputSensitivity);
+                transform.RotateAround(transform.position, Vector3.right, SpaceNavigator.Rotation.x * baseMouseRotateSpeed * inputSensitivity);
+                transform.RotateAround(transform.position, Vector3.forward, SpaceNavigator.Rotation.z * baseMouseRotateSpeed * inputSensitivity);
             }
         }
     }
