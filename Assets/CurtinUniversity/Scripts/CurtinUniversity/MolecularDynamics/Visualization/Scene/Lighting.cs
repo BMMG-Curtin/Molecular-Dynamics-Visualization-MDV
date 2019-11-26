@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Component to control lighting in scene
     public class Lighting : MonoBehaviour {
 
         [SerializeField]

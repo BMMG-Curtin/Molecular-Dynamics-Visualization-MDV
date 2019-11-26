@@ -75,7 +75,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         }
 
         // RenderStructure and ShowStructure are separate to allow the primary and secondary structures to be prerendered and then 
-        // both turned on at the same time. Before we did this, the show of the structures would be staggered showing some level of flickering 
+        // both turned on at the same time. Without this, the show of the structures is staggered and shows some level of flickering 
         public IEnumerator RenderStructure(MoleculeRenderSettings settings, PrimaryStructureFrame frame, int meshQuality) {
 
             Stopwatch watch = new Stopwatch();

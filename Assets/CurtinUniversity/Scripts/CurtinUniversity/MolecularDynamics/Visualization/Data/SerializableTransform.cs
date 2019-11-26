@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Unity transforms are not serializable. 
+    // This wraps the transform into a serializable form.
     public class SerializableTransform {
 
         public Vector3 Position { get; private set; }

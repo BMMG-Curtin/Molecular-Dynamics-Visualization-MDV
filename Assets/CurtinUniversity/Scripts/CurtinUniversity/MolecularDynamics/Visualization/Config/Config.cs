@@ -5,6 +5,7 @@ using System.IO;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Utility class. Read settings from a config file and provides methods to access the settings.
     public static class Config {
 
         private static string configFilePath = Application.streamingAssetsPath + Path.DirectorySeparatorChar + @"config.txt";

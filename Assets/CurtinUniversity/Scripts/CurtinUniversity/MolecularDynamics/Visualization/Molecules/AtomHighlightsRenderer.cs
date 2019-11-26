@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 using UnityEngine;
 
@@ -15,6 +13,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
         public Color HighlightColor;
     }
 
+    // Renders atom highlight discs using point mesh and PCX point cloud shader
+    // Uses the render settings to determine how large the discs need to be so 
+    // render settings should be updated whenever the atom render sizes change.
     public class AtomHighlightsRenderer : MonoBehaviour {
 
         [SerializeField]
@@ -41,9 +42,9 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             ClearHighlights();
 
+            // separate List into atoms by size
             Dictionary<float, List<HighLightedAtom>> atomsBySize = new Dictionary<float, List<HighLightedAtom>>();
 
-            // separate List into atoms by element
             foreach(HighLightedAtom highlighedAtom in atoms) {
 
                 if ((renderSettings.EnabledResidueNames != null && !renderSettings.EnabledResidueNames.Contains(highlighedAtom.Atom.ResidueName)) ||
@@ -51,7 +52,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                     continue;
                 }
 
-                // get atom size
+                // get atom size 
                 float atomDiameter = getAtomRadius(highlighedAtom.Atom) * 2;
 
                 if (!atomsBySize.ContainsKey(atomDiameter)) {
@@ -61,7 +62,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
                 atomsBySize[atomDiameter].Add(highlighedAtom);
             }
 
-            // render mesh for each element
+            // render separate mesh for atom size
             foreach(KeyValuePair<float, List<HighLightedAtom>> item in atomsBySize) {
                 renderAtomHighlights(item.Key, item.Value);
             }
@@ -71,6 +72,7 @@ namespace CurtinUniversity.MolecularDynamics.Visualization {
 
             GameObject atomHighlightsMesh;
 
+            // we maintain a list of atom meshes so we don't need to recreate the mesh object each time we render
             if (atomHighlightMeshes.ContainsKey(size)) {
                 atomHighlightsMesh = atomHighlightMeshes[size];
             }

@@ -4,6 +4,7 @@ using CurtinUniversity.MolecularDynamics.Model;
 
 namespace CurtinUniversity.MolecularDynamics.Visualization {
 
+    // Renders a molecule simulation box 
     public class MoleculeBox : MonoBehaviour {
 
         [SerializeField]

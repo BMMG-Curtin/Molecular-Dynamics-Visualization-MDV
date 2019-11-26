@@ -47,6 +47,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
         }
     }
 
+    // Utility class to calculate and report on interaction energies between groups of atoms
     public class InteractionsCalculator {
 
         private const float maxInteractionDistance = 0.8f;
@@ -54,6 +55,8 @@ namespace CurtinUniversity.MolecularDynamics.Model {
 
         private HashSet<int> addedInteractions;
 
+        // Returns atom interactions between groups of atoms. Will ignore interactions between atoms within each group.
+        // Uses KDTree to find atoms within a certain distance and then calculates the forces on those atoms.
         public List<AtomInteraction> GetAllInteractions(List<Atom> molecule1Atoms, List<Vector3> molecule1AtomPositions, List<Atom> molecule2Atoms, List<Vector3> molecule2AtomPositions, Gradient repulsiveGradient, Gradient strongAttractiveGradient, Gradient weakAttractiveGradient, int processorCores = 1) {
 
             if (molecule1Atoms == null || molecule1AtomPositions == null || molecule1Atoms.Count != molecule1AtomPositions.Count) {
@@ -158,6 +161,7 @@ namespace CurtinUniversity.MolecularDynamics.Model {
             interaction.LennardJonesPotential = Double.IsPositiveInfinity(score) ? Double.MaxValue : score;
         }
 
+        // Calulates the Coulombs force between two atoms
         public void SetElecrostaticEnergy(AtomInteraction interaction) {
 
             double coulombsConstant = 138.7848663d;
